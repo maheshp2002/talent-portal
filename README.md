@@ -1,3 +1,3 @@
 # talent-portal
 
-![image](https://github.com/maheshp2002/talent-portal/assets/95010740/38ae29bc-da24-4320-847b-3c393bbd2aaf)
+![image](https://github.com/maheshp2002/talent-portal/assets/95010740/82ec829d-4130-4573-a82a-344ba8f5a692)
