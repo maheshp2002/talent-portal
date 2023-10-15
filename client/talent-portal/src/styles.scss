@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/scss/bootstrap.scss';
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
+body {
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+}
