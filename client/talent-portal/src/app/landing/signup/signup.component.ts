@@ -6,13 +6,13 @@ import { Constants } from 'src/app/configs/app.config';
 import { PasswordValidator } from 'src/app/core/validators/password.validator';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'app-signup',
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class SignupComponent implements OnInit{
   isPasswordVisible = false;
-  loginForm: FormGroup = new FormGroup({});
+  registerForm: FormGroup = new FormGroup({});
 
   constructor(private readonly fb: FormBuilder,
     public readonly constants: Constants,
@@ -37,19 +37,20 @@ export class LoginComponent implements OnInit {
   /**
    * Builds a form using the FormGroup class from Angular's Reactive Forms API.
    */
-    buildForm() {
-      this.loginForm = this.fb.group({
-        email: ['', [Validators.required, Validators.maxLength(150), Validators.pattern(this.constants.emailPattern)]],
-        password: ['', [
-          Validators.required,
-          Validators.minLength(8),
-          this.validator.passwordValidator(
-            this.constants.passwordPatternAllowedCharacters
-          ),
-          Validators.pattern(this.constants.passwordPattern),
-          Validators.maxLength(15)
-        ]
-        ]
-      })
-    }
+  buildForm() {
+    this.registerForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(50), Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.maxLength(150), Validators.pattern(this.constants.emailPattern)]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        this.validator.passwordValidator(
+          this.constants.passwordPatternAllowedCharacters
+        ),
+        Validators.pattern(this.constants.passwordPattern),
+        Validators.maxLength(15)
+      ]
+      ]
+    })
+  }
 }

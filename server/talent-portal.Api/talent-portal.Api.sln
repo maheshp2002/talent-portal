@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "talent-portal.Api", "talent-portal.Api\talent-portal.Api.csproj", "{2CA93E21-49CF-4759-A438-A401503D35EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "talent-portal.Api", "talent-portal.Api\talent-portal.Api.csproj", "{2CA93E21-49CF-4759-A438-A401503D35EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "talent-portal.Domain", "talent-portal.Domain\talent-portal.Domain.csproj", "{B2ECA6B7-082A-4B2F-99A7-AAA1C06DD273}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "talent-portal.Domain", "talent-portal.Domain\talent-portal.Domain.csproj", "{B2ECA6B7-082A-4B2F-99A7-AAA1C06DD273}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "talent-portal.Service", "talent-portal.Service\talent-portal.Service.csproj", "{A2261958-EA49-42C7-98C6-17AB86089AE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "talent-portal.Service", "talent-portal.Service\talent-portal.Service.csproj", "{A2261958-EA49-42C7-98C6-17AB86089AE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

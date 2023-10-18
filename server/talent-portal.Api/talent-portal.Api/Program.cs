@@ -27,7 +27,7 @@ app.UseStaticFiles(new StaticFileOptions
     ServeUnknownFileTypes = true,
 });
 
-app.UseCors(options =>
+app.UseCors(options =>  
 {
     options.AllowAnyOrigin();
     options.AllowAnyHeader();
