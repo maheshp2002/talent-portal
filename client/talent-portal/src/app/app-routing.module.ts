@@ -4,7 +4,11 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',    
-    loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule),
+    loadChildren: () => import('./features/landing/landing.module').then((m) => m.LandingModule),
+  },
+  {
+    path: 'user',    
+    loadChildren: () => import('./features/user/user.module').then((m) => m.UserModule)
   },
 ];
 

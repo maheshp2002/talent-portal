@@ -1,0 +1,12 @@
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\bin\Debug\net6.0\talent-portal.Domain.deps.json
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\bin\Debug\net6.0\talent-portal.Domain.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\bin\Debug\net6.0\talent-portal.Domain.pdb
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.csproj.AssemblyReference.cache
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.AssemblyInfoInputs.cache
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.AssemblyInfo.cs
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.csproj.CoreCompileInputs.cache
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\refint\talent-portal.Domain.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.pdb
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\ref\talent-portal.Domain.dll

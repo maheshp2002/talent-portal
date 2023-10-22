@@ -1,0 +1,17 @@
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\bin\Debug\net6.0\talent-portal.Service.deps.json
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\bin\Debug\net6.0\talent-portal.Service.runtimeconfig.json
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\bin\Debug\net6.0\talent-portal.Service.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\bin\Debug\net6.0\talent-portal.Service.pdb
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\bin\Debug\net6.0\talent-portal.Domain.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\bin\Debug\net6.0\talent-portal.Domain.pdb
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.csproj.AssemblyReference.cache
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.AssemblyInfoInputs.cache
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.AssemblyInfo.cs
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.csproj.CoreCompileInputs.cache
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.csproj.CopyComplete
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\refint\talent-portal.Service.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.pdb
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\talent-portal.Service.genruntimeconfig.cache
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Service\obj\Debug\net6.0\ref\talent-portal.Service.dll

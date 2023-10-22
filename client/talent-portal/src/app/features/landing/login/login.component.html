@@ -1,0 +1,47 @@
+<div class="m-0 w-100 h-100 d-flex">
+    <div class="h-100 w-50">
+        <img src="/assets/images/men.jpg" class="image-container">
+    </div>
+    <div class="right-container w-50 h-100 m-0">
+        <form [formGroup]="loginForm"
+            class="d-flex flex-column justify-content-center align-items-center h-100" (submit)="onSubmit()">
+            <div class="sub-container flex-column d-flex align-items-center">
+                <img src="/assets/images/talent-portal-logo.png" class="logo">
+                <h1 class="text-center m-5 fw-bold">Welcome Back!</h1>
+            </div>
+            <div class="form-group">
+                <input class="input form-control" type="email" name="email" id="login-email" placeholder="Email" formControlName="email">
+                <label class="required label">Email</label>
+                <app-error-message [control]="loginForm.get('email')" [validationMessages]="{
+                    minLength: message.minLength,
+                    maxLength: message.emailMaxLength,
+                    email: message.invalidEmail,
+                    pattern: message.invalidEmail,
+                    required: message.requiredField
+                }"></app-error-message>
+            </div>
+            <div class="form-group">
+                <input class="input form-control" placeholder="Password" pPassword
+                    [type]="isPasswordVisible ? 'text' : 'password'" id="password-input" formControlName="password">
+                <label class="label required d-inline" for="newPassword">Password</label>
+                <a class="pi eye-icon" id="-password-eye-icon"
+                    [ngClass]="{'pi-eye': isPasswordVisible, 'pi-eye-slash': !isPasswordVisible}"
+                    (click)="togglePasswordVisibility()"></a>
+                <app-error-message [control]="loginForm.get('password')" [validationMessages]="{
+                                    required: message.requiredField,
+                                    minlength: message.passwordMinLength,
+                                    maxlength: message.passwordMaxLength,
+                                    pattern: message.invalidPassword,
+                                    invalidPassword: message.allowedCharacters
+                            }"></app-error-message>
+            </div>
+            <button [disabled]="loginForm.invalid" type="submit" class="btn btn-outline-dark rounded-5 login-button">Login</button>
+            <a [routerLink]="['/forgot-password']" id="admin-login-link" class="forgot-password-link mt-5">
+                Forgot Password
+            </a>
+            <a [routerLink]="['/signup']" id="admin-login-link" class="signup-link mt-3">
+                Don't have an account? Click here to register.
+            </a>
+        </form>
+    </div>
+</div>

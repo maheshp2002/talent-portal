@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "k6N50hzSGVrxPBr7U8aQ+tGHP7aTJi/YvHmhdmthBos=",
+  "Source": "talent-portal.Api",
+  "BasePath": "_content/talent-portal.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
