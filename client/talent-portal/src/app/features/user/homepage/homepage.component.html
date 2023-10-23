@@ -1,4 +1,4 @@
-<div class="base-container mt-5 mb-5">
+<div class="base-container">
     <div class="d-flex justify-content-center">
         <img src="assets/images/people-looking-laptop.png" alt="boy looking book">
         <div class="d-flex flex-column justify-content-center ms-3">
@@ -16,14 +16,14 @@
                 <img src="assets/images/result.webp" alt="boy looking book">
                 <div class="d-flex flex-column justify-content-center align-items-center h-100">
                     <p>Check out your previous exam results.</p>
-                    <button type="button" class="btn btn-outline-dark rounded-2 nav-button">Results</button>
+                    <a type="button" class="btn btn-outline-dark rounded-2 nav-button">Results</a>
                 </div>
             </div>
             <div class="sub-container d-flex flex-column align-items-center pb-1">
                 <img src="assets/images/exam.jpg" alt="boy looking book">
                 <div class="d-flex flex-column justify-content-center align-items-center h-100">
                     <p>Find your choices.</p>
-                    <button type="button" class="btn btn-outline-dark rounded-2 nav-button">Jobs</button>
+                    <a type="button" [routerLink]="['/user/online-exam']" class="btn btn-outline-dark rounded-2 nav-button">Jobs</a>
                 </div>
             </div>
             <div class="sub-container d-flex flex-column align-items-center pb-1">
@@ -41,7 +41,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <div class="d-flex justify-content-center mt-5">
         <div class="image-container">
