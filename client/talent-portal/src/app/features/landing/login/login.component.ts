@@ -68,13 +68,20 @@ export class LoginComponent implements OnInit {
           severity: ToastTypes.SUCCESS,
           summary: 'Login successful'
         });
-
-        if (role == "User") {
+  
+        if (role === "User") {
           this.router.navigateByUrl('/user');
         } else {
           this.router.navigateByUrl('/admin');
         }
+      },
+
+      error: () => {
+        this.toast.add({
+          severity: ToastTypes.ERROR,
+          summary: 'An error occurred during login'
+        });
       }
-    })
+    });
   }
 }

@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit{
     private readonly service: AuthenticationService,
     private readonly router: Router,
     private readonly validator: PasswordValidator,
-    private readonly toast: MessageService,
+    private readonly toast: MessageService
   ) { }
 
   ngOnInit(): void {
@@ -60,8 +60,8 @@ export class SignupComponent implements OnInit{
 
   onSubmit() {
     this.service.register(this.registerForm.value).subscribe({
-      next: (response: any) => {
-      this.router.navigateByUrl('/login');
+      next: () => {
+      this.router.navigateByUrl('');
       this.toast.add({
         severity: ToastTypes.SUCCESS,
         summary: 'User registered successfully'
@@ -69,6 +69,13 @@ export class SignupComponent implements OnInit{
       this.toast.add({
         severity: ToastTypes.SUCCESS,
         summary: 'You can now login with this account'
+      });
+    },
+
+    error: () => {
+      this.toast.add({
+        severity: ToastTypes.ERROR,
+        summary: 'An error occurred during registration'
       });
     }
   })
