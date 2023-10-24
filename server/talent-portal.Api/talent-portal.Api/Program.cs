@@ -63,6 +63,7 @@ builder.Services.AddAuthentication(options =>
         };
     });
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<ExamService>();
 
 var app = builder.Build();
 

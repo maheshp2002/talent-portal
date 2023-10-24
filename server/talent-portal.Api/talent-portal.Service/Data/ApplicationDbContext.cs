@@ -70,4 +70,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<ApplicationUser> ApplicationUser { get; set; }
+
+    public DbSet<ExamQuestion> Questions { get; set; }
 }
