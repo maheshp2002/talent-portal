@@ -1,0 +1,147 @@
+<div class="top-container w-100 p-3 d-flex justify-content-end">
+    <button type="submit" class="btn btn-outline-warning rounded-2 add-button" (click)="isVisible = true">Add
+        Question</button>
+</div>
+<div class="ms-3 me-3">
+    <hr>
+</div>
+<div class="main-container">
+    <div class="card shadow m-3 border-warning d-flex flex-row" *ngFor="let mcq of mcqs">
+        <div class="left-container p-4">
+            <div class="main-div">
+                <div class="question mb-2">
+                    <fa-icon [icon]="faQuestionCircle" class="me-2 ms-2"></fa-icon>
+                    <span>{{mcq.question}}</span>
+                </div>
+                <div *ngIf="mcq.isCodeProvided" class="mt-3 mb-3">
+                    <h4 class="ms-3">Code</h4>
+                    <pre class="code"><code [highlight]="mcq.code" [lineNumbers]="true"></code></pre>
+                </div>
+                <div class="options">
+                    <ol>
+                        <li>{{mcq.optionOne}}</li>
+                        <li>{{mcq.optionTwo}}</li>
+                        <li>{{mcq.optionThree}}</li>
+                        <li>{{mcq.optionFour}}</li>
+                    </ol>
+                </div>
+                <div class="answer">
+                    <span class="text-danger">Answer is: {{mcq.answer}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="right-container d-flex justify-content-center align-items-center">
+            <fa-icon [icon]="faDelete" class=""></fa-icon>
+        </div>
+    </div>
+</div>
+<p-dialog header="Add new question" [(visible)]="isVisible">
+    <form [formGroup]="questionForm" class="mb-5" (ngSubmit)="onSubmit()">
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-homepage-question">
+                Question
+            </label>
+            <input formControlName="question" placeholder="Type down question here" type="text" class="w-100"
+                id="admin-homepage-question">
+            <app-error-message [control]="questionForm.get('question')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.questionLength
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-homepage-optionOne">
+                Option One
+            </label>
+            <input formControlName="optionOne" placeholder="Type down option here" type="text" class="w-100"
+                id="admin-homepage-optionOne">
+            <app-error-message [control]="questionForm.get('optionOne')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.questionLength
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-homepage-optionTwo">
+                Option Two
+            </label>
+            <input formControlName="optionTwo" placeholder="Type down option here" type="text" class="w-100"
+                id="admin-homepage-optionTwo">
+            <app-error-message [control]="questionForm.get('optionTwo')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.questionLength
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-homepage-optionThree">
+                Option Three
+            </label>
+            <input formControlName="optionThree" placeholder="Type down option here" type="text" class="w-100"
+                id="admin-homepage-optionThree">
+            <app-error-message [control]="questionForm.get('optionThree')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.questionLength
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-homepage-optionFour">
+                Option Four
+            </label>
+            <input formControlName="optionFour" placeholder="Type down option here" type="text" class="w-100"
+                id="admin-homepage-optionFour">
+            <app-error-message [control]="questionForm.get('optionFour')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.questionLength
+            }"></app-error-message>
+        </div>
+        <div class="d-flex gap-3">
+            <label>
+                Is Code Provided
+            </label>
+            <div class="d-flex gap-2">
+                <input type="radio" name="isCodeProvided" [value]="true"  formControlName="isCodeProvided">
+                <label>Yes</label>
+            </div>
+            <div class="d-flex gap-2">
+                <input type="radio" name="isCodeProvided" [value]="false" formControlName="isCodeProvided">
+                <label>No</label>
+            </div>
+        </div>
+        <div class="form-input-control ps-0" *ngIf="questionForm.getRawValue().isCodeProvided">
+            <label class="required" for="admin-homepage-code">
+                Code
+            </label>
+            <textarea formControlName="code" placeholder="Type down answer here" type="text" class="w-100"
+                id="admin-homepage-code"></textarea>
+            <app-error-message [control]="questionForm.get('code')" [validationMessages]="{
+                    maxlength: message.codeLength
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-homepage-answer">
+                Answer
+            </label>
+            <input formControlName="answer" placeholder="Type down answer here" type="text" class="w-100"
+                id="admin-homepage-answerr">
+            <app-error-message [control]="questionForm.get('answer')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.questionLength
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-homepage-skill">
+                Skill
+            </label>
+            <input formControlName="skill" placeholder="Type down skill here" type="text" class="w-100"
+                id="admin-homepage-skill">
+            <app-error-message [control]="questionForm.get('skill')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.skillLength
+            }"></app-error-message>
+        </div>
+        <div class="fixed-bottom dialog-footer w-100 d-flex justify-content-end p-3">
+            <button icon="pi pi-check" (click)="isVisible = false"
+                class="btn btn-outline-dark rounded-2 dialog-button me-3">Cancel</button>
+            <button [disabled]="questionForm.invalid" icon="pi pi-check" type="submit"
+                class="btn btn-dark rounded-2 dialog-button">Save</button>
+        </div>
+    </form>
+</p-dialog>

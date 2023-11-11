@@ -14,24 +14,12 @@ public class ExamController : UserControllerBase
         _service = service;
     }
 
-    [HttpGet("questions")]
+    [HttpGet("skill-questions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetExamQuestion(string skill)
     {
         var result = await _service.GetQuestionsAsync(skill);
-        if (result.IsValid)
-            return Ok(result);
-
-        return BadRequest(result.Errors);
-    }
-
-    [HttpPost("questions")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> PostExamQuestion(QuestionsAddDto dto)
-    {
-        var result = await _service.QuestionsAddAsync(dto);
         if (result.IsValid)
             return Ok(result);
 

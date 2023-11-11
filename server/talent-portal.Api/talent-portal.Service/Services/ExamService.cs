@@ -41,6 +41,29 @@ public class ExamService
         return response;
     }
 
+    public async Task<ServiceResponse<List<QuestionsViewDto>>> GetAllQuestionsAsync()
+    {
+        var response = new ServiceResponse<List<QuestionsViewDto>>();
+
+        var questions = await _db.Questions
+            .Select(c => new QuestionsViewDto
+            {
+                Id = c.Id,
+                Question = c.Question,
+                IsCodeProvided = c.IsCodeProvided,
+                Code = c.Code,
+                OptionOne = c.OptionOne,
+                OptionTwo = c.OptionTwo,
+                OptionThree = c.OptionThree,
+                OptionFour = c.OptionFour,
+                Answer = c.Answer
+            }).ToListAsync();
+
+        response.Result = questions;
+
+        return response;
+    }
+
     public async Task<ServiceResponse<QuestionsViewDto>> QuestionsAddAsync(QuestionsAddDto dto)
     {
         var response = new ServiceResponse<QuestionsViewDto>();

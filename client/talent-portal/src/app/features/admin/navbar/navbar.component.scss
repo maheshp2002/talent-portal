@@ -1,0 +1,30 @@
+.primary {
+    background-color: #A162F7;
+}
+
+.secondary {
+    background-color: #161830;
+}
+
+.logo {
+    width: 300px;
+}
+
+.active-link {
+    color: #fff;
+}
+
+.profile-pic {
+    border: 1px solid grey;
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+
+    &:hover {
+        border: 1px solid white;
+    }
+
+    i {
+        font-size: 20px;
+    }
+}

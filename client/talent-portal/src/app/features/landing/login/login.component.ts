@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
         this.toast.add({
           severity: ToastTypes.SUCCESS,
           summary: 'Login successful'
-        });
+        });        
   
         if (role === "User") {
           this.router.navigateByUrl('/user');
