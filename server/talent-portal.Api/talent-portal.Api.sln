@@ -9,6 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "talent-portal.Domain", "tal
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "talent-portal.Service", "talent-portal.Service\talent-portal.Service.csproj", "{A2261958-EA49-42C7-98C6-17AB86089AE1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PythonScript", "PythonScript", "{1611EE5E-2EDD-4031-AE72-F6A12322A041}"
+	ProjectSection(SolutionItems) = preProject
+		D:\Python\coco.names = D:\Python\coco.names
+		D:\Python\main.py = D:\Python\main.py
+		D:\Python\yolov3.cfg = D:\Python\yolov3.cfg
+		D:\Python\yolov3.weights = D:\Python\yolov3.weights
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

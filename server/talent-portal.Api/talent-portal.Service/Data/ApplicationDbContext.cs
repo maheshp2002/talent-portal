@@ -72,4 +72,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
     public DbSet<ExamQuestion> Questions { get; set; }
+
+    public DbSet<Job> Jobs { get; set; }
+
+    public DbSet<ExamResult> Results { get; set; }
 }

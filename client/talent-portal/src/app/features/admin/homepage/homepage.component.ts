@@ -8,6 +8,7 @@ import { Messages } from 'src/app/common/message';
 import { Constants } from 'src/app/configs/app.config';
 import { ToastTypes } from 'src/app/core/enums';
 import { IGetQuestions, IResponse } from 'src/app/core/interfaces';
+import { DetectionService } from 'src/app/core/services/cheat-detection.service';
 import { ExamService } from 'src/app/core/services/exam.service';
 
 @Component({
@@ -33,7 +34,8 @@ export class HomepageComponent implements OnInit {
     public readonly message: Messages,
     private readonly messageService: MessageService,
     private readonly constants: Constants,
-    private readonly service: ExamService
+    private readonly service: ExamService,
+    private readonly detectionService: DetectionService,
   ) { }
 
   ngOnInit(): void {
@@ -89,6 +91,14 @@ export class HomepageComponent implements OnInit {
       console.log(value);
 
     })
+  }
+
+  onStartClick() {
+    this.detectionService.startDetection();
+  }
+
+  onStopClick() {
+    this.detectionService.stopDetection();
   }
 
   onSubmit() {

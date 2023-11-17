@@ -3,7 +3,7 @@ using talent_portal.Api.Areas.Authentication;
 using talent_portal.Service.Dto;
 using talent_portal.Service.Services;
 
-namespace talent_portal.Api.Areas.User;
+namespace talent_portal.Api.Areas.Admin;
 
 public class ExamQuestionsController : AdminControllerBase
 {
