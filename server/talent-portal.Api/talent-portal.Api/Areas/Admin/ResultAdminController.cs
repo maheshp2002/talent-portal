@@ -14,7 +14,7 @@ public class ResultAdminController : AdminControllerBase
         _service = service;
     }
 
-    [HttpGet("result/{id}")]
+    [HttpGet("result")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAllResult(int jobId)

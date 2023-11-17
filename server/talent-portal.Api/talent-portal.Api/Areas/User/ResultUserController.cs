@@ -14,7 +14,7 @@ public class ResultUserController : UserControllerBase
         _service = service;
     }
 
-    [HttpGet("result/{id}")]
+    [HttpGet("result")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAllResult(string user)
@@ -26,7 +26,7 @@ public class ResultUserController : UserControllerBase
         return BadRequest(result.Errors);
     }
 
-    [HttpGet("result")]
+    [HttpPost("result")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAllJobs(ResultAddDto dto)

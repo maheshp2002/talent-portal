@@ -65,6 +65,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<ExamService>();
 builder.Services.AddScoped<JobsService>();
+builder.Services.AddScoped<ResultService>();
 
 var app = builder.Build();
 
