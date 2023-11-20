@@ -1,0 +1,37 @@
+<form class="p-5">
+    <div class="d-flex gap-4 align-items-center border-bottom border-warning mb-4">
+        <label class="text-warning">Question {{index + 1}}:</label>
+        <h1>{{currentQuestion.question}}</h1>
+    </div>
+    <div *ngIf="currentQuestion.isCodeProvided" class="mt-3 mb-3 code">
+        <label class="text-warning mb-4 options-label">Code:</label>
+        <pre class="code"><code [highlight]="currentQuestion.code" [lineNumbers]="true"></code></pre>
+    </div>
+    <div class="middle-container">
+        <label class="text-warning mb-4 options-label">Options:</label>
+        <div class="d-flex gap-4 mb-3">
+            <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
+            <label>{{currentQuestion.optionOne}}</label>
+        </div>
+        <div class="d-flex gap-4 mb-3">
+            <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
+            <label>{{currentQuestion.optionTwo}}</label>
+        </div>
+        <div class="d-flex gap-4 mb-3">
+            <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
+            <label>{{currentQuestion.optionThree}}</label>
+        </div>
+        <div class="d-flex gap-4 mb-3">
+            <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
+            <label>{{currentQuestion.optionFour}}</label>
+        </div>
+
+        <!-- <app-error-message [control]="questionForm.get('question')" [validationMessages]="{
+                required: message.requiredField,
+                maxlength: message.questionLength
+        }"></app-error-message> -->
+    </div>
+    <div class="d-flex justify-content-end">
+        <button [type]="index == 2 ? 'submit' : 'button'" class="btn btn-dark rounded-2 next-button" (click)="nextQuestion()">{{index == 1 ? 'Submit' : 'Next'}}</button>
+    </div>
+</form>

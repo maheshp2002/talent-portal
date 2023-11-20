@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace talent_portal.Domain.Models;
 
-[Index(nameof(Id), IsUnique = true)]
 public class ApplicationUser : IdentityUser
 {
     public string Name { get; set; }

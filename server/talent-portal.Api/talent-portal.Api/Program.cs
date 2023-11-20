@@ -31,7 +31,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.SignIn.RequireConfirmedAccount = false;
 
     options.User.RequireUniqueEmail = true; // Must add.
-    options.Password.RequiredLength = 6;
+    options.Password.RequiredLength = 8;
     options.Password.RequireDigit = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireLowercase = true;

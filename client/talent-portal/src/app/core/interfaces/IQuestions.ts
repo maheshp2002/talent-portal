@@ -1,7 +1,7 @@
 export interface IGetQuestions {
     id: number
     question: string
-    isCodeProvided: string
+    isCodeProvided: boolean
     code: string
     optionOne: string
     optionTwo: string

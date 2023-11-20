@@ -7,17 +7,23 @@ import { ILoginDto, IGetQuestions, IRegisterDto, IPostQuestions } from '../inter
 })
 export class ExamService {
 
-    url = "https://localhost:7163/api/admin/examquestions";
+    adminUrl = "https://localhost:7163/api/admin/examquestions";
+    userUrl = "https://localhost:7163/api/user";
 
     constructor(private http: HttpClient) {
 
     }
 
     getQuestions() {
-        return this.http.get<IGetQuestions[]>(this.url + "/questions");
+        return this.http.get<IGetQuestions[]>(this.adminUrl + "/questions");
+    }
+
+    getSkillQuestions(skill: string) {
+        const params = { skill: skill };
+        return this.http.get<IGetQuestions[]>(this.userUrl + "/exam/skill-questions", { params });
     }
 
     addQuestions(question: IPostQuestions) {
-        return this.http.post(this.url + "/questions", question);
+        return this.http.post(this.adminUrl + "/questions", question);
     }
 }

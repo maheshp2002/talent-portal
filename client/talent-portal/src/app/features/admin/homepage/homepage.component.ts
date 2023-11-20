@@ -35,7 +35,7 @@ export class HomepageComponent implements OnInit {
     private readonly messageService: MessageService,
     private readonly constants: Constants,
     private readonly service: ExamService,
-    private readonly detectionService: DetectionService,
+    private readonly detectionService: DetectionService
   ) { }
 
   ngOnInit(): void {
@@ -91,14 +91,6 @@ export class HomepageComponent implements OnInit {
       console.log(value);
 
     })
-  }
-
-  onStartClick() {
-    this.detectionService.startDetection();
-  }
-
-  onStopClick() {
-    this.detectionService.stopDetection();
   }
 
   onSubmit() {
