@@ -10,8 +10,8 @@ const routes: Routes = [
   {
     path: '', component: UserLayoutComponent, children: [
       { path: '', component: HomepageComponent },
-      { path: 'online-exam', component: OnlineExamLandingComponent},
-      { path: 'exam', component: ExamComponent, canDeactivate: [CanDeactivateGuard]  }
+      { path: 'exam-landing/:id', component: OnlineExamLandingComponent},
+      { path: 'exam/:id', component: ExamComponent, canDeactivate: [CanDeactivateGuard]  }
     ]
   },
 ];

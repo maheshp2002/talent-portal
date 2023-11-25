@@ -12,8 +12,8 @@ using talent_portal.Service.Data;
 namespace talent_portal.Service.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231117112538_AddedJobs")]
-    partial class AddedJobs
+    [Migration("20231125063255_UpdatedExamResult")]
+    partial class UpdatedExamResult
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -238,9 +238,6 @@ namespace talent_portal.Service.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -313,14 +310,17 @@ namespace talent_portal.Service.Migrations
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ExamDate")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsPassed")
                         .HasColumnType("bit");
 
                     b.Property<int>("JobId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Score")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -328,7 +328,7 @@ namespace talent_portal.Service.Migrations
 
                     b.HasIndex("JobId");
 
-                    b.ToTable("examResults");
+                    b.ToTable("Results");
                 });
 
             modelBuilder.Entity("talent_portal.Domain.Models.Job", b =>

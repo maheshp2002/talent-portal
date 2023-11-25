@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 using talent_portal.Domain.Models;
 using talent_portal.Service.Data;
 using talent_portal.Service.Dto;

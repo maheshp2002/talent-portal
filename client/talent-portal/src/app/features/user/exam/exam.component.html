@@ -1,4 +1,4 @@
-<form class="p-5">
+<form class="p-5" [formGroup]="questionForm">
     <div class="d-flex gap-4 align-items-center border-bottom border-warning mb-4">
         <label class="text-warning">Question {{index + 1}}:</label>
         <h1>{{currentQuestion.question}}</h1>
@@ -10,28 +10,25 @@
     <div class="middle-container">
         <label class="text-warning mb-4 options-label">Options:</label>
         <div class="d-flex gap-4 mb-3">
-            <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
+            <input type="radio" name="answer" [value]="currentQuestion.optionOne" formControlName="answer">
             <label>{{currentQuestion.optionOne}}</label>
         </div>
         <div class="d-flex gap-4 mb-3">
-            <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
+            <input type="radio" name="answer" [value]="currentQuestion.optionTwo" formControlName="answer">
             <label>{{currentQuestion.optionTwo}}</label>
         </div>
         <div class="d-flex gap-4 mb-3">
-            <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
+            <input type="radio" name="answer" [value]="currentQuestion.optionThree" formControlName="answer">
             <label>{{currentQuestion.optionThree}}</label>
         </div>
         <div class="d-flex gap-4 mb-3">
-            <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
+            <input type="radio" name="answer" [value]="currentQuestion.optionFour" formControlName="answer">
             <label>{{currentQuestion.optionFour}}</label>
         </div>
-
-        <!-- <app-error-message [control]="questionForm.get('question')" [validationMessages]="{
-                required: message.requiredField,
-                maxlength: message.questionLength
-        }"></app-error-message> -->
     </div>
     <div class="d-flex justify-content-end">
-        <button [type]="index == 2 ? 'submit' : 'button'" class="btn btn-dark rounded-2 next-button" (click)="nextQuestion()">{{index == 1 ? 'Submit' : 'Next'}}</button>
+        <button [disabled]="questionForm.invalid" [type]="index == 3 ? 'submit' : 'button'"
+            class="btn btn-dark rounded-2 next-button" (click)="submit()">{{index == 2 ? 'Submit' :
+            'Next'}}</button>
     </div>
 </form>

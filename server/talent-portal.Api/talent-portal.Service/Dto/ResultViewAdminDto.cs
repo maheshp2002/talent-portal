@@ -6,7 +6,7 @@ public class ResultViewAdminDto
 
     public bool IsPassed { get; set; }
 
-    public string? Score { get; set; }
+    public int Score { get; set; }
 
     public string JobName { get; set; }
 

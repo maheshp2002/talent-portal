@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace talent_portal.Service.Migrations
 {
-    public partial class AddedJobs : Migration
+    public partial class UpdatedExamResult : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -196,26 +196,27 @@ namespace talent_portal.Service.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "examResults",
+                name: "Results",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsPassed = table.Column<bool>(type: "bit", nullable: false),
-                    Score = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Score = table.Column<int>(type: "int", nullable: false),
+                    ExamDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JobId = table.Column<int>(type: "int", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_examResults", x => x.Id);
+                    table.PrimaryKey("PK_Results", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_examResults_AspNetUsers_ApplicationUserId",
+                        name: "FK_Results_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_examResults_Jobs_JobId",
+                        name: "FK_Results_Jobs_JobId",
                         column: x => x.JobId,
                         principalTable: "Jobs",
                         principalColumn: "Id",
@@ -265,12 +266,6 @@ namespace talent_portal.Service.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_Id",
-                table: "AspNetUsers",
-                column: "Id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -278,20 +273,20 @@ namespace talent_portal.Service.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_examResults_ApplicationUserId",
-                table: "examResults",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_examResults_JobId",
-                table: "examResults",
-                column: "JobId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Questions_Question",
                 table: "Questions",
                 column: "Question",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Results_ApplicationUserId",
+                table: "Results",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Results_JobId",
+                table: "Results",
+                column: "JobId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -312,10 +307,10 @@ namespace talent_portal.Service.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "examResults");
+                name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Questions");
+                name: "Results");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

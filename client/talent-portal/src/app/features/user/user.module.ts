@@ -11,6 +11,7 @@ import { ExamComponent } from './exam/exam.component';
 import { ErrorMessageComponent } from 'src/app/shared/error-message/error-message.component';
 import { ConfirmationService } from 'primeng/api';
 import { HighlightModule } from 'ngx-highlightjs';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { HighlightModule } from 'ngx-highlightjs';
     UserRoutingModule,
     ErrorMessageComponent,
     HighlightModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    SharedModule
   ],
   providers: [ConfirmationService]
 })

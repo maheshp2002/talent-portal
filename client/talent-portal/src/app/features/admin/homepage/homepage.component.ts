@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
@@ -8,7 +7,6 @@ import { Messages } from 'src/app/common/message';
 import { Constants } from 'src/app/configs/app.config';
 import { ToastTypes } from 'src/app/core/enums';
 import { IGetQuestions, IResponse } from 'src/app/core/interfaces';
-import { DetectionService } from 'src/app/core/services/cheat-detection.service';
 import { ExamService } from 'src/app/core/services/exam.service';
 
 @Component({
@@ -29,13 +27,11 @@ export class HomepageComponent implements OnInit {
   questionForm: FormGroup = new FormGroup({});
 
   constructor(
-    private readonly router: Router,
     private readonly fb: FormBuilder,
     public readonly message: Messages,
     private readonly messageService: MessageService,
     private readonly constants: Constants,
-    private readonly service: ExamService,
-    private readonly detectionService: DetectionService
+    private readonly service: ExamService
   ) { }
 
   ngOnInit(): void {
@@ -86,11 +82,6 @@ export class HomepageComponent implements OnInit {
         [Validators.required, Validators.maxLength(500)]
       ]
     });
-
-    this.questionForm.get('isCodeProvided')?.valueChanges.subscribe(value => {
-      console.log(value);
-
-    })
   }
 
   onSubmit() {
@@ -105,9 +96,6 @@ export class HomepageComponent implements OnInit {
       // Update the code control value with the transformed code
       codeControl.patchValue(codeValue);
     }
-
-    console.log(this.questionForm.get('code')?.value);
-
 
     this.isVisible = false;
     this.service.addQuestions(this.questionForm.value).subscribe({

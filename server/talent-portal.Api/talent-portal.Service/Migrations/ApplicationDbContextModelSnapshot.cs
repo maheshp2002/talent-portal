@@ -236,9 +236,6 @@ namespace talent_portal.Service.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -320,8 +317,8 @@ namespace talent_portal.Service.Migrations
                     b.Property<int>("JobId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Score")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
