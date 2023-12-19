@@ -344,7 +344,10 @@ namespace talent_portal.Service.Migrations
                     b.Property<bool>("IsOpen")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Skills")
+                    b.Property<string>("Position")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SerializedSkills")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

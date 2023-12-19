@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace talent_portal.Service.Migrations
 {
-    public partial class UpdatedExamResult : Migration
+    public partial class UpdatedJob : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -60,8 +60,9 @@ namespace talent_portal.Service.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsOpen = table.Column<bool>(type: "bit", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Skills = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    SerializedSkills = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartedDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Position = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

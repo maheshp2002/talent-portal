@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using talent_portal.Domain.Models;
@@ -69,28 +70,24 @@ builder.Services.AddScoped<ResultService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseHttpsRedirection();
+
+app.UseCors(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.AllowAnyHeader();
+    options.AllowAnyMethod();
+    options.AllowAnyOrigin();
+});
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    ServeUnknownFileTypes = true,
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Resumes")),
+    RequestPath = "/resumes"
 });
-
-app.UseCors(options =>  
-{
-    options.AllowAnyOrigin();
-    options.AllowAnyHeader();
-    options.AllowAnyMethod();
-});
-
-app.UseStaticFiles();
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

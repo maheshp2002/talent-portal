@@ -10,7 +10,9 @@ public class JobsViewDto
 
     public string? Description { get; set; }
 
-    public string Skills { get; set; }
+    public List<string> Skills { get; set; }
 
     public string StartedDate { get; set; }
+
+    public string? Position { get; set; }
 }

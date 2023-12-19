@@ -15,4 +15,6 @@ export class Messages {
     questionLength = "Maximum length is 500 characters"
     skillLength = "Maximum length is 50 characters"
     codeLength = "Maximum length is 3000 characters"
+    invalidFileSize = "The file size should be less than 10mb."
+    invalidFileType = "Only files of type pdf is supported"
 }

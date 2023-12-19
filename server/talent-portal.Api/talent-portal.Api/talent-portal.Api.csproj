@@ -29,4 +29,9 @@
     <ProjectReference Include="..\talent-portal.Service\talent-portal.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resumes\" />
+    <Folder Include="Skills\" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,33 @@
+// .p-fileupload {
+//     height: 0;
+// }
+
+// .pi-plus::before {
+//     content: "\e942";
+// }
+
+// .pi-upload::before {
+//     content: "\e942";
+// }
+
+.p-button.p-fileupload-choose {
+    width: 250px;
+    height: 60px;
+    border: 2px solid rgb(253, 208, 125);
+    background-color: white;
+    color: rgb(253, 208, 125);
+    
+    &:hover {
+        color: white; 
+        border: none;       
+        background-color: rgb(253, 208, 125);
+    }
+}
+
+.p-message.p-message-error {
+    display: none;
+}
+
+.p-button .p-button-icon-left {
+    display: none !important;
+}

@@ -5,13 +5,17 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { OnlineExamLandingComponent } from './online-exam-landing/online-exam-landing.component';
 import { CanDeactivateGuard } from 'src/app/core/services/CanDeactivateGuard.service';
 import { ExamComponent } from './exam/exam.component';
+import { JobSearchComponent } from './job-search/job-search.component';
+import { ResultComponent } from './result/result.component';
 
 const routes: Routes = [
   {
     path: '', component: UserLayoutComponent, children: [
       { path: '', component: HomepageComponent },
       { path: 'exam-landing/:id', component: OnlineExamLandingComponent},
-      { path: 'exam/:id', component: ExamComponent, canDeactivate: [CanDeactivateGuard]  }
+      { path: 'exam/:id', component: ExamComponent, canDeactivate: [CanDeactivateGuard]  },
+      { path: 'jobs', component: JobSearchComponent },
+      { path: 'result/:jobId/:userId/:noOfQ', component: ResultComponent }
     ]
   },
 ];

@@ -1,0 +1,73 @@
+.fw-700 {
+    font-weight: 700;
+}
+
+.ps-34 {
+    padding-left: 34px;
+}
+
+.top-container {
+    height: 10vh;
+}
+
+.title {
+    font-weight: 500;
+    font-size: 25px;
+}
+
+.left-container {
+    width: 95vw;
+}
+
+.right-container {
+    border-width: 0px 0px 0px 1px;
+    border-style: solid;
+    border-color: #fdd07d;
+    width: 5vw;
+    color: #fdd07d;
+    background-color: white;
+
+    &:hover {
+        background-color: #fdd07d;
+        color: white;
+    }
+}
+
+.back-shadow {
+    transition: box-shadow 0.3s ease-in-out;
+    box-shadow: none;
+
+    &:hover {
+        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+}
+
+.add-button {
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+
+    &:hover {
+        color: white;
+    }
+}
+
+.dialog-footer {
+    background-color: white;
+    border-top: #7F7F7F solid 1px;
+}
+
+.dialog-button {
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+
+    &:hover {
+        color: white;
+    }
+}
+
+hr {
+    color: orange;
+}

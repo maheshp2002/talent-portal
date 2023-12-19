@@ -12,8 +12,8 @@ using talent_portal.Service.Data;
 namespace talent_portal.Service.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231125063255_UpdatedExamResult")]
-    partial class UpdatedExamResult
+    [Migration("20231217135039_UpdatedJob")]
+    partial class UpdatedJob
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -346,7 +346,10 @@ namespace talent_portal.Service.Migrations
                     b.Property<bool>("IsOpen")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Skills")
+                    b.Property<string>("Position")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SerializedSkills")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

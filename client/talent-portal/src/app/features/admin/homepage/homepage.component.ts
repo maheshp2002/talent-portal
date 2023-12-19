@@ -30,7 +30,6 @@ export class HomepageComponent implements OnInit {
     private readonly fb: FormBuilder,
     public readonly message: Messages,
     private readonly messageService: MessageService,
-    private readonly constants: Constants,
     private readonly service: ExamService
   ) { }
 

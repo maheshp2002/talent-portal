@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -8,6 +8,7 @@ import { ToastTypes } from 'src/app/core/enums';
 import { CanComponentDeactivate, IPostResult, IGetQuestions, IResponse } from 'src/app/core/interfaces';
 import { DetectionService } from 'src/app/core/services/cheat-detection.service';
 import { ExamService } from 'src/app/core/services/exam.service';
+import { PreLoaderService } from 'src/app/core/services/preloader.service';
 import { ResultService } from 'src/app/core/services/result.service';
 import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
 
@@ -16,8 +17,10 @@ import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
   templateUrl: './exam.component.html',
   styleUrls: ['./exam.component.scss']
 })
-export class ExamComponent implements CanComponentDeactivate {
+export class ExamComponent implements CanComponentDeactivate, OnInit {
   navigatingAway: boolean = false;
+  personCheatingLimit: number = 0;
+  objectCheatingLimit: number = 0;
   isCheating: boolean = false;
   detectObject: any;
   currentQuestion: IGetQuestions = {
@@ -46,7 +49,6 @@ export class ExamComponent implements CanComponentDeactivate {
     result: []
   }
   constructor(
-    private readonly router: Router,
     private readonly fb: FormBuilder,
     public readonly message: Messages,
     private readonly messageService: MessageService,
@@ -54,10 +56,13 @@ export class ExamComponent implements CanComponentDeactivate {
     private readonly resultService: ResultService,
     private readonly detectionService: DetectionService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly tokenHelper: TokenHelper
+    private readonly tokenHelper: TokenHelper,
+    private readonly preloaderService: PreLoaderService,
+    private readonly router: Router
   ) { }
 
   async ngOnInit() {
+    // this.preloaderService.show();
     this.getId();
     this.buildQuestionForm();
     this.getQuestionsList();
@@ -96,26 +101,32 @@ export class ExamComponent implements CanComponentDeactivate {
 
     // If you want to subscribe to the detected object data
     this.detectionService.getDetectedObject().subscribe((data) => {
+      this.preloaderService.hide();
       this.detectObject = data;
-      
+
       if (this.detectObject.toString().toLowerCase().includes("cheating")) {
-        console.log(data);
-        
-        this.isCheating = true;
         this.messageService.add({
           severity: ToastTypes.WARNING,
           summary: data
         });
+
+        if (this.detectObject.toString().toLowerCase().includes("Cheating: Person detected")) {
+          this.personCheatingLimit = this.personCheatingLimit + 1;
+        }
+
+        if (this.detectObject.toString().toLowerCase().includes("Cheating: Cell phone detected")) {
+          this.objectCheatingLimit = this.objectCheatingLimit + 1;
+        }
+
+        if (this.objectCheatingLimit >= 10 || this.personCheatingLimit >= 2) {
+          this.isCheating = true;
+        }
       }
     });
   }
 
-  onDetectionStop() {
-    this.detectionService.stopDetection();
-  }
-
   getQuestionsList() {
-    this.examService.getSkillQuestions('java').subscribe({
+    this.examService.getSkillQuestions(this.result.jobId, this.result.userId).subscribe({
       next: (result: any) => {
         this.response = result;
         this.mcqs = this.response.result;
@@ -134,16 +145,16 @@ export class ExamComponent implements CanComponentDeactivate {
     this.result.score = this.currentQuestion.answer == selectedOption
       ? this.result.score + 1
       : this.result.score + 0;
-    if (this.index < 2) {
+    if (this.index < this.mcqs.length - 1) {      
       this.index = this.index + 1;
       this.currentQuestion = this.mcqs[this.index];
     } else {
-      console.log(this.result);
-      this.onDetectionStop();
+      this.detectionService.stopDetection();
       var result = this.result;
       result.isPassed = result.score >= 10 ? true : false;
       this.resultService.addResult(result).subscribe({
         next: () => {
+          this.router.navigate(['user/result', result.jobId, result.userId]);
           this.messageService.add({
             severity: ToastTypes.SUCCESS,
             summary: 'Exam completed successfully'

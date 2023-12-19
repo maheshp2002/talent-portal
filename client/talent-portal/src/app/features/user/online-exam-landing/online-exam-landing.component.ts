@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-online-exam-landing',
@@ -13,7 +13,10 @@ export class OnlineExamLandingComponent implements OnInit {
     this.getJobId();
   }
 
-  constructor(private readonly route: ActivatedRoute) { }
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
+  ) { }
 
   getJobId() {
     this.route.params.subscribe(params => {

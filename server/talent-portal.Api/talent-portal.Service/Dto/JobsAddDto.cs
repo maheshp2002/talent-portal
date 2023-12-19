@@ -8,5 +8,5 @@ public class JobsAddDto
 
     public string? Description { get; set; }
 
-    public string Skills { get; set; }
+    public string? Position { get; set; }
 }

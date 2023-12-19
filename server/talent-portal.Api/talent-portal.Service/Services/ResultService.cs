@@ -58,6 +58,26 @@ public class ResultService
         return response;
     }
 
+    public async Task<ServiceResponse<ResultViewUserDto>> GetCurrentResultAsync(CurrentResultDto dto)
+    {
+        var response = new ServiceResponse<ResultViewUserDto>();
+
+        var data = _db.Results.FirstOrDefault(m => m.ApplicationUserId == dto.userId && m.JobId == dto.JobId);
+        var result = new ResultViewUserDto
+        {
+            Id = data.Id,
+            Score = data.Score,
+            IsPassed = data.IsPassed,
+            ExamDate = data.ExamDate,
+            JobName = _db.Jobs.FirstOrDefault(m => m.Id == data.JobId).Title,
+            JobDescription = _db.Jobs.FirstOrDefault(m => m.Id == data.JobId).Description
+        };
+
+        response.Result = result;
+
+        return response;
+    }
+
     public async Task<ServiceResponse<ResultViewUserDto>> ResultAddAsync(ResultAddDto dto)
     {
         var response = new ServiceResponse<ResultViewUserDto>();

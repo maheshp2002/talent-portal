@@ -16,21 +16,24 @@
                 <img src="assets/images/result.webp" alt="boy looking book">
                 <div class="d-flex flex-column justify-content-center align-items-center h-100">
                     <p>Check out your previous exam results.</p>
-                    <a type="button" [routerLink]="['/user/online-exam']" class="btn btn-outline-dark rounded-2 nav-button">Results</a>
+                    <a type="button" [routerLink]="['/user/results']"
+                        class="btn btn-outline-dark rounded-2 nav-button">Results</a>
                 </div>
             </div>
             <div class="sub-container d-flex flex-column align-items-center pb-1">
                 <img src="assets/images/exam.jpg" alt="boy looking book">
                 <div class="d-flex flex-column justify-content-center align-items-center h-100">
                     <p>Find your choices.</p>
-                    <a type="button" [routerLink]="['/user/exam-landing']" class="btn btn-outline-dark rounded-2 nav-button">Jobs</a>
+                    <a type="button" [routerLink]="['/user/jobs']"
+                        class="btn btn-outline-dark rounded-2 nav-button">Jobs</a>
                 </div>
             </div>
             <div class="sub-container d-flex flex-column align-items-center pb-1">
                 <img src="assets/images/indeed-job-search.jpg" alt="boy looking book">
                 <div class="d-flex flex-column justify-content-center align-items-center h-100">
                     <p>Check out jobs from indeed.</p>
-                    <a href="https://in.indeed.com" class="btn btn-outline-dark rounded-2 nav-button">Search</a>
+                    <a href="https://in.indeed.com" target="_blank"
+                        class="btn btn-outline-dark rounded-2 nav-button">Search</a>
                 </div>
             </div>
             <div class="sub-container d-flex flex-column align-items-center pb-1">
@@ -92,3 +95,43 @@
         </div>
     </div>
 </div>
+
+<p-dialog [(visible)]="isDialogVisible" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <div class="d-flex gap-3 cheating-dialog">
+        <h3>User Profile</h3>
+    </div>
+    <form [formGroup]="resumeUploadForm" (submit)="onSubmit()">
+        <div class="d-flex gap-3">
+            <div class="w-50">
+                <p class="mt-1">
+                    Email:
+                </p>
+                <div class="border rounded p-2">{{profile.email}}</div>
+            </div>
+            <div class="w-50">
+                <p class="mt-1">
+                    Name:
+                </p>
+                <div class="border rounded p-2">{{profile.name}}</div>
+            </div>
+        </div>
+        <div class="w-100">
+            <p class="mt-5">
+                Resume:
+            </p>
+            <a [href]="profile.resumeUrl" target="_blank">{{profile.resume}}</a>
+        </div>
+        <div class="d-flex justify-content-center w-100 mt-3 gap-5">
+            <p-fileUpload #fileUpload (onSelect)="onFileSelect($event)" mode="basic" name="file"
+                [chooseLabel]="isFileSelected ? fileName : 'Choose'" [accept]="allowedFileType" [customUpload]="true"
+                [maxFileSize]="fileSizeInBytes"></p-fileUpload>
+            <button type="submit" [disabled]="resumeUploadForm.invalid || !resumeUploadForm.dirty" class="btn btn-outline-dark rounded-2 upload-button">Upload</button>
+        </div>
+        <div class="error">
+            <app-error-message [control]="resumeUploadForm.get('file')" [validationMessages]="{
+                            invalidFileSize: message.invalidFileSize,
+                            invalidFileType: message.invalidFileType}">
+            </app-error-message>
+        </div>
+    </form>
+</p-dialog>

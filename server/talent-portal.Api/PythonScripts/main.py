@@ -3,15 +3,16 @@ import numpy as np
 import asyncio
 import websockets
 
-# Variable to control detection
+# Variables for detection and tracking
 detect = False
 
-# Function for simulating person and phone detection
+# Function for simulating person and object detection (phones, tablets, laptops)
 async def simulate_detection(websocket):
     global detect
     cap = cv2.VideoCapture(0)  # Use '0' for the primary camera
 
-    # Load pre-trained YOLO weights and configurations
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
     net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
     classes = []
     with open("coco.names", "r") as f:
@@ -23,45 +24,48 @@ async def simulate_detection(websocket):
 
     print("Simulation started")
 
-    consecutive_persons_detected = 0  # Counter for consecutive frames with multiple persons detected
-
     while detect:
         ret, frame = cap.read()
         if not ret:
             break
 
-        # Object detection using YOLO
+        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray_frame, 1.3, 5)
+
+        # Reset person count for each frame
+        person_count = 0
+
+        # Haar Cascade person detection
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            cv2.putText(frame, "Face", (x, y - 5),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            person_count += 1  # Increment person count for each detection
+
+        # Print message based on the number of face detections
+        if person_count > 1:
+            print("Cheating: Person detected")
+            await websocket.send(f"Cheating: Person detected")
+
+        # Object detection using YOLO for phone, tablet, and laptop
         height, width, channels = frame.shape
         blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
         net.setInput(blob)
         outs = net.forward(output_layers)
-
-        persons_detected = 0  # Counter for persons detected in the current frame
 
         for out in outs:
             for detection in out:
                 scores = detection[5:]
                 class_id = np.argmax(scores)
                 confidence = scores[class_id]
-                if confidence > 0.5:  # Threshold
-                    if class_id == 0:  # Class ID for person in COCO dataset
-                        persons_detected += 1  # Increment counter for each person detected
+                if confidence > 0.2:  # Adjust confidence threshold as needed
+                    if class_id in [67, 63]:  # Class ID for cell phone in COCO dataset
+                        detected_class = classes[class_id]
+                        print("Cheating: Phone detected")
+                        await websocket.send(f"Cheating: {detected_class.capitalize()} detected")
 
-                    elif class_id == 67:  # Class ID for cell phone in COCO dataset
-                        await websocket.send(f"Phone detected: {classes[class_id]}")
-                        print("Phone detected")
-
-        # Check if more than one person is detected in the current frame
-        if persons_detected > 1:
-            consecutive_persons_detected += 1
-        else:
-            consecutive_persons_detected = 0
-
-        # Send "Person detected" message only if multiple persons are consistently detected across frames
-        if consecutive_persons_detected >= 1:  # Sending only when 5 consecutive frames have >1 person
-            await websocket.send(f"{persons_detected} Persons detected")
-            print(f"{persons_detected} Persons detected")
-
+        # cv2.imshow('Camera View', frame) # for camera view
+        # cv2.waitKey(1)
         await asyncio.sleep(1)  # Control the rate of detection
 
     cap.release()

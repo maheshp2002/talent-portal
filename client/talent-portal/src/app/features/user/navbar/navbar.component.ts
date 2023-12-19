@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { take } from 'rxjs';
 import { ToastTypes } from 'src/app/core/enums';
+import { ProfileDialogService } from 'src/app/core/services/ProfileDialogService.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,11 +11,13 @@ import { ToastTypes } from 'src/app/core/enums';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-
+  @Output() profileClick: EventEmitter<void> = new EventEmitter<void>();
+  
   constructor(
     private readonly activatedRouter: ActivatedRoute,
     private readonly router: Router,
-    private readonly toast: MessageService
+    private readonly toast: MessageService,
+    private profileDialogService: ProfileDialogService
   ) { }
 
 
@@ -39,5 +42,9 @@ export class NavbarComponent implements OnInit {
       severity: ToastTypes.SUCCESS,
       summary: 'Logged out successfully'
     });
+  }
+
+  onProfileClick(): void {
+    this.profileDialogService.setIsDialogVisible(true);
   }
 }

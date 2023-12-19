@@ -10,6 +10,8 @@ export class Constants {
 	dateFormat = 'MM/dd/yyy';
 	wholeNumberPattern = /^\d+$/;
 	dateTimeFormat = 'MM/dd/yyy, hh:mm a';
-	imageSizeInBytes = 1000000;
-	allowedImageType = 'image/*';
+	fileSizeInBytes = 1000000;
+	allowedFileType = 'application/pdf';
+	row = 10;
 }
+

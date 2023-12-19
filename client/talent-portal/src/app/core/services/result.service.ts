@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IGetResult, IPostResult } from '../interfaces';
+import { IGetResult, IPostResult, IResponse } from '../interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -18,9 +18,13 @@ export class ResultService {
         return this.http.get<IGetResult[]>(this.adminUrl + "/result");
     }
 
-    getResult(skill: string) {
-        const params = { skill: skill };
-        return this.http.get<IGetResult[]>(this.userUrl + "/result", { params });
+    getAlltResultUser(userId: string) {
+        return this.http.get<IGetResult[]>(this.userUrl + "/result" + userId);
+    }
+
+    getCurrentResult(jobId: number, userId: string) {
+        const params = { jobId: jobId, userId: userId };
+        return this.http.get<IGetResult>(this.userUrl + "/result", { params });
     }
 
     addResult(result: IPostResult) {

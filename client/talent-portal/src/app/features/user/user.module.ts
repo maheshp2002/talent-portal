@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { FileUploadModule } from 'primeng/fileupload';
+import { TableModule } from 'primeng/table';
 
 import { UserRoutingModule } from './user-routing.module';
 import { HomepageComponent } from './homepage/homepage.component';
@@ -12,7 +14,11 @@ import { ErrorMessageComponent } from 'src/app/shared/error-message/error-messag
 import { ConfirmationService } from 'primeng/api';
 import { HighlightModule } from 'ngx-highlightjs';
 import { SharedModule } from 'src/app/shared/shared.module';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { DialogModule } from 'primeng/dialog';
+import { JobSearchComponent } from './job-search/job-search.component';
+import { CircleProgressOptions, NgCircleProgressModule } from 'ng-circle-progress';
+import { ResultComponent } from './result/result.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +26,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
     UserLayoutComponent,
     NavbarComponent,
     OnlineExamLandingComponent,
-    ExamComponent
+    ExamComponent,
+    JobSearchComponent,
+    ResultComponent
   ],
   imports: [
     CommonModule,
@@ -28,8 +36,13 @@ import { SharedModule } from 'src/app/shared/shared.module';
     ErrorMessageComponent,
     HighlightModule,
     ConfirmDialogModule,
-    SharedModule
+    SharedModule,
+    DialogModule,
+    FileUploadModule,
+    TableModule,
+    FontAwesomeModule,
+    NgCircleProgressModule
   ],
-  providers: [ConfirmationService]
+  providers: [ConfirmationService, CircleProgressOptions]
 })
 export class UserModule { }

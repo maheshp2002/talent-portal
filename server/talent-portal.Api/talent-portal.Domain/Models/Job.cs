@@ -1,10 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.Text.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace talent_portal.Domain.Models
 {
@@ -18,8 +13,17 @@ namespace talent_portal.Domain.Models
 
         public string Description { get; set; }
 
-        public string Skills { get; set; }
+        [NotMapped]
+        public List<string> Skills { get; set; }
+
+        public string SerializedSkills
+        {
+            get => Skills != null ? JsonSerializer.Serialize(Skills) : null;
+            set => Skills = !string.IsNullOrEmpty(value) ? JsonSerializer.Deserialize<List<string>>(value) : new List<string>();
+        }
 
         public string StartedDate { get; set; }
+
+        public string? Position { get; set; }
     }
 }

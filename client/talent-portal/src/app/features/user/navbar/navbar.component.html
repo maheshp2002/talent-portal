@@ -18,8 +18,8 @@
                     <button class="btn nav-link" id="nav-bar-logout-button" (click)="logout()"><i
                             class="pi pi-sign-out"></i> Logout</button>
                 </li>
-                <a class="btn nav-link profile-pic d-flex justify-content-center align-items-center me-2 ms-3"
-                    [routerLink]="['/user/profile']" routerLinkActive="active-link"><i class="pi pi-user"></i></a>
+                <button class="btn nav-link profile-pic d-flex justify-content-center align-items-center me-2 ms-3"
+                    (click)="onProfileClick()" routerLinkActive="active-link"><i class="pi pi-user"></i></button>
             </ul>
         </div>
     </div>

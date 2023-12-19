@@ -1,0 +1,9 @@
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999; /* Adjust z-index as needed */
+    pointer-events: none; /* Ensure events go through for content below */
+  }

@@ -17,9 +17,9 @@ public class ExamController : UserControllerBase
     [HttpGet("skill-questions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetExamQuestion(string skill)
+    public async Task<IActionResult> GetExamQuestion([FromQuery] ExamDto dto)
     {
-        var result = await _service.GetQuestionsAsync(skill);
+        var result = await _service.GetQuestionsAsync(dto);
         if (result.IsValid)
             return Ok(result);
 

@@ -1,0 +1,27 @@
+<div class="d-flex justify-content-center align-items-center pt-5 w-100">
+    <div class="main-container card shadow m-3 border-warning w-75 ps-5 pe-5">
+        <span class="title pt-3">Exam Result</span>
+        <hr>
+        <div class="d-flex flex-row justify-content-start align-items-center h-100 w-100">
+            <circle-progress [percent]="percentage" subtitle="Score" [radius]="80" [outerStrokeWidth]="16"
+                [innerStrokeWidth]="8" [outerStrokeColor]="'#ffbd42'" [innerStrokeColor]="'#fdd07d'" [animation]="true"
+                [animationDuration]="3000" [animateSubtitle]="true">
+            </circle-progress>
+            <div class="h-100 w-75 d-flex flex-column justify-content-center p-5 right-container">
+                <div class="d-flex">
+                    <span class="fw-700 me-3">Your Score:</span>
+                    <span>{{result.score}}</span>
+                </div>
+                <div class="d-flex mt-3">
+                    <span class="fw-700 me-3">Total Score:</span>
+                    <span>{{noOfQ}}</span>
+                </div>
+                <div class="d-flex fw-700 mt-3">
+                    <span class="me-3">Passed/Failed:</span>
+                    <span [ngClass]="result.isPassed ? 'text-success' : 'text-danger'">{{result.isPassed ? "Passed" : "Failed"}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-poper></app-poper>
+</div>

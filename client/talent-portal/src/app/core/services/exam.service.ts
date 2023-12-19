@@ -18,8 +18,8 @@ export class ExamService {
         return this.http.get<IGetQuestions[]>(this.adminUrl + "/questions");
     }
 
-    getSkillQuestions(skill: string) {
-        const params = { skill: skill };
+    getSkillQuestions(jobId: number, userId: string) {
+        const params = { jobId: jobId, userId: userId };
         return this.http.get<IGetQuestions[]>(this.userUrl + "/exam/skill-questions", { params });
     }
 
