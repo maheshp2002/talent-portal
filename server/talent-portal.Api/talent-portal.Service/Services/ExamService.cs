@@ -157,6 +157,26 @@ public class ExamService
         return response;
     }
 
+    public async Task<ServiceResponse<string>> QuestionsDeleteAsync(int id)
+    {
+        var response = new ServiceResponse<string>();
+
+        var question = _db.Questions.FirstOrDefault(x => x.Id == id);
+
+        if (question == null)
+        {
+            response.AddError("Not found", "Question not found");
+            return response;
+        }
+
+        _db.Questions.Remove(question);
+        await _db.SaveChangesAsync();
+
+        response.Result = "Question deleted successfully";
+
+        return response;
+    }
+
     public async Task<ServiceResponse<List<string>>> ExtractSkillsFromPDFAsync(byte[] pdfBytes, int jobId)
     {
         var response = new ServiceResponse<List<string>>();

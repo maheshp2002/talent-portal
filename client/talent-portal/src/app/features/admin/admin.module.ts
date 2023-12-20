@@ -11,12 +11,16 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ConfirmationService } from 'primeng/api';
+import { ViewAllJobComponent } from './view-all-job/view-all-job.component';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
     AdminLayoutComponent,
     HomepageComponent,
-    NavbarComponent
+    NavbarComponent,
+    ViewAllJobComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +30,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     HighlightModule,
     DialogModule,
     ButtonModule,
-    SharedModule
+    SharedModule,
+    TableModule
   ]
 })
 export class AdminModule { }

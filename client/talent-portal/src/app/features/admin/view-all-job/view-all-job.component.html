@@ -1,0 +1,50 @@
+<div class="table-container p-3">
+    <p-table (onRowSelect)="onRowSelect($event.data.id)" #jobsTable [scrollable]="true" [resizableColumns]="true" [paginator]="true"
+        [value]="jobs" [rows]="rows" selectionMode="single">
+        <ng-template pTemplate="header">
+            <tr class="table-header-shadow">
+                <th pSortableColumn="title">
+                    <div class="d-flex justify-content-between align-items-center">
+                        Name
+                        <p-sortIcon field="title"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="position">
+                    <div class="d-flex justify-content-between align-items-center">
+                        Position
+                        <p-sortIcon field="position"></p-sortIcon>
+                    </div>
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Job Started Date
+                </th>
+                <th>
+                    Job Status
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" ngFor let-job [ngForOf]="jobs" let-i="index"
+            [ngForTrackBy]="trackByJobId">
+            <tr [pSelectableRow]="job" *ngIf="job.isOpen" >
+                <td>{{job.title}}</td>
+                <td>{{job.position}}</td>
+                <td>{{job.description}}</td>
+                <td>{{job.startedDate}}</td>
+                <td class="d-flex gap-3 fw-700" [ngClass]="job.isOpen ? 'text-success' : 'text-danger'">
+                    <span>{{job.isOpen ? 'Open' : 'Closed'}}</span>
+                    <i class="pi" [ngClass]="job.isOpen ? 'pi-check-circle' : 'pi-times'"></i>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="12">
+                    <app-no-data-found></app-no-data-found>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

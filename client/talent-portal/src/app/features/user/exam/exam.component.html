@@ -33,7 +33,7 @@
     </div>
 </form>
 
-<p-dialog [visible]="isCheating" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+<p-dialog [(visible)]="isCheating" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
     <div class="d-flex gap-3 cheating-dialog">
         <i class="pi pi-exclamation-triangle p-mr-2 text-warning"></i>
         <h3>Cheating Detected</h3>

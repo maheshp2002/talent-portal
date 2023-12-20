@@ -26,4 +26,10 @@ export class ExamService {
     addQuestions(question: IPostQuestions) {
         return this.http.post(this.adminUrl + "/questions", question);
     }
+
+    deleteQuestions(id: number) {
+        console.log(id);
+        
+        return this.http.delete(this.adminUrl + "/questions/" + id);
+    }
 }

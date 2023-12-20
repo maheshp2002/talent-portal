@@ -37,4 +37,16 @@ public class ExamQuestionsController : AdminControllerBase
 
         return BadRequest(result.Errors);
     }
+
+    [HttpDelete("questions/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteExamQuestion(int id)
+    {
+        var result = await _service.QuestionsDeleteAsync(id);
+        if (result.IsValid)
+            return Ok(result);
+
+        return BadRequest(result.Errors);
+    }
 }

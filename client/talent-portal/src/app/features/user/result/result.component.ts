@@ -44,7 +44,7 @@ export class ResultComponent implements OnInit{
       next: (response) => {
         this.result = response;
         console.log(response);
-        this.percentage = (this.noOfQ * this.result.score) * 100;
+        this.percentage = (this.noOfQ / this.result.score) * 100;
       }
     });
   }

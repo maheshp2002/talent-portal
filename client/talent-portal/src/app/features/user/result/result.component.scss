@@ -1,5 +1,13 @@
 .main-container {
     height: 50vh;
+    
+    img {
+        height: 150px;
+    }
+}
+
+.rotate-45 {
+    transform: rotate(-45deg);
 }
 
 .fw-700 {

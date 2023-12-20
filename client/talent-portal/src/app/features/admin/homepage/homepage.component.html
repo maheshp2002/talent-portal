@@ -30,9 +30,9 @@
                 </div>
             </div>
         </div>
-        <div class="right-container d-flex justify-content-center align-items-center">
-            <fa-icon [icon]="faDelete" class=""></fa-icon>
-        </div>
+        <a (click)="ConfirmShow(mcq.id)" class="right-container d-flex justify-content-center align-items-center">
+            <fa-icon [icon]="faDelete"></fa-icon>
+        </a>
     </div>
 </div>
 <p-dialog header="Add new question" [(visible)]="isVisible">
@@ -115,15 +115,28 @@
                     maxlength: message.codeLength
             }"></app-error-message>
         </div>
-        <div class="form-input-control ps-0">
-            <label class="required" for="admin-homepage-answer">
+        <div class="d-flex gap-3 mt-2 mb-2">
+            <label>
                 Answer
             </label>
-            <input formControlName="answer" placeholder="Type down answer here" type="text" class="w-100"
-                id="admin-homepage-answerr">
+            <div class="d-flex gap-2">
+                <input type="radio" name="answer" [value]="questionForm.get('optionOne')?.getRawValue()"  formControlName="answer">
+                <label>Option 1</label>
+            </div>
+            <div class="d-flex gap-2">
+                <input type="radio" name="answer" [value]="questionForm.get('optionTwo')?.getRawValue()" formControlName="answer">
+                <label>Option 2</label>
+            </div>
+            <div class="d-flex gap-2">
+                <input type="radio" name="answer" [value]="questionForm.get('optionThree')?.getRawValue()" formControlName="answer">
+                <label>Option 3</label>
+            </div>
+            <div class="d-flex gap-2">
+                <input type="radio" name="answer" [value]="questionForm.get('optionFour')?.getRawValue()" formControlName="answer">
+                <label>Option 4</label>
+            </div>
             <app-error-message [control]="questionForm.get('answer')" [validationMessages]="{
-                    required: message.requiredField,
-                    maxlength: message.questionLength
+                    required: message.requiredField
             }"></app-error-message>
         </div>
         <div class="form-input-control ps-0">
@@ -144,4 +157,19 @@
                 class="btn btn-dark rounded-2 dialog-button">Save</button>
         </div>
     </form>
+</p-dialog>
+<p-dialog [(visible)]="isConfirmShow" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <div class="d-flex gap-3 cheating-dialog">
+        <i class="pi pi-exclamation-triangle fw-25 text-warning"></i>
+        <h3>{{confirmHeader}}</h3>
+    </div>
+    <p class="mt-5">
+        {{confirmMessage}}
+    </p>
+    <div class="w-100 d-flex justify-content-end p-3">
+        <button icon="pi pi-check" (click)="isConfirmShow = false"
+            class="btn btn-outline-dark rounded-2 dialog-button me-3">Cancel</button>
+        <button (click)="onDelete()" icon="pi pi-check" type="button"
+            class="btn btn-dark rounded-2 dialog-button">Delete</button>
+    </div>
 </p-dialog>

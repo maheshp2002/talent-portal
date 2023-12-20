@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Messages } from 'src/app/common/message';
-import { Constants } from 'src/app/configs/app.config';
 import { ToastTypes } from 'src/app/core/enums';
 import { IGetQuestions, IResponse } from 'src/app/core/interfaces';
 import { ExamService } from 'src/app/core/services/exam.service';
@@ -21,10 +20,15 @@ export class HomepageComponent implements OnInit {
     result: []
   }
   isVisible = false;
+  isConfirmShow = false;
+  questionId = 0;
   faQuestionCircle = faQuestionCircle;
   faDelete = faTrash;
   mcqs: IGetQuestions[] = [];
   questionForm: FormGroup = new FormGroup({});
+  initialFormState: FormGroup = new FormGroup({});
+  confirmHeader = 'Delete Question';
+  confirmMessage = 'Are you sure you want to delete this question?'
 
   constructor(
     private readonly fb: FormBuilder,
@@ -74,12 +78,47 @@ export class HomepageComponent implements OnInit {
       optionFour: ['',
         [Validators.required, Validators.maxLength(500)]
       ],
-      answer: ['',
-        [Validators.required, Validators.maxLength(500)]
+      answer: [null,
+        [Validators.required]
       ],
       skill: ['',
         [Validators.required, Validators.maxLength(500)]
       ]
+    });
+
+    this.questionForm.get('answer')?.valueChanges.subscribe((value) => {
+      console.log('Selected value:', value);
+      // You can perform additional actions or checks based on the selected value here
+    });
+  }
+
+  /**
+   * Reset settingsForm to it's initial state.
+   */
+  resetForm() {
+    this.questionForm.reset(this.initialFormState);
+  }
+
+  ConfirmShow(id: number) {
+    this.questionId = id;
+    this.isConfirmShow = true;
+  }
+
+  onDelete() {
+    this.service.deleteQuestions(this.questionId).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: ToastTypes.SUCCESS,
+          summary: 'Question deleted successfully'
+        });
+      },
+
+      error: () => {
+        this.messageService.add({
+          severity: ToastTypes.ERROR,
+          summary: 'An error occurred while deleting'
+        });
+      }
     });
   }
 
@@ -108,13 +147,13 @@ export class HomepageComponent implements OnInit {
       error: () => {
         this.messageService.add({
           severity: ToastTypes.ERROR,
-          summary: 'An error occurred'
+          summary: 'An error occurred while adding'
         });
       }
     })
 
   }
-  
+
   restoreMultiline(text: string): string {
     return text.replace(/\\n/g, "\n");
   }

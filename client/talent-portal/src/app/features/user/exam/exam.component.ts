@@ -21,6 +21,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
   navigatingAway: boolean = false;
   personCheatingLimit: number = 0;
   objectCheatingLimit: number = 0;
+  NoOfQ: number = 10;
   isCheating: boolean = false;
   detectObject: any;
   currentQuestion: IGetQuestions = {
@@ -62,7 +63,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
   ) { }
 
   async ngOnInit() {
-    // this.preloaderService.show();
+    this.preloaderService.show();
     this.getId();
     this.buildQuestionForm();
     this.getQuestionsList();
@@ -98,10 +99,10 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
 
   onDetectionStart() {
     this.detectionService.startDetection();
+    this.preloaderService.hide();
 
     // If you want to subscribe to the detected object data
     this.detectionService.getDetectedObject().subscribe((data) => {
-      this.preloaderService.hide();
       this.detectObject = data;
 
       if (this.detectObject.toString().toLowerCase().includes("cheating")) {
@@ -110,13 +111,14 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
           summary: data
         });
 
-        if (this.detectObject.toString().toLowerCase().includes("Cheating: Person detected")) {
+        if (this.detectObject.toString().toLowerCase().includes("cheating: person detected")) {
           this.personCheatingLimit = this.personCheatingLimit + 1;
         }
 
-        if (this.detectObject.toString().toLowerCase().includes("Cheating: Cell phone detected")) {
+        if (this.detectObject.toString().toLowerCase().includes("cheating: cell phone detected")) {
           this.objectCheatingLimit = this.objectCheatingLimit + 1;
         }
+        console.log(this.detectObject.toString().toLowerCase())
 
         if (this.objectCheatingLimit >= 10 || this.personCheatingLimit >= 2) {
           this.isCheating = true;
@@ -142,19 +144,19 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
 
   submit() {
     var selectedOption = this.questionForm.get('answer')?.value;
-    this.result.score = this.currentQuestion.answer == selectedOption
+    this.result.score = this.currentQuestion.answer.toLowerCase() == selectedOption.toLowerCase()
       ? this.result.score + 1
       : this.result.score + 0;
-    if (this.index < this.mcqs.length - 1) {      
+    if (this.index < this.mcqs.length - 1) {
       this.index = this.index + 1;
       this.currentQuestion = this.mcqs[this.index];
     } else {
       this.detectionService.stopDetection();
       var result = this.result;
-      result.isPassed = result.score >= 10 ? true : false;
+      result.isPassed = result.score >= 5 ? true : false;
       this.resultService.addResult(result).subscribe({
         next: () => {
-          this.router.navigate(['user/result', result.jobId, result.userId]);
+          this.router.navigate(['user/result', result.jobId, result.userId, this.NoOfQ]);
           this.messageService.add({
             severity: ToastTypes.SUCCESS,
             summary: 'Exam completed successfully'

@@ -7,7 +7,7 @@
                 [innerStrokeWidth]="8" [outerStrokeColor]="'#ffbd42'" [innerStrokeColor]="'#fdd07d'" [animation]="true"
                 [animationDuration]="3000" [animateSubtitle]="true">
             </circle-progress>
-            <div class="h-100 w-75 d-flex flex-column justify-content-center p-5 right-container">
+            <div class="h-100 w-50 d-flex flex-column justify-content-center p-5 right-container">
                 <div class="d-flex">
                     <span class="fw-700 me-3">Your Score:</span>
                     <span>{{result.score}}</span>
@@ -21,7 +21,17 @@
                     <span [ngClass]="result.isPassed ? 'text-success' : 'text-danger'">{{result.isPassed ? "Passed" : "Failed"}}</span>
                 </div>
             </div>
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <div class="h-75 w-25 d-flex justify-content-center align-items-center">
+                    <img *ngIf="result.isPassed && percentage < 90" class="rotate-45" [src]="'assets/images/passed.png'" alt="pass">
+                    <img *ngIf="result.isPassed && percentage > 90" [src]="'assets/images/a-plus.png'" alt="pass full mark">
+                    <img *ngIf="!result.isPassed" [src]="'assets/images/fail.png'" alt="fail">
+                </div>
+                <p *ngIf="!result.isPassed" class="mt-2 text-center">Don't lose heart. There's always room for improvement!</p>
+                <p *ngIf="result.isPassed && percentage > 90" class="mt-2 text-center">Perfection achieved! Flawless victory on the exam!</p>
+                <p *ngIf="result.isPassed && percentage < 90" class="mt-2 text-center">Congratulations! You aced the exam!</p>
+            </div>
         </div>
     </div>
-    <app-poper></app-poper>
+    <app-poper *ngIf="result.isPassed"></app-poper>
 </div>
