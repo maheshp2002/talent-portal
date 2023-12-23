@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IGetResult, IPostResult, IResponse } from '../interfaces';
+import { IGetResult, IGetAllResultUser, IPostResult, IResponse, IGetAllResultAdmin } from '../interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -14,12 +14,12 @@ export class ResultService {
 
     }
 
-    getResultAdmin() {
-        return this.http.get<IGetResult[]>(this.adminUrl + "/result");
+    getResultAdmin(jobId: number) {
+        return this.http.get<IGetAllResultAdmin[]>(this.adminUrl + "/result/" + jobId);
     }
 
-    getAlltResultUser(userId: string) {
-        return this.http.get<IGetResult[]>(this.userUrl + "/result" + userId);
+    getAllResultUser(userId: string) {
+        return this.http.get<IGetAllResultUser[]>(this.userUrl + "/result/" + userId);
     }
 
     getCurrentResult(jobId: number, userId: string) {

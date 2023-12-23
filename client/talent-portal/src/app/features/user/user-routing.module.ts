@@ -7,6 +7,7 @@ import { CanDeactivateGuard } from 'src/app/core/services/CanDeactivateGuard.ser
 import { ExamComponent } from './exam/exam.component';
 import { JobSearchComponent } from './job-search/job-search.component';
 import { ResultComponent } from './result/result.component';
+import { AttendedExamsComponent } from './attended-exams/attended-exams.component';
 
 const routes: Routes = [
   {
@@ -15,7 +16,8 @@ const routes: Routes = [
       { path: 'exam-landing/:id', component: OnlineExamLandingComponent},
       { path: 'exam/:id', component: ExamComponent, canDeactivate: [CanDeactivateGuard]  },
       { path: 'jobs', component: JobSearchComponent },
-      { path: 'result/:jobId/:userId/:noOfQ', component: ResultComponent }
+      { path: 'result/:jobId/:userId', component: ResultComponent },
+      { path: 'attended-exams', component: AttendedExamsComponent }
     ]
   },
 ];

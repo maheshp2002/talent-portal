@@ -10,6 +10,10 @@ public class ResultViewAdminDto
 
     public string JobName { get; set; }
 
+    public string Resume { get; set; }
+
+    public int TotalScore { get; set; }
+
     public string JobDescription { get; set; }
 
     public string ExamDate { get; set; }

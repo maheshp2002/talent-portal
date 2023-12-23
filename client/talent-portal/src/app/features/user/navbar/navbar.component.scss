@@ -28,3 +28,18 @@
         font-size: 20px;
     }
 }
+
+.dialog-button {
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+
+    &:hover {
+        color: white;
+    }
+}
+
+.fw-25 {
+    font-size: 30px;
+}
+

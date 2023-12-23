@@ -1,0 +1,22 @@
+@import '/src/styles/variables.scss';
+
+.position {
+    width: 250px;
+}
+
+.fw-700 {
+    font-weight: 700;
+}
+
+.pi {
+    line-height: 1.5 !important;
+    font-weight: 700 !important;
+}
+
+.opening-date {
+    width: 50px;
+}
+
+a:hover {
+    color: $secondary-color;
+}

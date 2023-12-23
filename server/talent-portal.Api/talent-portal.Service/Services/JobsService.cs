@@ -51,9 +51,30 @@ public class JobsService
                 Skills = c.Skills.ToList(),
                 StartedDate = c.StartedDate,
                 Position = c.Position
-            }).ToListAsync();
+            }).OrderByDescending(c => c.StartedDate).ToListAsync();
 
         response.Result = jobs;
+
+        return response;
+    }
+
+    public async Task<ServiceResponse<string>> UpdateJobStatusAsync(JobUpdateDto dto)
+    {
+        var response = new ServiceResponse<string>();
+
+        var jobs = _db.Jobs.FirstOrDefault(c => c.Id == dto.Id);
+
+        if (jobs == null)
+        {
+            response.AddError("Not Found", $"No Job Found with the id: {dto.Id}");
+            return response;
+        }
+
+        jobs.IsOpen = dto.IsOpen;
+
+        await _db.SaveChangesAsync();
+
+        response.Result = "Job Updated Successfully";
 
         return response;
     }

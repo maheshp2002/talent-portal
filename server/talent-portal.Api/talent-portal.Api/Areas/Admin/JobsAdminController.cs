@@ -29,9 +29,21 @@ public class JobsAdminController : AdminControllerBase
     [HttpGet("jobs/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAllJobs(int id)
+    public async Task<IActionResult> GetJobs(int id)
     {
         var result = await _service.GetJobAsync(id);
+        if (result.IsValid)
+            return Ok(result);
+
+        return BadRequest(result.Errors);
+    }
+
+    [HttpPut("update-status")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateJobStatus(JobUpdateDto dto)
+    {
+        var result = await _service.UpdateJobStatusAsync(dto);
         if (result.IsValid)
             return Ok(result);
 

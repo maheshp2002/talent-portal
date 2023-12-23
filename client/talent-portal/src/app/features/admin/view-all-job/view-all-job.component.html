@@ -28,14 +28,16 @@
         </ng-template>
         <ng-template pTemplate="body" ngFor let-job [ngForOf]="jobs" let-i="index"
             [ngForTrackBy]="trackByJobId">
-            <tr [pSelectableRow]="job" *ngIf="job.isOpen" >
+            <tr [pSelectableRow]="job">
                 <td>{{job.title}}</td>
                 <td>{{job.position}}</td>
-                <td>{{job.description}}</td>
+                <td [pTooltip]="job.description" [tooltipPosition]="'top'">{{job.description}}</td>
                 <td>{{job.startedDate}}</td>
-                <td class="d-flex gap-3 fw-700" [ngClass]="job.isOpen ? 'text-success' : 'text-danger'">
-                    <span>{{job.isOpen ? 'Open' : 'Closed'}}</span>
-                    <i class="pi" [ngClass]="job.isOpen ? 'pi-check-circle' : 'pi-times'"></i>
+                <td>
+                    <a (click)="updateStatus(job.id, job.isOpen)" class="d-flex gap-3 fw-700" [ngClass]="job.isOpen ? 'text-success' : 'text-danger'">
+                        <span pTooltip="Click to change status" [tooltipPosition]="'top'">{{job.isOpen ? 'Open' : 'Closed'}}</span>
+                        <i class="pi" [ngClass]="job.isOpen ? 'pi-check-circle' : 'pi-times'"></i>
+                    </a>
                 </td>
             </tr>
         </ng-template>

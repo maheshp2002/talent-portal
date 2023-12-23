@@ -25,10 +25,12 @@ public class ResultService
             {
                 Id = c.Id,
                 Score = c.Score,
+                TotalScore = c.TotalScore,
                 IsPassed = c.IsPassed,
                 ExamDate = c.ExamDate,
                 JobName = _db.Jobs.FirstOrDefault(m => m.Id == c.JobId).Title,
                 JobDescription = _db.Jobs.FirstOrDefault(m => m.Id == c.JobId).Description,
+                Resume = "https://localhost:7163/" +_db.ApplicationUser.FirstOrDefault(m => m.Id == c.ApplicationUserId).Resume,
                 UserEmail = _db.Users.FirstOrDefault(m => m.Id == c.ApplicationUserId).Email,
                 UserName = _db.Users.FirstOrDefault(m => m.Id == c.ApplicationUserId).Name
             }).ToListAsync();
@@ -49,7 +51,9 @@ public class ResultService
                 Score = c.Score,
                 IsPassed = c.IsPassed,
                 ExamDate = c.ExamDate,
+                TotalScore = c.TotalScore,
                 JobName = _db.Jobs.FirstOrDefault(m => m.Id == c.JobId).Title,
+                JobPosition = _db.Jobs.FirstOrDefault(m => m.Id == c.JobId).Position,
                 JobDescription = _db.Jobs.FirstOrDefault(m => m.Id == c.JobId).Description
             }).ToListAsync();
 
@@ -69,6 +73,7 @@ public class ResultService
             Score = data.Score,
             IsPassed = data.IsPassed,
             ExamDate = data.ExamDate,
+            TotalScore = data.TotalScore,
             JobName = _db.Jobs.FirstOrDefault(m => m.Id == data.JobId).Title,
             JobDescription = _db.Jobs.FirstOrDefault(m => m.Id == data.JobId).Description
         };
@@ -88,6 +93,7 @@ public class ResultService
             Score = dto.Score,
             ApplicationUserId = dto.UserId,
             JobId = dto.JobId,
+            TotalScore = dto.TotalScore,
             ExamDate = DateTime.Now.ToString("MM/dd/yyyy")
         };
 
@@ -99,6 +105,7 @@ public class ResultService
         {
             IsPassed = result.IsPassed,
             Score = result.Score,
+            TotalScore= result.TotalScore,
             ExamDate = DateTime.Now.ToString("MM/dd/yyyy"),
             JobName = _db.Jobs.FirstOrDefault(m => m.Id == result.JobId).Title,
             JobDescription = _db.Jobs.FirstOrDefault(m => m.Id == result.JobId).Description

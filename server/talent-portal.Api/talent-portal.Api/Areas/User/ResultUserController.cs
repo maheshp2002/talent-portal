@@ -14,12 +14,12 @@ public class ResultUserController : UserControllerBase
         _service = service;
     }
 
-    [HttpGet("result/{user}")]
+    [HttpGet("result/{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAllResult(string user)
+    public async Task<IActionResult> GetAllResult(string userId)
     {
-        var result = await _service.GetAllResultUserAsync(user);
+        var result = await _service.GetAllResultUserAsync(userId);
         if (result.IsValid)
             return Ok(result);
 

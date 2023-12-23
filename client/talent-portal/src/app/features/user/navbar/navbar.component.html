@@ -15,7 +15,7 @@
                             class="pi pi-home"></i> Home</a>
                 </li>
                 <li class="nav-item">
-                    <button class="btn nav-link" id="nav-bar-logout-button" (click)="logout()"><i
+                    <button class="btn nav-link" id="nav-bar-logout-button" (click)="isConfirmShow = true"><i
                             class="pi pi-sign-out"></i> Logout</button>
                 </li>
                 <button class="btn nav-link profile-pic d-flex justify-content-center align-items-center me-2 ms-3"
@@ -24,3 +24,18 @@
         </div>
     </div>
 </nav>
+<p-dialog [(visible)]="isConfirmShow" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <div class="d-flex gap-3 cheating-dialog">
+        <i class="pi pi-sign-out fw-25 text-warning"></i>
+        <h3>Logout</h3>
+    </div>
+    <p class="mt-5">
+        Are you sure you want to logout?
+    </p>
+    <div class="w-100 d-flex justify-content-end p-3">
+        <button icon="pi pi-check" (click)="isConfirmShow = false"
+            class="btn btn-outline-dark rounded-2 dialog-button me-3">Cancel</button>
+        <button (click)="logout()" icon="pi pi-check" type="button"
+            class="btn btn-dark rounded-2 dialog-button">Logout</button>
+    </div>
+</p-dialog>

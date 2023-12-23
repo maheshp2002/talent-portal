@@ -12,7 +12,8 @@ import { ProfileDialogService } from 'src/app/core/services/ProfileDialogService
 })
 export class NavbarComponent implements OnInit {
   @Output() profileClick: EventEmitter<void> = new EventEmitter<void>();
-  
+  isConfirmShow = false;
+
   constructor(
     private readonly activatedRouter: ActivatedRoute,
     private readonly router: Router,

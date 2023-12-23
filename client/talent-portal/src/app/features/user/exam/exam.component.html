@@ -27,8 +27,8 @@
         </div>
     </div>
     <div class="d-flex justify-content-end">
-        <button [disabled]="questionForm.invalid" [type]="index < mcqs.length ? 'submit' : 'button'"
-            class="btn btn-dark rounded-2 next-button" (click)="submit()">{{index < mcqs.length ? 'Submit' :
+        <button [disabled]="questionForm.invalid" [type]="index >= noOfQ - 1 ? 'submit' : 'button'"
+            class="btn btn-dark rounded-2 next-button" (click)="submit()">{{index >= noOfQ - 1 ? 'Submit' :
             'Next'}}</button>
     </div>
 </form>

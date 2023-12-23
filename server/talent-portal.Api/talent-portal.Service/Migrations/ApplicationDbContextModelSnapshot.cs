@@ -320,6 +320,9 @@ namespace talent_portal.Service.Migrations
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalScore")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");

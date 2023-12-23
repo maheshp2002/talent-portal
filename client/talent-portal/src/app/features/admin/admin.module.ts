@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
@@ -11,16 +12,17 @@ import { HighlightModule } from 'ngx-highlightjs';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ConfirmationService } from 'primeng/api';
 import { ViewAllJobComponent } from './view-all-job/view-all-job.component';
 import { TableModule } from 'primeng/table';
+import { ExamResultComponent } from './exam-result/exam-result.component';
 
 @NgModule({
   declarations: [
     AdminLayoutComponent,
     HomepageComponent,
     NavbarComponent,
-    ViewAllJobComponent
+    ViewAllJobComponent,
+    ExamResultComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import { TableModule } from 'primeng/table';
     DialogModule,
     ButtonModule,
     SharedModule,
-    TableModule
+    TableModule,
+    TooltipModule
   ]
 })
 export class AdminModule { }

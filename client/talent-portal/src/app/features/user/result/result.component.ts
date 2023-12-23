@@ -11,13 +11,13 @@ import { ResultService } from 'src/app/core/services/result.service';
 export class ResultComponent implements OnInit{
   jobId = 0;
   userId = '';
-  noOfQ = 0;
   result: IGetResult = {
     id: 0,
     isPassed: false,
     score: 0,
     jobId: 0,
-    userId: ''
+    userId: '',
+    totalScore: 0
   };
   percentage = 0.0;
 
@@ -35,7 +35,6 @@ export class ResultComponent implements OnInit{
     this.activatedRoute.params.subscribe(params => {
       this.jobId = params['jobId'];
       this.userId = params['userId']; 
-      this.noOfQ = params['noOfQ'];      
     });
   }
 
@@ -44,7 +43,7 @@ export class ResultComponent implements OnInit{
       next: (response) => {
         this.result = response;
         console.log(response);
-        this.percentage = (this.noOfQ / this.result.score) * 100;
+        this.percentage = (this.result.score / this.result.totalScore) * 100;
       }
     });
   }

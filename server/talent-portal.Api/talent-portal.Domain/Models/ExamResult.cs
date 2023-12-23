@@ -10,6 +10,8 @@ namespace talent_portal.Domain.Models
 
         public int Score { get; set; }
 
+        public int TotalScore { get; set; }
+
         public string? ExamDate { get; set; }
 
         [ForeignKey(nameof(JobId))]

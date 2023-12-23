@@ -16,3 +16,8 @@ export interface IPostJobDto {
     startedDate: ""
     position: string
 }
+
+export interface UpdateJobStatusDto {
+    id: number
+    isOpen: boolean
+}

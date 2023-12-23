@@ -53,6 +53,7 @@ export class HomepageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isDialogVisible = false;
     this.getUserProfile();
     this.buildResumeForm();
   }
@@ -111,11 +112,11 @@ export class HomepageComponent implements OnInit {
       next: () => {
         this.fileName = '';
         this.isFileSelected = false;
+        this.getUserProfile();
         this.messageService.add({
           severity: ToastTypes.SUCCESS,
           summary: 'Resume uploaded successfully'
         });
-        this.getUserProfile();
       },
 
       error: () => {

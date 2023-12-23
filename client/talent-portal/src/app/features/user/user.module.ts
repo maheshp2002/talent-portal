@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { UserRoutingModule } from './user-routing.module';
 import { HomepageComponent } from './homepage/homepage.component';
@@ -19,6 +20,7 @@ import { DialogModule } from 'primeng/dialog';
 import { JobSearchComponent } from './job-search/job-search.component';
 import { CircleProgressOptions, NgCircleProgressModule } from 'ng-circle-progress';
 import { ResultComponent } from './result/result.component';
+import { AttendedExamsComponent } from './attended-exams/attended-exams.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { ResultComponent } from './result/result.component';
     OnlineExamLandingComponent,
     ExamComponent,
     JobSearchComponent,
-    ResultComponent
+    ResultComponent,
+    AttendedExamsComponent
   ],
   imports: [
     CommonModule,
@@ -41,6 +44,7 @@ import { ResultComponent } from './result/result.component';
     FileUploadModule,
     TableModule,
     FontAwesomeModule,
+    TooltipModule,
     NgCircleProgressModule
   ],
   providers: [ConfirmationService, CircleProgressOptions]

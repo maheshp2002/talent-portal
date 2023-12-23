@@ -21,7 +21,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
   navigatingAway: boolean = false;
   personCheatingLimit: number = 0;
   objectCheatingLimit: number = 0;
-  NoOfQ: number = 10;
+  noOfQ: number = 0;
   isCheating: boolean = false;
   detectObject: any;
   currentQuestion: IGetQuestions = {
@@ -39,7 +39,8 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
     isPassed: false,
     score: 0,
     jobId: 0,
-    userId: "string"
+    userId: "string",
+    totalScore: 0
   }
   index = 0;
   mcqs: IGetQuestions[] = [];
@@ -132,13 +133,36 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
       next: (result: any) => {
         this.response = result;
         this.mcqs = this.response.result;
+        this.noOfQ = this.mcqs.length;
         this.mcqs.forEach(mcq => {
           if (mcq.isCodeProvided) {
             mcq.code = this.restoreMultiline(mcq.code);
           }
         });
         this.currentQuestion = this.mcqs[0];
+      },
+
+      error: (errorResponse) => {
+        
+        const errorObject = errorResponse.error;
+        
+        // Iterate through the keys in the error object
+        for (const key in errorObject) {
+          if (Object.prototype.hasOwnProperty.call(errorObject, key)) {
+            const errorMessage = errorObject[key];
+            // Display or handle the error message as needed
+            this.messageService.add({
+              severity: ToastTypes.ERROR,
+              summary: errorMessage
+            });
+          }
+        }
+
+        setTimeout(() => {
+          this.router.navigate(['user/jobs']);
+        }, 500);
       }
+
     });
   }
 
@@ -147,16 +171,20 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
     this.result.score = this.currentQuestion.answer.toLowerCase() == selectedOption.toLowerCase()
       ? this.result.score + 1
       : this.result.score + 0;
-    if (this.index < this.mcqs.length - 1) {
+
+    if (this.index < this.noOfQ - 1) {
+
       this.index = this.index + 1;
       this.currentQuestion = this.mcqs[this.index];
-    } else {
+    }
+    else {
       this.detectionService.stopDetection();
       var result = this.result;
-      result.isPassed = result.score >= 5 ? true : false;
+      result.totalScore = this.noOfQ
+      result.isPassed = result.score >= (this.noOfQ - 1) / 2 ? true : false;
       this.resultService.addResult(result).subscribe({
         next: () => {
-          this.router.navigate(['user/result', result.jobId, result.userId, this.NoOfQ]);
+          this.router.navigate(['user/result', result.jobId, result.userId]);
           this.messageService.add({
             severity: ToastTypes.SUCCESS,
             summary: 'Exam completed successfully'

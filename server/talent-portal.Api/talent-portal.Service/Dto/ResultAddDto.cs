@@ -11,4 +11,6 @@ public class ResultAddDto
     public int JobId { get; set; }
 
     public string? UserId { get; set; }
+
+    public int TotalScore { get; set; }
 }

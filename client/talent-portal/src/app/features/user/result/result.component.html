@@ -5,7 +5,7 @@
         <div class="d-flex flex-row justify-content-start align-items-center h-100 w-100">
             <circle-progress [percent]="percentage" subtitle="Score" [radius]="80" [outerStrokeWidth]="16"
                 [innerStrokeWidth]="8" [outerStrokeColor]="'#ffbd42'" [innerStrokeColor]="'#fdd07d'" [animation]="true"
-                [animationDuration]="3000" [animateSubtitle]="true">
+                [animationDuration]="percentage < 50 ? 500 : 3000" [animateSubtitle]="true">
             </circle-progress>
             <div class="h-100 w-50 d-flex flex-column justify-content-center p-5 right-container">
                 <div class="d-flex">
@@ -14,7 +14,7 @@
                 </div>
                 <div class="d-flex mt-3">
                     <span class="fw-700 me-3">Total Score:</span>
-                    <span>{{noOfQ}}</span>
+                    <span>{{result.totalScore}}</span>
                 </div>
                 <div class="d-flex fw-700 mt-3">
                     <span class="me-3">Passed/Failed:</span>

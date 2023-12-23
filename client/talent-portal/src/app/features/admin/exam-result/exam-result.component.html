@@ -1,0 +1,59 @@
+<div class="table-container p-3">
+    <p-table #resultTable [scrollable]="true" [resizableColumns]="true" [paginator]="true"
+        [value]="results" [rows]="rows" selectionMode="single">
+        <ng-template pTemplate="header">
+            <tr class="table-header-shadow">
+                <th pSortableColumn="title">
+                    <div class="d-flex justify-content-between align-items-center">
+                        Candidate
+                        <p-sortIcon field="title"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="position">
+                    <div class="d-flex justify-content-between align-items-center">
+                        Candidate Email
+                        <p-sortIcon field="position"></p-sortIcon>
+                    </div>
+                </th>
+                <th>
+                    Exam Score
+                </th>
+                <th>
+                    Passed / Failed
+                </th>
+                <th>
+                    Job Name
+                </th>
+                <th>
+                    Resume
+                </th>
+                <th>
+                    Job Opening Date
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" ngFor let-result [ngForOf]="results" let-i="index">
+            <tr>
+                <td>{{result.userName}}</td>
+                <td>
+                    <a [href]="'mailto:' + result.userEmail">{{result.userEmail}}</a>
+                </td>
+                <td>{{result.score}}</td>
+                <td class="d-flex gap-3 fw-700" [ngClass]="result.isPassed ? 'text-success' : 'text-danger'">
+                    <span>{{result.isPassed ? 'Passed' : 'Failed'}}</span>
+                    <i class="pi" [ngClass]="result.isPassed ? 'pi-check-circle' : 'pi-times'"></i>
+                </td>
+                <td>{{result.jobName}}</td>
+                <td class="position"><a [href]="result.resume" target="_blank">Download</a></td>
+                <td class="opening-date">{{result.examDate}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="12">
+                    <app-no-data-found></app-no-data-found>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

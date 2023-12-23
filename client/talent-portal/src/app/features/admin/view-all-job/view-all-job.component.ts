@@ -1,8 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Constants } from 'src/app/configs/app.config';
-import { IGetJobDto } from 'src/app/core/interfaces';
+import { ToastTypes } from 'src/app/core/enums';
+import { IGetJobDto, UpdateJobStatusDto } from 'src/app/core/interfaces';
 import { JobService } from 'src/app/core/services/job.service';
 
 @Component({
@@ -19,7 +21,8 @@ export class ViewAllJobComponent {
   constructor(
     private readonly constants: Constants,
     private readonly service: JobService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly toast: MessageService
   ) { }
 
   ngOnInit(): void {
@@ -27,9 +30,25 @@ export class ViewAllJobComponent {
   }
 
   getJobs() {
-    this.service.getAllJobs().subscribe({
+    this.service.getAllJobsAdmin().subscribe({
       next: (response: any) => {
         this.jobs = response.result;
+      }
+    });
+  }
+
+  updateStatus(jobId: number, isOpen: boolean) {
+    const updateStatus: UpdateJobStatusDto = {
+      id: jobId,
+      isOpen: !isOpen
+    }
+    this.service.updateJobStatus(updateStatus).subscribe({
+      next: () => {
+        this.getJobs();
+        this.toast.add({
+          severity: ToastTypes.SUCCESS,
+          summary: 'Job Status Updated Successfully'
+        });
       }
     });
   }
@@ -39,6 +58,6 @@ export class ViewAllJobComponent {
   }
 
   onRowSelect(jobId: number) {
-    this.router.navigate(['user/exam-landing', jobId])
+    this.router.navigate(['admin/exam-result', jobId])
   }
 }

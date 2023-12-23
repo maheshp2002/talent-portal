@@ -1,0 +1,47 @@
+<div class="main-container">
+    <div class="card back-shadow m-3 border-warning d-flex flex-row" *ngFor="let result of results">
+        <div class="left-container p-4">
+            <div class="main-div">
+                <div class="title mb-2">
+                    <fa-icon [icon]="faSuitcase" class="me-2 ms-2 text-warning"></fa-icon>
+                    <span>{{result.jobName}}</span>
+                </div>
+                <hr>
+                <div class="mt-4">
+                    <fa-icon [icon]="faKeyboard" class="me-2 ms-2 text-warning"></fa-icon>
+                    <span class="fw-700">Position:</span>
+                    <span class="ps-2">{{result.jobPosition}}</span>
+                    <div class="mt-2">
+                        <fa-icon [icon]="faCalendar" class="me-2 ms-2 text-warning"></fa-icon>
+                        <span class="fw-700 ps-1">Exam written date:</span>
+                        <span class="ps-2">{{result.examDate}}</span>
+                    </div>
+                </div>
+                <div class="mt-4 ps-34">
+                    <span class="fw-700">Exam Status:</span>
+                    <span class="fw-700" [ngClass]="result.isPassed ? 'text-success' : 'text-danger'">
+                        {{result.isPassed ? 'Passed' : 'failed'}}
+                        <img *ngIf="result.isPassed" class="rotate-45" [src]="'assets/images/passed.png'" alt="pass">
+                        <img *ngIf="!result.isPassed" [src]="'assets/images/fail.png'" alt="fail">
+                    </span>
+                </div>
+                <div class="mt-5 ps-34">
+                    <span class="fw-700">Job Description: </span>
+                    <div class="description mt-2">{{result.jobDescription}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="right-container d-flex flex-column justify-content-center align-items-center">
+            <circle-progress [percent]="(result.score / result.totalScore) * 100" subtitle="Percentage" [radius]="80" [outerStrokeWidth]="16"
+            [innerStrokeWidth]="8" [outerStrokeColor]="'#ffbd42'" [innerStrokeColor]="'#fdd07d'" [animation]="true"
+            [animationDuration]="((result.score / result.totalScore) * 100) < 50 ? 1000 : 3000" [animateSubtitle]="true">
+            </circle-progress>
+            <div class="text-dark d-flex">
+                <span class="fw-700 me-2">Score:</span>
+                <p class="fw-700 me-1">{{result.score}}</p>
+                <p class="me-1">out of</p>
+                <p class="fw-700">{{result.totalScore}}</p>
+            </div>
+        </div>
+    </div>
+</div>
