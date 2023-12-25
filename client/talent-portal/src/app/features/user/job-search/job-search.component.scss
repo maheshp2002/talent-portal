@@ -1,3 +1,10 @@
+@import '/src/styles/variables.scss';
+
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+}
+
 .fw-700 {
     font-weight: 700;
 }
@@ -13,6 +20,29 @@
 .title {
     font-weight: 500;
     font-size: 25px;
+}
+
+.search-icon {
+    color: grey;
+    position: absolute;
+    cursor: pointer;
+    transform: translateY(15px) translateX(-40px) !important;
+
+    &:hover {
+        color: $secondary-color;
+    }
+}
+
+.fs-23 {
+    font-size: 23px;
+}
+
+.fs-18 {
+    font-size: 18px;
+}
+
+.top-container {
+    height: 10vh;
 }
 
 .left-container {

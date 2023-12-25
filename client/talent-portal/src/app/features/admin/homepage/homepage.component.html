@@ -1,4 +1,5 @@
-<div class="top-container w-100 p-3 d-flex justify-content-end">
+<div class="top-container w-100 p-3 d-flex justify-content-between">
+    <h2>Questions</h2>
     <button type="submit" class="btn btn-outline-warning rounded-2 add-button" (click)="isVisible = true">Add
         Question</button>
 </div>
@@ -45,7 +46,7 @@
                 id="admin-homepage-question">
             <app-error-message [control]="questionForm.get('question')" [validationMessages]="{
                     required: message.requiredField,
-                    maxlength: message.questionLength
+                    maxlength: message.maxLengthFiveHundred
             }"></app-error-message>
         </div>
         <div class="form-input-control ps-0">
@@ -56,7 +57,7 @@
                 id="admin-homepage-optionOne">
             <app-error-message [control]="questionForm.get('optionOne')" [validationMessages]="{
                     required: message.requiredField,
-                    maxlength: message.questionLength
+                    maxlength: message.maxLengthFiveHundred
             }"></app-error-message>
         </div>
         <div class="form-input-control ps-0">
@@ -67,7 +68,7 @@
                 id="admin-homepage-optionTwo">
             <app-error-message [control]="questionForm.get('optionTwo')" [validationMessages]="{
                     required: message.requiredField,
-                    maxlength: message.questionLength
+                    maxlength: message.maxLengthFiveHundred
             }"></app-error-message>
         </div>
         <div class="form-input-control ps-0">
@@ -78,7 +79,7 @@
                 id="admin-homepage-optionThree">
             <app-error-message [control]="questionForm.get('optionThree')" [validationMessages]="{
                     required: message.requiredField,
-                    maxlength: message.questionLength
+                    maxlength: message.maxLengthFiveHundred
             }"></app-error-message>
         </div>
         <div class="form-input-control ps-0">
@@ -89,7 +90,7 @@
                 id="admin-homepage-optionFour">
             <app-error-message [control]="questionForm.get('optionFour')" [validationMessages]="{
                     required: message.requiredField,
-                    maxlength: message.questionLength
+                    maxlength: message.maxLengthFiveHundred
             }"></app-error-message>
         </div>
         <div class="d-flex gap-3">
@@ -166,7 +167,7 @@
     <p class="mt-5">
         {{confirmMessage}}
     </p>
-    <div class="w-100 d-flex justify-content-end p-3">
+    <div class="w-100 dialog-footer flex justify-content-end p-3">
         <button icon="pi pi-check" (click)="isConfirmShow = false"
             class="btn btn-outline-dark rounded-2 dialog-button me-3">Cancel</button>
         <button (click)="onDelete()" icon="pi pi-check" type="button"

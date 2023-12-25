@@ -1,0 +1,124 @@
+<div class="top-container w-100 p-3 d-flex justify-content-between">
+    <h2>Counsellor details</h2>
+    <button type="submit" class="btn btn-outline-warning rounded-2 add-button" (click)="isVisible = true">
+        Add Counsellor</button>
+</div>
+<div class="ms-3 me-3">
+    <hr>
+</div>
+<div class="table-container p-3">
+    <p-table #counsellingTable [scrollable]="true" [resizableColumns]="true" [paginator]="true" [value]="counselling"
+        [rows]="rows" selectionMode="single">
+        <ng-template pTemplate="header">
+            <tr class="table-header-shadow">
+                <th pSortableColumn="name">
+                    <div class="d-flex justify-content-between align-items-center">
+                        Counsellor Name
+                        <p-sortIcon field="name"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="email">
+                    <div class="d-flex justify-content-between align-items-center">
+                        Email
+                        <p-sortIcon field="email"></p-sortIcon>
+                    </div>
+                </th>
+                <th>
+                    Phone Number
+                </th>
+                <th>
+                    Address
+                </th>
+                <th>
+                    Website
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" ngFor let-counsellor [ngForOf]="counselling" let-i="index">
+            <tr>
+                <td>{{counsellor.name}}</td>
+                <td>
+                    <a [href]="'mailto:' + counsellor.email">{{counsellor.email}}</a>
+                </td>
+                <td>{{counsellor.phoneNumber}}</td>
+                <td [pTooltip]="counsellor.address" [tooltipPosition]="'top'" class="max-width-400 text-truncate">{{counsellor.address}}</td>
+                <td><a [href]="counsellor.websiteUrl" target="_blank">Check their website</a></td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="12">
+                    <app-no-data-found></app-no-data-found>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-dialog header="Add new counselling" [(visible)]="isVisible">
+    <form [formGroup]="counsellingForm" class="mb-5" (ngSubmit)="onSubmit()">
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-counselling-name">
+                Name
+            </label>
+            <input formControlName="name" placeholder="Type down counsellor name here" type="text" class="w-100"
+                id="admin-counselling-name">
+            <app-error-message [control]="counsellingForm.get('name')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.lengthTwoHundred
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-counselling-email">
+                Email
+            </label>
+            <input formControlName="email" placeholder="Type down counsellor email here" type="text" class="w-100"
+                id="admin-counselling-email">
+            <app-error-message [control]="counsellingForm.get('email')" [validationMessages]="{
+                    minLength: message.minLength,
+                    maxLength: message.emailMaxLength,
+                    email: message.invalidEmail,
+                    pattern: message.invalidEmail,
+                    required: message.requiredField
+                }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-counselling-phoneNumber">
+                Phone Number
+            </label>
+            <input appPhoneNumberCode formControlName="phoneNumber" placeholder="Type down counsellor phone number here" type="text" class="w-100"
+                id="admin-counselling-phoneNumber">
+            <app-error-message [control]="counsellingForm.get('phoneNumber')" [validationMessages]="{
+                    required: message.requiredField,
+                    pattern: message.invalidPhoneNumber
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-counselling-address">
+                Address
+            </label>
+            <textarea formControlName="address" placeholder="Type down counsellor address here" type="text" class="w-100"
+                id="admin-counselling-address"></textarea>
+            <app-error-message [control]="counsellingForm.get('address')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.maxLengthFiveHundred
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0 max-width-200">
+            <label class="required" for="admin-counselling-website">
+                Website Url
+            </label>
+            <input formControlName="websiteUrl" placeholder="Type down counsellor website url here" type="text" class="w-100"
+                id="admin-counselling-website">
+            <app-error-message [control]="counsellingForm.get('websiteUrl')" [validationMessages]="{
+                    required: message.requiredField,
+                    pattern: message.invalidUrl
+            }"></app-error-message>
+        </div>
+        <div class="fixed-bottom dialog-footer w-100 d-flex justify-content-end p-3">
+            <button icon="pi pi-check" (click)="isVisible = false"
+                class="btn btn-outline-dark rounded-2 dialog-button me-3">Cancel</button>
+            <button [disabled]="counsellingForm.invalid" icon="pi pi-check" type="submit"
+                class="btn btn-dark rounded-2 dialog-button">Save</button>
+        </div>
+    </form>
+</p-dialog>

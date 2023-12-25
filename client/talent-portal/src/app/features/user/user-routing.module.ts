@@ -8,6 +8,7 @@ import { ExamComponent } from './exam/exam.component';
 import { JobSearchComponent } from './job-search/job-search.component';
 import { ResultComponent } from './result/result.component';
 import { AttendedExamsComponent } from './attended-exams/attended-exams.component';
+import { CounsellingComponent } from './counselling/counselling.component';
 
 const routes: Routes = [
   {
@@ -17,7 +18,8 @@ const routes: Routes = [
       { path: 'exam/:id', component: ExamComponent, canDeactivate: [CanDeactivateGuard]  },
       { path: 'jobs', component: JobSearchComponent },
       { path: 'result/:jobId/:userId', component: ResultComponent },
-      { path: 'attended-exams', component: AttendedExamsComponent }
+      { path: 'attended-exams', component: AttendedExamsComponent },
+      { path: 'counselling', component: CounsellingComponent }
     ]
   },
 ];

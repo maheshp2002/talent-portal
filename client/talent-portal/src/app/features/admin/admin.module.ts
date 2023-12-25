@@ -15,6 +15,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ViewAllJobComponent } from './view-all-job/view-all-job.component';
 import { TableModule } from 'primeng/table';
 import { ExamResultComponent } from './exam-result/exam-result.component';
+import { CounsellingComponent } from './counselling/counselling.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ExamResultComponent } from './exam-result/exam-result.component';
     HomepageComponent,
     NavbarComponent,
     ViewAllJobComponent,
-    ExamResultComponent
+    ExamResultComponent,
+    CounsellingComponent
   ],
   imports: [
     CommonModule,

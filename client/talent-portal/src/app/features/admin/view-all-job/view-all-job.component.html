@@ -1,6 +1,12 @@
+<div class="top-container w-100 p-3 d-flex justify-content-start">
+    <h2>Job details</h2>
+</div>
+<div class="ms-3 me-3">
+    <hr>
+</div>
 <div class="table-container p-3">
-    <p-table (onRowSelect)="onRowSelect($event.data.id)" #jobsTable [scrollable]="true" [resizableColumns]="true" [paginator]="true"
-        [value]="jobs" [rows]="rows" selectionMode="single">
+    <p-table (onRowSelect)="onRowSelect($event.data.id)" #jobsTable [scrollable]="true" [resizableColumns]="true"
+        [paginator]="true" [value]="jobs" [rows]="rows" selectionMode="single">
         <ng-template pTemplate="header">
             <tr class="table-header-shadow">
                 <th pSortableColumn="title">
@@ -26,16 +32,18 @@
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" ngFor let-job [ngForOf]="jobs" let-i="index"
-            [ngForTrackBy]="trackByJobId">
+        <ng-template pTemplate="body" ngFor let-job [ngForOf]="jobs" let-i="index" [ngForTrackBy]="trackByJobId">
             <tr [pSelectableRow]="job">
                 <td>{{job.title}}</td>
                 <td>{{job.position}}</td>
-                <td [pTooltip]="job.description" [tooltipPosition]="'top'">{{job.description}}</td>
+                <td [pTooltip]="job.description" class="max-width-400 text-truncate" [tooltipPosition]="'top'">
+                    {{job.description}}</td>
                 <td>{{job.startedDate}}</td>
                 <td>
-                    <a (click)="updateStatus(job.id, job.isOpen)" class="d-flex gap-3 fw-700" [ngClass]="job.isOpen ? 'text-success' : 'text-danger'">
-                        <span pTooltip="Click to change status" [tooltipPosition]="'top'">{{job.isOpen ? 'Open' : 'Closed'}}</span>
+                    <a (click)="updateStatus(job.id, job.isOpen)" class="d-flex gap-3 fw-700"
+                        [ngClass]="job.isOpen ? 'text-success' : 'text-danger'">
+                        <span pTooltip="Click to change status" [tooltipPosition]="'top'">{{job.isOpen ? 'Open' :
+                            'Closed'}}</span>
                         <i class="pi" [ngClass]="job.isOpen ? 'pi-check-circle' : 'pi-times'"></i>
                     </a>
                 </td>

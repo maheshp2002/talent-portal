@@ -67,6 +67,7 @@ builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<ExamService>();
 builder.Services.AddScoped<JobsService>();
 builder.Services.AddScoped<ResultService>();
+builder.Services.AddScoped<CounsellingService>();
 
 var app = builder.Build();
 

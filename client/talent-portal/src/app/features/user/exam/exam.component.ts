@@ -24,6 +24,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
   noOfQ: number = 0;
   isCheating: boolean = false;
   detectObject: any;
+  isConfirmDialogShow: boolean = false;
   currentQuestion: IGetQuestions = {
     id: 0,
     question: "",
@@ -88,19 +89,24 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
-    $event.returnValue = "Are you sure you want to reload thi page? This will terminate you from the exam.";
-    console.log($event);
-
+    if (!this.isCheating) {      
+      $event.returnValue = "Are you sure you want to reload this page? This will terminate you from the exam.";
+      console.log($event);
+      this.detectionService.stopDetection();
+    }
   }
 
   canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
-    const confirmNavigation = window.confirm('Are you sure you want to leave this page? Leaving this page will terminate you from examination.');
-    return confirmNavigation;
+    if (!this.isConfirmDialogShow) {
+      const confirmNavigation = window.confirm('Are you sure you want to leave this page? Leaving this page will terminate you from examination.');
+      this.detectionService.stopDetection();
+      return confirmNavigation;
+    }
+    return true;
   }
 
   onDetectionStart() {
     this.detectionService.startDetection();
-    this.preloaderService.hide();
 
     // If you want to subscribe to the detected object data
     this.detectionService.getDetectedObject().subscribe((data) => {
@@ -122,7 +128,13 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
         console.log(this.detectObject.toString().toLowerCase())
 
         if (this.objectCheatingLimit >= 10 || this.personCheatingLimit >= 2) {
-          this.isCheating = true;
+          this.isCheating = this.isConfirmDialogShow = true;
+
+          this.detectionService.stopDetection();
+          
+          setTimeout(() => {
+            this.router.navigate(['user/jobs']);
+          }, 3000);
         }
       }
     });
@@ -143,7 +155,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
       },
 
       error: (errorResponse) => {
-        
+        this.isConfirmDialogShow = true;
         const errorObject = errorResponse.error;
         
         // Iterate through the keys in the error object
@@ -157,10 +169,12 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
             });
           }
         }
+        
+        this.detectionService.stopDetection();
 
-        setTimeout(() => {
+        setTimeout(() => {          
           this.router.navigate(['user/jobs']);
-        }, 500);
+        }, 1000);
       }
 
     });

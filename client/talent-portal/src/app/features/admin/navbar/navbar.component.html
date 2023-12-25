@@ -11,15 +11,18 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="btn nav-link" [routerLink]="['/admin/homepage']" routerLinkActive="active-link"><i
-                            class="pi pi-home"></i> Home</a>
+                    <a class="btn nav-link" [routerLink]="['/admin/homepage']" routerLinkActive="active-link">
+                        <fa-icon [icon]="faHome"></fa-icon> Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="btn nav-link" [routerLink]="['/admin/jobs']" routerLinkActive="active-link"><fa-icon [icon]="faSuitcase"></fa-icon> Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <button class="btn nav-link" id="nav-bar-logout-button" (click)="isConfirmShow = true"><i
-                            class="pi pi-sign-out"></i> Logout</button>
+                    <a class="btn nav-link" [routerLink]="['/admin/counselling']" routerLinkActive="active-link"><fa-icon [icon]="faHandshake"></fa-icon> Counsellors</a>
+                </li>
+                <li class="nav-item">
+                    <button class="btn nav-link" id="nav-bar-logout-button" (click)="isConfirmShow = true">
+                        <fa-icon [icon]="faLogout"></fa-icon> Logout</button>
                 </li>
             </ul>
         </div>

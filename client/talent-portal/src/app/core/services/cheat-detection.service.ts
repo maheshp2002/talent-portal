@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { PreLoaderService } from './preloader.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DetectionService {
   private websocket: WebSocket | undefined;
+
+  constructor(
+    private readonly preloaderService: PreLoaderService
+  ) {}
 
   startDetection() {
     this.websocket = new WebSocket('ws://localhost:8765');
@@ -21,6 +26,14 @@ export class DetectionService {
       console.log('WebSocket connection closed');
       // You can handle the closed connection here if needed
     };
+
+    this.websocket.onopen = () => {
+      console.log('Websocket started');
+      setTimeout(() => {
+        this.preloaderService.hide();
+      }, 2000);
+    }
+
   }
 
   stopDetection() {

@@ -5,10 +5,12 @@ import websockets
 
 # Variables for detection and tracking
 detect = False
+active_websocket = None
 
 # Function for simulating person and object detection (phones, tablets, laptops)
-async def simulate_detection(websocket):
+async def simulate_detection():
     global detect
+    global active_websocket
     cap = cv2.VideoCapture(0)  # Use '0' for the primary camera
 
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -45,7 +47,7 @@ async def simulate_detection(websocket):
         # Print message based on the number of face detections
         if person_count > 1:
             print("Cheating: Person detected")
-            await websocket.send(f"Cheating: Person detected")
+            await active_websocket.send(f"Cheating: Person detected")
 
         # Object detection using YOLO for phone, tablet, and laptop
         height, width, channels = frame.shape
@@ -62,11 +64,13 @@ async def simulate_detection(websocket):
                     if class_id in [67, 63]:  # Class ID for cell phone in COCO dataset
                         detected_class = classes[class_id]
                         print("Cheating: Phone detected")
-                        await websocket.send(f"Cheating: {detected_class.capitalize()} detected")
+                        await active_websocket.send(f"Cheating: {detected_class.capitalize()} detected")
 
         # cv2.imshow('Camera View', frame) # for camera view
         # cv2.waitKey(1)
         await asyncio.sleep(1)  # Control the rate of detection
+        if active_websocket and active_websocket.closed:
+            detect = False
 
     cap.release()
     cv2.destroyAllWindows()
@@ -75,8 +79,10 @@ async def simulate_detection(websocket):
 # Function to start simulation
 async def start_simulation(websocket, path):
     global detect
+    global active_websocket
+    active_websocket = websocket
     detect = True
-    await simulate_detection(websocket)
+    await simulate_detection()
 
 # Function to stop simulation
 def stop_simulation():

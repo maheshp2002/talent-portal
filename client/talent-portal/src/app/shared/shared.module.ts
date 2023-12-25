@@ -5,12 +5,13 @@ import { ErrorMessageComponent } from './error-message/error-message.component';
 import { NoDataFoundComponent } from './no-data-found/no-data-found.component';
 import { PreLoaderComponent } from './pre-loader/pre-loader.component';
 import { PoperComponent } from './poper/poper.component';
+import { PhoneNumberCodeDirective } from '../core/directives';
 
 @NgModule({
   declarations: [
-  
+    PhoneNumberCodeDirective,
     PreLoaderComponent,
-       PoperComponent
+    PoperComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +26,8 @@ import { PoperComponent } from './poper/poper.component';
     ErrorMessageComponent,
     NoDataFoundComponent,
     PreLoaderComponent,
-    PoperComponent
+    PoperComponent,
+    PhoneNumberCodeDirective
   ]
 })
 export class SharedModule { }

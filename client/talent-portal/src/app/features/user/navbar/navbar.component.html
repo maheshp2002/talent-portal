@@ -11,12 +11,13 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="btn nav-link" [routerLink]="['/user']" routerLinkActive="active-link"><i
-                            class="pi pi-home"></i> Home</a>
+                    <a class="btn nav-link" [routerLink]="['/user']" routerLinkActive="active-link">
+                        <fa-icon [icon]="faHome"></fa-icon> Home
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <button class="btn nav-link" id="nav-bar-logout-button" (click)="isConfirmShow = true"><i
-                            class="pi pi-sign-out"></i> Logout</button>
+                    <button class="btn nav-link" id="nav-bar-logout-button" (click)="isConfirmShow = true">
+                        <fa-icon [icon]="faLogout"></fa-icon> Logout</button>
                 </li>
                 <button class="btn nav-link profile-pic d-flex justify-content-center align-items-center me-2 ms-3"
                     (click)="onProfileClick()" routerLinkActive="active-link"><i class="pi pi-user"></i></button>

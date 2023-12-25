@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faSuitcase } from '@fortawesome/free-solid-svg-icons';
+import { faHandshake, faHome, faSignOutAlt, faSuitcase } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
 import { take } from 'rxjs';
 import { ToastTypes } from 'src/app/core/enums';
@@ -13,6 +13,9 @@ import { ToastTypes } from 'src/app/core/enums';
 export class NavbarComponent implements OnInit {
   faSuitcase = faSuitcase;
   isConfirmShow = false;
+  faHandshake = faHandshake;
+  faHome = faHome;
+  faLogout = faSignOutAlt;
 
   constructor(
     private readonly activatedRouter: ActivatedRoute,

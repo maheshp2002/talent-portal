@@ -21,6 +21,7 @@ import { JobSearchComponent } from './job-search/job-search.component';
 import { CircleProgressOptions, NgCircleProgressModule } from 'ng-circle-progress';
 import { ResultComponent } from './result/result.component';
 import { AttendedExamsComponent } from './attended-exams/attended-exams.component';
+import { CounsellingComponent } from './counselling/counselling.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AttendedExamsComponent } from './attended-exams/attended-exams.componen
     ExamComponent,
     JobSearchComponent,
     ResultComponent,
-    AttendedExamsComponent
+    AttendedExamsComponent,
+    CounsellingComponent
   ],
   imports: [
     CommonModule,

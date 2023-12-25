@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { Messages } from 'src/app/common/message';
 import { ToastTypes } from 'src/app/core/enums';
 import { IGetQuestions, IResponse } from 'src/app/core/interfaces';
@@ -84,11 +84,6 @@ export class HomepageComponent implements OnInit {
       skill: ['',
         [Validators.required, Validators.maxLength(500)]
       ]
-    });
-
-    this.questionForm.get('answer')?.valueChanges.subscribe((value) => {
-      console.log('Selected value:', value);
-      // You can perform additional actions or checks based on the selected value here
     });
   }
 

@@ -4,6 +4,7 @@ import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ViewAllJobComponent } from './view-all-job/view-all-job.component';
 import { ExamResultComponent } from './exam-result/exam-result.component';
+import { CounsellingComponent } from './counselling/counselling.component';
 
 const routes: Routes = [
   {
@@ -11,7 +12,8 @@ const routes: Routes = [
     children: [
       { path: 'jobs', component: ViewAllJobComponent },
       { path: 'homepage', component: HomepageComponent },
-      { path: 'exam-result/:id', component: ExamResultComponent }
+      { path: 'exam-result/:id', component: ExamResultComponent },
+      { path: 'counselling', component: CounsellingComponent }
     ]
   }
 ];

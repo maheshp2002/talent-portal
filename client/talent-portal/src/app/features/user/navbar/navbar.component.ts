@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { faHome, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
 import { take } from 'rxjs';
 import { ToastTypes } from 'src/app/core/enums';
@@ -13,6 +14,8 @@ import { ProfileDialogService } from 'src/app/core/services/ProfileDialogService
 export class NavbarComponent implements OnInit {
   @Output() profileClick: EventEmitter<void> = new EventEmitter<void>();
   isConfirmShow = false;
+  faHome = faHome;
+  faLogout = faSignOutAlt
 
   constructor(
     private readonly activatedRouter: ActivatedRoute,
