@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MailKit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using talent_portal.Domain.Models;
 using talent_portal.Service.Data;
 using talent_portal.Service.Dto;
+using MailService = talent_portal.Service.Email.MailService;
 using talent_portal.Service.Type;
 
 namespace talent_portal.Service.Services;
@@ -19,18 +24,21 @@ public class AccountService
     private readonly SignInManager<ApplicationUser> _signinManager;
     private readonly IConfiguration _configuration;
     private readonly ApplicationDbContext _db;
+    private readonly MailService _mailService;
 
     public AccountService(
     ApplicationDbContext db,
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
     SignInManager<ApplicationUser> signinManager,
+    MailService mailService,
     IConfiguration configuration)
     {
         _db = db;
         _userManager = userManager;
         _roleManager = roleManager;
         _signinManager = signinManager;
+        _mailService = mailService;
         _configuration = configuration;
     }
 
@@ -109,6 +117,8 @@ public class AccountService
 
         var response = new ServiceResponse<UserViewDto>();
 
+        var existingUsersCount = await _db.ApplicationUser.CountAsync();
+
         var user = new ApplicationUser()
         {
             Id = Guid.NewGuid().ToString(),
@@ -127,7 +137,7 @@ public class AccountService
         await _db.Users.AddAsync(user);
         await _db.SaveChangesAsync();
 
-        await _userManager.AddToRoleAsync(user, "User");
+        await _userManager.AddToRoleAsync(user, existingUsersCount != 0 ? "User" : "Admin");
 
         response.Result = new UserViewDto
         {
@@ -186,7 +196,7 @@ public class AccountService
 
         if (user == null)
         {
-            response.AddError("no user", "No user found");
+            response.AddError("noUser", "No user found");
             return response;
         }
 
@@ -196,8 +206,8 @@ public class AccountService
             Name = user.Name,
             Email = user.Email,
             IsAdmin = user.IsAdmin,
-            Resume =  user.Resume == null || user.Resume == "" ? "No resume uploaded" : user.Resume.Remove(0, 8),
-            ResumeUrl =  user.Resume == null || user.Resume == "" ? "" : "https://localhost:7163/" + user.Resume, // update url according to your local host
+            Resume = user.Resume == null || user.Resume == "" ? "No resume uploaded" : user.Resume.Remove(0, 8),
+            ResumeUrl = user.Resume == null || user.Resume == "" ? "" : "https://localhost:7163/" + user.Resume, // update url according to your local host
         };
 
         return response;
@@ -224,5 +234,81 @@ public class AccountService
         };
 
         return response;
+    }
+
+    public async Task<ServiceResponse<bool>> ForgotPasswordAsync(ForgotPasswordDto dto)
+    {
+        var response = new ServiceResponse<bool>();
+
+        var user = await _userManager.FindByEmailAsync(dto.Email);
+
+        if (user == null)
+        {
+            response.AddError("noUser", "There is no account registered with the provided email id.");
+            response.Result = false;
+
+            return response;
+        }
+
+        var jwtToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var resetPasswordUrl = _configuration.GetSection("AppSettings")["ResetPasswordUrl"];
+
+        var mailData = new MailDto()
+        {
+            Email = dto.Email,
+            Subject = "Talent Portal - Password Reset",
+            Body = $"Hi {user.Name}<br><br>Please click the link below to change your password.<br><br>{resetPasswordUrl}?token={jwtToken}&email={dto.Email}<br><br>Talent Portal support team"
+        };
+
+        await _mailService.SendAsync(mailData);
+        response.Result = true;
+
+        return response;
+    }
+
+    public async Task<ServiceResponse<bool>> ResetPasswordAsync(ResetPasswordDto dto)
+    {
+        var response = new ServiceResponse<bool>();
+
+        var user = await _userManager.FindByEmailAsync(dto.Email);
+
+        if (user == null)
+        {
+            response.AddError("noUser", "User not found.");
+            return response;
+        }
+
+        var resetPassResult = await _userManager.ResetPasswordAsync(user, dto.Token, dto.Password);
+
+        if (!resetPassResult.Succeeded)
+        {
+            response.AddError("unableToReset", "Invalid Token.");
+            return response;
+
+        }
+        response.Result = true;
+
+        return response;
+
+    }
+
+    // Handle jwt token decode
+    private (string userId, string role) ExtractUserIdAndRoleFromToken(string token)
+    {
+        var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwtToken = tokenHandler.ReadToken(token) as System.IdentityModel.Tokens.Jwt.JwtSecurityToken;
+
+        if (jwtToken != null)
+        {
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+            var roleClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role);
+
+            if (userIdClaim != null && roleClaim != null)
+            {
+                return (userIdClaim.Value, roleClaim.Value);
+            }
+        }
+
+        return (string.Empty, string.Empty);
     }
 }

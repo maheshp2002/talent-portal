@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { IResponse, IUserProfileDto } from 'src/app/core/interfaces';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { IUserProfileDto } from 'src/app/core/interfaces';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -20,6 +20,7 @@ export class HomepageComponent implements OnInit {
   @ViewChild('fileUpload') fileUpload: any;
   isDialogVisible = false;
   private dialogSubscription: Subscription;
+  private animatedElements: Element[] = [];
 
   profile: IUserProfileDto = {
     id: '',
@@ -45,7 +46,7 @@ export class HomepageComponent implements OnInit {
     private readonly constants: Constants,
     public readonly message: Messages,
     private readonly fileValidator: FileValidator,
-    private profileDialogService: ProfileDialogService
+    private readonly profileDialogService: ProfileDialogService
   ) {
     this.dialogSubscription = this.profileDialogService.isDialogVisible$.subscribe((isVisible: boolean) => {
       this.isDialogVisible = isVisible;
@@ -53,11 +54,33 @@ export class HomepageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isDialogVisible = false;
-    this.getUserProfile();
-    this.buildResumeForm();
+      window.scrollTo(0, 0);
+      this.isDialogVisible = false;
+      this.getUserProfile();
+      this.buildResumeForm();
   }
 
+  // Image Animation
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll() {
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    elements.forEach(element => {
+      if (this.isElementInViewport(element) && !element.classList.contains('animate')) {
+        element.classList.add('animate');
+      }
+    });
+  }
+
+  isElementInViewport(element: Element): boolean {
+    const rect = element.getBoundingClientRect();
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    return (
+      rect.top <= windowHeight * 0.8 &&
+      rect.bottom >= windowHeight * 0.2
+    );
+  }
+
+  // Other functionalities
   getUserProfile() {
     this.userId = this.tokenHelper.getDecodedToken().nameidentifier;
 

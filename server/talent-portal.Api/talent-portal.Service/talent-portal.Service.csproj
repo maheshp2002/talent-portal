@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="iTextSharp" Version="5.5.13.3" />
+		<PackageReference Include="MailKit" Version="4.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.23" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.4" />

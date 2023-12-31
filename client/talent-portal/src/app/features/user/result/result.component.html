@@ -23,13 +23,13 @@
             </div>
             <div class="d-flex flex-column justify-content-center align-items-center">
                 <div class="h-75 w-25 d-flex justify-content-center align-items-center">
-                    <img *ngIf="result.isPassed && percentage < 90" class="rotate-45" [src]="'assets/images/passed.png'" alt="pass">
-                    <img *ngIf="result.isPassed && percentage > 90" [src]="'assets/images/a-plus.png'" alt="pass full mark">
-                    <img *ngIf="!result.isPassed" [src]="'assets/images/fail.png'" alt="fail">
+                    <img *ngIf="result.isPassed && percentage < 90" class="stamped-image" [src]="'assets/images/passed.png'" alt="pass">
+                    <img *ngIf="result.isPassed && percentage > 90" class="stamped-image" [src]="'assets/images/a-plus.png'" alt="pass full mark">
+                    <img *ngIf="!result.isPassed" [src]="'assets/images/fail.png'" class="stamped-image" alt="fail">
                 </div>
-                <p *ngIf="!result.isPassed" class="mt-2 text-center">Don't lose heart. There's always room for improvement!</p>
-                <p *ngIf="result.isPassed && percentage > 90" class="mt-2 text-center">Perfection achieved! Flawless victory on the exam!</p>
-                <p *ngIf="result.isPassed && percentage < 90" class="mt-2 text-center">Congratulations! You aced the exam!</p>
+                <p *ngIf="!result.isPassed" class="mt-2 text-center fade-in">Don't lose heart. There's always room for improvement!</p>
+                <p *ngIf="result.isPassed && percentage > 90" class="mt-2 text-center fade-in">Perfection achieved! Flawless victory on the exam!</p>
+                <p *ngIf="result.isPassed && percentage < 90" class="mt-2 text-center fade-in">Congratulations! You aced the exam!</p>
             </div>
         </div>
     </div>

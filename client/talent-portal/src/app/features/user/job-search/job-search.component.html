@@ -2,44 +2,48 @@
     class="mb-5 form-input-control ps-5 pe-5 w-100 top-container w-100">
     <input formControlName="search" placeholder="Search for job name" type="text" class="w-100"
         id="user-job-search-search">
-    <!-- <a class="close-icon pi pi-times text-decoration-none" (click)="cancelSearch()" id="serach-icon"></a> -->
     <a [ngClass]="jobSearchForm.get('search')?.value ? 'pi-times fs-18' : 'pi-search fs-23'" class="search-icon pi text-decoration-none" (click)="cancelSearch()" id="serach-icon"></a>
 </form>
 <div class="main-container mt-5">
-    <div class="card back-shadow m-3 border-warning d-flex flex-row" *ngFor="let job of jobs">
-        <div class="left-container p-4">
-            <div class="main-div">
-                <div class="title mb-2">
-                    <fa-icon [icon]="faSuitcase" class="me-2 ms-2 text-warning"></fa-icon>
-                      <ng-container *ngIf="!jobSearchForm.get('search')?.value || job.title.toLowerCase().includes(jobSearchForm.get('search')?.value.toLowerCase())">
-                        <ng-container *ngFor="let letter of job.title.split('')">
-                          <span [ngClass]="{'highlight': jobSearchForm.get('search')?.value.toLowerCase().includes(letter.toLowerCase())}">{{ letter }}</span>
-                        </ng-container>
-                      </ng-container>
-                      <ng-container *ngIf="!job.title.toLowerCase().includes(jobSearchForm.get('search')?.value.toLowerCase())">
-                        {{ job.title }}
-                      </ng-container>
-            
-                </div>
-                <hr>
-                <div class="mt-4">
-                    <fa-icon [icon]="faKeyboard" class="me-2 ms-2 text-warning"></fa-icon>
-                    <span class="fw-700">Position:</span>
-                    <span class="ps-2">{{job.position}}</span>
-                    <div class="mt-2">
-                        <fa-icon [icon]="faCalendar" class="me-2 ms-2 text-warning"></fa-icon>
-                        <span class="fw-700 ps-1">Opened date:</span>
-                        <span class="ps-2">{{job.startedDate}}</span>
+    <div *ngIf="isResultEmpty" class="d-flex justify-content-center align-items-center">
+        <img src="/assets/gif/no-result.gif">
+    </div>
+    <div *ngIf="!isResultEmpty">
+        <div class="card back-shadow m-3 border-warning d-flex flex-row" *ngFor="let job of jobs">
+            <div class="left-container p-4">
+                <div class="main-div">
+                    <div class="title mb-2">
+                        <fa-icon [icon]="faSuitcase" class="me-2 ms-2 text-warning"></fa-icon>
+                          <ng-container *ngIf="!jobSearchForm.get('search')?.value || job.title.toLowerCase().includes(jobSearchForm.get('search')?.value.toLowerCase())">
+                            <ng-container *ngFor="let letter of job.title.split('')">
+                              <span [ngClass]="{'highlight': jobSearchForm.get('search')?.value.toLowerCase().includes(letter.toLowerCase())}">{{ letter }}</span>
+                            </ng-container>
+                          </ng-container>
+                          <ng-container *ngIf="!job.title.toLowerCase().includes(jobSearchForm.get('search')?.value.toLowerCase())">
+                            {{ job.title }}
+                          </ng-container>
+                
+                    </div>
+                    <hr>
+                    <div class="mt-4">
+                        <fa-icon [icon]="faKeyboard" class="me-2 ms-2 text-warning"></fa-icon>
+                        <span class="fw-700">Position:</span>
+                        <span class="ps-2">{{job.position}}</span>
+                        <div class="mt-2">
+                            <fa-icon [icon]="faCalendar" class="me-2 ms-2 text-warning"></fa-icon>
+                            <span class="fw-700 ps-1">Opened date:</span>
+                            <span class="ps-2">{{job.startedDate}}</span>
+                        </div>
+                    </div>
+                    <div class="mt-5 ps-34">
+                        <span class="fw-700">Description: </span>
+                        <p>{{job.description}}</p>
                     </div>
                 </div>
-                <div class="mt-5 ps-34">
-                    <span class="fw-700">Description: </span>
-                    <p>{{job.description}}</p>
-                </div>
             </div>
+            <button (click)="onClick(job.id)" class="right-container d-flex justify-content-center align-items-center">
+                <fa-icon [icon]="faArrowRight" class=""></fa-icon>
+            </button>
         </div>
-        <button (click)="onClick(job.id)" class="right-container d-flex justify-content-center align-items-center">
-            <fa-icon [icon]="faArrowRight" class=""></fa-icon>
-        </button>
     </div>
 </div>

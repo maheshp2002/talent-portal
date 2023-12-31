@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { PreLoaderService } from './preloader.service';
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastTypes } from '../enums';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DetectionService {
   private websocket: WebSocket | undefined;
+  private isConfirmDialogShowSubject = new Subject<boolean>();
 
   constructor(
-    private readonly preloaderService: PreLoaderService
+    private readonly preloaderService: PreLoaderService,
+    private readonly router: Router,
+    private readonly messageService: MessageService
   ) {}
 
   startDetection() {
@@ -19,6 +25,12 @@ export class DetectionService {
     //   console.log('Detected object:', event.data); // Log the detected object in the browser console
     // };
     this.websocket.onerror = (error) => {
+      this.setConfirmDialogShow(true); 
+      this.messageService.add({
+        severity: ToastTypes.ERROR,
+        summary: 'An error occurred'
+      });
+      this.router.navigate(['user/jobs']);
       console.error('WebSocket error:', error);
     };
 
@@ -28,10 +40,9 @@ export class DetectionService {
     };
 
     this.websocket.onopen = () => {
-      console.log('Websocket started');
-      setTimeout(() => {
+      setTimeout(() => {              
         this.preloaderService.hide();
-      }, 2000);
+      }, 4000);
     }
 
   }
@@ -52,5 +63,14 @@ export class DetectionService {
         observer.next(event.data);
       });
     });
+  }
+
+  // For pop up confirm
+  setConfirmDialogShow(isShow: boolean) {
+    this.isConfirmDialogShowSubject.next(isShow);
+  }
+
+  getConfirmDialogShow(): Observable<boolean> {
+    return this.isConfirmDialogShowSubject.asObservable();
   }
 }

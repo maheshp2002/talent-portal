@@ -84,3 +84,11 @@ C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent
 C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\obj\Debug\net6.0\talent-portal.Api.pdb
 C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\obj\Debug\net6.0\talent-portal.Api.genruntimeconfig.cache
 C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\obj\Debug\net6.0\ref\talent-portal.Api.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\bin\Debug\net6.0\BouncyCastle.Cryptography.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\bin\Debug\net6.0\MailKit.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\bin\Debug\net6.0\MimeKit.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\bin\Debug\net6.0\System.Formats.Asn1.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\bin\Debug\net6.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\bin\Debug\net6.0\System.Text.Encoding.CodePages.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Api\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Text.Encoding.CodePages.dll

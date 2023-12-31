@@ -23,6 +23,7 @@ export class AttendedExamsComponent {
   ) { }
 
   ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.getResult();
   }
   

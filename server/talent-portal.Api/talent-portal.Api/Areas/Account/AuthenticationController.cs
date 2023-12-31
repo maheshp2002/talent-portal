@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using talent_portal.Api.Areas.Authentication;
 using talent_portal.Service.Dto;
 using talent_portal.Service.Services;
@@ -72,5 +73,38 @@ public class AuthenticationController : AccountControllerBase
             return Ok(result);
 
         return BadRequest(result.Errors);
+    }
+
+    [HttpPost("forgot-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+    {
+        var response = await _service.ForgotPasswordAsync(dto);
+
+        if (response.IsValid)
+        {
+            return Ok(response.Result);
+        }
+
+        return BadRequest(response.Errors);
+    }
+
+    [HttpPut("change-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+    {
+        // Extract the token from the request headers or query parameters
+        //string token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+        var response = await _service.ResetPasswordAsync(dto);
+
+        if (response.IsValid)
+        {
+            return Ok(response.Result);
+        }
+
+        return BadRequest(response.Errors);
     }
 }

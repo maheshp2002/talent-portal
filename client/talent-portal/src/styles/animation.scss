@@ -1,0 +1,87 @@
+/* Define keyframe animations */
+@keyframes slideFromLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out;
+    animation: fadeIn 2s forwards;
+}
+
+/* Apply animations to specific elements */
+.animate-on-scroll {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+
+    &.animate {
+        opacity: 1;
+        animation-fill-mode: forwards;
+    }
+
+    &.img-left {
+        &.animate {
+            animation: slideFromLeft 1s forwards;
+        }
+    }
+
+    &.img-right {
+        &.animate {
+            animation: slideFromRight 1s forwards;
+        }
+    }
+
+    &.description-fade {
+        &.animate {
+            animation: fadeIn 2s forwards;
+        }
+    }
+}
+
+// Stamp animation
+.stamped-image {
+    transform-origin: bottom;
+    opacity: 0; /* Initially invisible */
+    animation: stampAnimation 1s forwards;
+}
+
+@keyframes stampAnimation {
+    0% {
+        transform: scale(2); /* Start from a larger size */
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1); /* End at the original size */
+        opacity: 1; /* Fully visible */
+    }
+}

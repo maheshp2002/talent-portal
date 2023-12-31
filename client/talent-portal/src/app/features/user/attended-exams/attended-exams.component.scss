@@ -76,6 +76,12 @@ img {
     width: 30px;
 }
 
+.main-container {
+    .top-image {
+        width: 500px;
+    }
+}
+
 .rotate-45 {
     transform: rotate(-45deg);
 }

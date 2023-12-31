@@ -19,6 +19,7 @@ export class CounsellingComponent {
   ) { }
 
   ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.getCounsellors();
   }
 

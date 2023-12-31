@@ -66,6 +66,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
 
   async ngOnInit() {
     this.preloaderService.show();
+    this.subscribeToConfirmDialogChanges();
     this.getId();
     this.buildQuestionForm();
     this.getQuestionsList();
@@ -87,11 +88,18 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
     this.result.userId = this.tokenHelper.getDecodedToken().nameidentifier;
   }
 
+  // Check if the is dialog value is changed.
+  private subscribeToConfirmDialogChanges() {
+    this.detectionService.getConfirmDialogShow().subscribe((isShow: boolean) => {
+      this.isConfirmDialogShow = isShow;
+      // You can add any additional logic here based on the changes
+    });
+  }
+
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
     if (!this.isCheating) {      
       $event.returnValue = "Are you sure you want to reload this page? This will terminate you from the exam.";
-      console.log($event);
       this.detectionService.stopDetection();
     }
   }
@@ -125,7 +133,6 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
         if (this.detectObject.toString().toLowerCase().includes("cheating: cell phone detected")) {
           this.objectCheatingLimit = this.objectCheatingLimit + 1;
         }
-        console.log(this.detectObject.toString().toLowerCase())
 
         if (this.objectCheatingLimit >= 10 || this.personCheatingLimit >= 2) {
           this.isCheating = this.isConfirmDialogShow = true;
@@ -198,14 +205,19 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
       result.isPassed = result.score >= (this.noOfQ - 1) / 2 ? true : false;
       this.resultService.addResult(result).subscribe({
         next: () => {
-          this.router.navigate(['user/result', result.jobId, result.userId]);
+          this.isConfirmDialogShow = true;
+          this.preloaderService.hide();
           this.messageService.add({
             severity: ToastTypes.SUCCESS,
             summary: 'Exam completed successfully'
           });
+          this.router.navigate(['user/result', result.jobId, result.userId]);
         },
 
         error: () => {
+          this.isConfirmDialogShow = true;
+          this.preloaderService.hide();
+          this.router.navigate(['user/result', result.jobId, result.userId]);
           this.messageService.add({
             severity: ToastTypes.ERROR,
             summary: 'An error occurred'

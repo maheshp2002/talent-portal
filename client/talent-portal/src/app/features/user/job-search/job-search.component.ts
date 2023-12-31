@@ -22,6 +22,7 @@ export class JobSearchComponent implements OnInit {
   faSuitcase = faSuitcase;
   faKeyboard = faKeyboard;
   faCalendar = faCalendar;
+  isResultEmpty = false;
   jobSearchForm: FormGroup = new FormGroup({});
 
   constructor(
@@ -74,6 +75,7 @@ export class JobSearchComponent implements OnInit {
   filterJobs(value: string) {
     if (!value) {
       this.jobs = [...this.initialJobs]; // Reset to initial jobs if the search input is empty
+      this.isResultEmpty = false;
       return;
     }
   
@@ -81,5 +83,7 @@ export class JobSearchComponent implements OnInit {
     this.jobs = this.initialJobs.filter(
       job => job.title.toLowerCase().includes(searchTerm)
     );
+
+    this.isResultEmpty = this.jobs.length <= 0 ? true : false;
   }
 }

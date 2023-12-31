@@ -6,6 +6,7 @@ import { Messages } from 'src/app/common/message';
 import { Constants } from 'src/app/configs/app.config';
 import { ToastTypes } from 'src/app/core/enums';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { PreLoaderService } from 'src/app/core/services/preloader.service';
 import { PasswordValidator } from 'src/app/core/validators/password.validator';
 
 @Component({
@@ -23,7 +24,8 @@ export class SignupComponent implements OnInit{
     private readonly service: AuthenticationService,
     private readonly router: Router,
     private readonly validator: PasswordValidator,
-    private readonly toast: MessageService
+    private readonly toast: MessageService,
+    private readonly preLoaderService: PreLoaderService
   ) { }
 
   ngOnInit(): void {
@@ -59,20 +61,23 @@ export class SignupComponent implements OnInit{
   }
 
   onSubmit() {
+    this.preLoaderService.show();
     this.service.register(this.registerForm.value).subscribe({
       next: () => {
-      this.router.navigateByUrl('');
-      this.toast.add({
-        severity: ToastTypes.SUCCESS,
-        summary: 'User registered successfully'
-      });
-      this.toast.add({
-        severity: ToastTypes.SUCCESS,
-        summary: 'You can now login with this account'
-      });
+        this.preLoaderService.hide();
+        this.router.navigateByUrl('');
+        this.toast.add({
+          severity: ToastTypes.SUCCESS,
+          summary: 'User registered successfully'
+        });
+        this.toast.add({
+          severity: ToastTypes.SUCCESS,
+          summary: 'You can now login with this account'
+        });
     },
 
     error: () => {
+      this.preLoaderService.hide();
       this.toast.add({
         severity: ToastTypes.ERROR,
         summary: 'An error occurred during registration'

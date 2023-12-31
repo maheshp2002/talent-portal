@@ -1,3 +1,4 @@
+using MailKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using talent_portal.Domain.Models;
 using talent_portal.Service.Data;
+using talent_portal.Service.Email;
 using talent_portal.Service.Services;
+using MailService = talent_portal.Service.Email.MailService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +71,8 @@ builder.Services.AddScoped<ExamService>();
 builder.Services.AddScoped<JobsService>();
 builder.Services.AddScoped<ResultService>();
 builder.Services.AddScoped<CounsellingService>();
+builder.Services.AddScoped<MailService>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
 
 var app = builder.Build();
 

@@ -20,4 +20,5 @@ export class Messages {
     lengthTwoHundred = "Maximum length is 200 characters"
     invalidPhoneNumber = "Invalid phone number"
     invalidUrl = "Invalid URL"
+    passwordMisMatch = "Password mismatch"
 }

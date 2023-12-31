@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ILoginDto, IRegisterDto, IResponse } from '../interfaces';
+import { ILoginDto, IRegisterDto, IResetPasswordDto, IResponse } from '../interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -31,5 +31,13 @@ export class AuthenticationService {
 
     uploadResume(file: FormData) {
         return this.http.post<IResponse>(this.url + "/upload-resume", file);
+    }
+
+    forgotPassword(email: string) {        
+        return this.http.post<IResponse>(this.url + "/forgot-password", { email });
+    }
+
+    resetPassword(dto: IResetPasswordDto) {        
+        return this.http.put<IResponse>(this.url + "/change-password", dto);
     }
 }
