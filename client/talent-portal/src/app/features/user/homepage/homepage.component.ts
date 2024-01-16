@@ -20,7 +20,6 @@ export class HomepageComponent implements OnInit {
   @ViewChild('fileUpload') fileUpload: any;
   isDialogVisible = false;
   private dialogSubscription: Subscription;
-  private animatedElements: Element[] = [];
 
   profile: IUserProfileDto = {
     id: '',
