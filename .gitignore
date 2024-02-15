@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+decoded_photo.png
+decoded_photo.jpg
+decoded_photo.jpeg
