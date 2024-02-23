@@ -2,10 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faArrowRight, faCalendar, faKeyboard, faSuitcase } from '@fortawesome/free-solid-svg-icons';
+import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Constants } from 'src/app/configs/app.config';
+import { ToastTypes } from 'src/app/core/enums';
 import { IGetJobDto } from 'src/app/core/interfaces';
 import { JobService } from 'src/app/core/services/job.service';
+import { PreLoaderService } from 'src/app/core/services/preloader.service';
 import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
 
 @Component({
@@ -31,10 +34,13 @@ export class JobSearchComponent implements OnInit {
     private readonly constants: Constants,
     private readonly service: JobService,
     private readonly router: Router,
-    private readonly tokenHelper: TokenHelper
+    private readonly tokenHelper: TokenHelper,
+    private readonly preloader: PreLoaderService,
+    private readonly messageService: MessageService
   ) { }
 
   ngOnInit(): void {
+    this.preloader.show();
     window.scrollTo(0, 0);
     this.buildJobSearchForm();
     this.getUserProfile();
@@ -49,7 +55,24 @@ export class JobSearchComponent implements OnInit {
     const userId = this.tokenHelper.getDecodedToken().nameidentifier;
     this.service.getAllJobs(userId).subscribe({
       next: (response: any) => {
+        this.preloader.hide();
         this.initialJobs = this.jobs = response.result;
+      },
+
+      error: (errorResponse) => {
+        const errorObject = errorResponse.error;
+
+        // Iterate through the keys in the error object
+        for (const key in errorObject) {
+          if (Object.prototype.hasOwnProperty.call(errorObject, key)) {
+            const errorMessage = errorObject[key];
+            this.messageService.add({
+              severity: ToastTypes.ERROR,
+              summary: errorMessage
+            });
+          }
+        }
+        this.router.navigate(['user']);
       }
     });
   }

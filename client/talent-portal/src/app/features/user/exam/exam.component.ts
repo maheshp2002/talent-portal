@@ -352,9 +352,6 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
     } else {
 
       if (!this.isDescriptiveQuestion) {
-        // Stop detection as exam is completed
-        this.detectionService.stopDetection();
-
         // Calculate score based on selected options and correct answers
         this.result.score = 0;
         this.selectedOptions.forEach(element => {
@@ -428,6 +425,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
       next: () => {
         this.isConfirmDialogShow = true;
         this.preloaderService.hide();
+        this.detectionService.stopDetection();
         this.messageService.add({
           severity: ToastTypes.SUCCESS,
           summary: 'Exam completed successfully'
@@ -436,6 +434,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
       },
 
       error: () => {
+        this.detectionService.stopDetection();
         this.isConfirmDialogShow = true;
         this.preloaderService.hide();
         this.router.navigate(['user/result', result.jobId, result.userId]);
