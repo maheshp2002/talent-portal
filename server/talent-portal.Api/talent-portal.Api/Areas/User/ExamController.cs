@@ -14,12 +14,36 @@ public class ExamController : UserControllerBase
         _service = service;
     }
 
-    [HttpGet("skill-questions")]
+    [HttpGet("mcq-questions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetExamQuestion([FromQuery] ExamDto dto)
     {
-        var result = await _service.GetQuestionsAsync(dto);
+        var result = await _service.GetMcqQuestionsAsync(dto);
+        if (result.IsValid)
+            return Ok(result);
+
+        return BadRequest(result.Errors);
+    }
+
+    [HttpGet("descriptive-questions")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetDescriptiveExamQuestion([FromQuery] ExamDto dto)
+    {
+        var result = await _service.GetDescriptiveQuestionsAsync(dto);
+        if (result.IsValid)
+            return Ok(result);
+
+        return BadRequest(result.Errors);
+    }
+
+    [HttpPost("descriptive-answer")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> PostDescriptiveAnswer(List<DescriptiveDto> dtos)
+    {
+        var result = await _service.CalculateSimilarityScore(dtos);
         if (result.IsValid)
             return Ok(result);
 

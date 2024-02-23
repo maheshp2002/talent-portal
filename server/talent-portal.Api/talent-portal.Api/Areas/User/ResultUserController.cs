@@ -50,5 +50,4 @@ public class ResultUserController : UserControllerBase
         return BadRequest(result.Errors);
     }
 
-
 }

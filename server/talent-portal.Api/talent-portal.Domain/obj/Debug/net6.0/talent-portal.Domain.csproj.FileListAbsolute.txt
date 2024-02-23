@@ -10,3 +10,4 @@ C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent
 C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\refint\talent-portal.Domain.dll
 C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.pdb
 C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\ref\talent-portal.Domain.dll
+C:\Users\mahesh.p\Documents\GitHub\talent-portal\server\talent-portal.Api\talent-portal.Domain\obj\Debug\net6.0\talent-portal.Domain.sourcelink.json

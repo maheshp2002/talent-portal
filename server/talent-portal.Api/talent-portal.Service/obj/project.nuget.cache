@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ECvcxBGH2+nPGqrzxnGuv2iH4KY3qyxH726FVk7ctTWbib6k2uCtAT5C+JBuSSdBY39nPWlQ4+3YmP5LShe8Dg==",
+  "dgSpecHash": "XFcWvYkwFWuXb71HBHMV6ARQWVYECfEiZfcMOjH9ZmnTg5gtvk89KvyVfzvK4eSLelU78CJioSnZnh6v8lMSew==",
   "success": true,
   "projectFilePath": "C:\\Users\\mahesh.p\\Documents\\GitHub\\talent-portal\\server\\talent-portal.Api\\talent-portal.Service\\talent-portal.Service.csproj",
   "expectedPackageFiles": [
@@ -111,6 +111,26 @@
     "C:\\Users\\mahesh.p\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512"
   ],
   "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.IdentityModel.Tokens.Jwt' 6.33.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-59j7-ghrg-fj52",
+      "libraryId": "System.IdentityModel.Tokens.Jwt",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'System.IdentityModel.Tokens.Jwt' 6.33.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-8g9c-28fc-mcx2",
+      "libraryId": "System.IdentityModel.Tokens.Jwt",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    },
     {
       "code": "NU1701",
       "level": "Warning",

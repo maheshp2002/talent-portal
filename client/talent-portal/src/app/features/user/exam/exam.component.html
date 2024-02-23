@@ -7,29 +7,50 @@
         <label class="text-warning mb-4 options-label">Code:</label>
         <pre class="code"><code [highlight]="currentQuestion.code" [lineNumbers]="true"></code></pre>
     </div>
-    <div class="middle-container">
+    <div class="middle-container" *ngIf="!isDescriptiveQuestion">
         <label class="text-warning mb-4 options-label">Options:</label>
         <div class="d-flex gap-4 mb-3">
-            <input type="radio" name="answer" [value]="currentQuestion.optionOne" formControlName="answer">
+            <input type="radio" name="answer" [value]="currentQuestion.optionOne" formControlName="answer"
+                [checked]="questionForm.get('answer')?.value === currentQuestion.optionOne">
             <label>{{currentQuestion.optionOne}}</label>
         </div>
         <div class="d-flex gap-4 mb-3">
-            <input type="radio" name="answer" [value]="currentQuestion.optionTwo" formControlName="answer">
+            <input type="radio" name="answer" [value]="currentQuestion.optionTwo" formControlName="answer"
+                [checked]="questionForm.get('answer')?.value === currentQuestion.optionTwo">
             <label>{{currentQuestion.optionTwo}}</label>
         </div>
         <div class="d-flex gap-4 mb-3">
-            <input type="radio" name="answer" [value]="currentQuestion.optionThree" formControlName="answer">
+            <input type="radio" name="answer" [value]="currentQuestion.optionThree" formControlName="answer"
+                [checked]="questionForm.get('answer')?.value === currentQuestion.optionThree">
             <label>{{currentQuestion.optionThree}}</label>
         </div>
         <div class="d-flex gap-4 mb-3">
-            <input type="radio" name="answer" [value]="currentQuestion.optionFour" formControlName="answer">
+            <input type="radio" name="answer" [value]="currentQuestion.optionFour" formControlName="answer"
+                [checked]="questionForm.get('answer')?.value === currentQuestion.optionFour">
             <label>{{currentQuestion.optionFour}}</label>
         </div>
     </div>
+    <div class="middle-container d-flex flex-column justify-content-center mb-5" *ngIf="isDescriptiveQuestion">
+        <textarea rows="15" cols="180" name="answer" formControlName="answer" placeholder="Type down your answer..."
+            pInputTextarea [value]="" [autoResize]="true"
+            [class]="questionForm.invalid ? 'ng-invalid ng-dirty' : ''"></textarea>
+        <app-error-message [control]="questionForm.get('answer')" [validationMessages]="{
+            required: message.requiredField
+        }"></app-error-message>
+    </div>
     <div class="d-flex justify-content-end">
-        <button [disabled]="questionForm.invalid" [type]="index >= noOfQ - 1 ? 'submit' : 'button'"
-            class="btn btn-dark rounded-2 next-button" (click)="submit()">{{index >= noOfQ - 1 ? 'Submit' :
-            'Next'}}</button>
+        <div [tooltipPosition]="'top'" [pTooltip]="index <= 0 ? 'No previous question' : ''" class="me-5">
+            <button [disabled]="index <= 0" [type]="'button'" class="btn btn-outline-dark rounded-2 next-button"
+                (click)="onBackClick()">
+                <i class="pi pi-chevron-left">Back</i>
+            </button>
+        </div>
+        <button [disabled]="questionForm.invalid"
+            [type]="index >= noOfQ - 1 && isDescriptiveQuestion ? 'submit' : 'button'"
+            class="btn btn-dark rounded-2 next-button" (click)="submit()">{{index >= noOfQ - 1 && isDescriptiveQuestion
+            ? 'Submit' : 'Next'}}
+            <i class="pi pi-chevron-right"></i>
+        </button>
     </div>
 </form>
 

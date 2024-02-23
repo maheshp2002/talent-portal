@@ -30,6 +30,8 @@ export class AuthenticationService {
     }
 
     uploadResume(file: FormData) {
+        console.log(file.get('profileImage'));
+        
         return this.http.post<IResponse>(this.url + "/upload-resume", file);
     }
 

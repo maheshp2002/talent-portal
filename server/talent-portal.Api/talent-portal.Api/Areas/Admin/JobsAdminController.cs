@@ -19,7 +19,7 @@ public class JobsAdminController : AdminControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAllJobs()
     {
-        var result = await _service.GetAllJobsAsync();
+        var result = await _service.GetAllJobsAdminAsync();
         if (result.IsValid)
             return Ok(result);
 

@@ -14,12 +14,12 @@ public class JobsUserController : UserControllerBase
         _service = service;
     }
 
-    [HttpGet("jobs")]
+    [HttpGet("skill-jobs/{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetAllJobs()
+    public async Task<IActionResult> GetAllJobs(string userId)
     {
-        var result = await _service.GetAllJobsAsync();
+        var result = await _service.GetAllJobsAsync(userId);
         if (result.IsValid)
             return Ok(result);
 

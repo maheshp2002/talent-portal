@@ -6,7 +6,7 @@ public class ResultAddDto
 {
     public bool IsPassed { get; set; }
 
-    public int Score { get; set; }
+    public decimal Score { get; set; }
 
     public int JobId { get; set; }
 

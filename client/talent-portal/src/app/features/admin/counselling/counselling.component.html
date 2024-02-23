@@ -54,7 +54,7 @@
         </ng-template>
     </p-table>
 </div>
-<p-dialog header="Add new counselling" [(visible)]="isVisible">
+<p-dialog [draggable]="false" header="Add new counselling" [(visible)]="isVisible">
     <form [formGroup]="counsellingForm" class="mb-5" (ngSubmit)="onSubmit()">
         <div class="form-input-control ps-0">
             <label class="required" for="admin-counselling-name">

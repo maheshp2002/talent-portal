@@ -8,7 +8,7 @@ namespace talent_portal.Domain.Models
 
         public bool IsPassed { get; set; }
 
-        public int Score { get; set; }
+        public decimal Score { get; set; }
 
         public int TotalScore { get; set; }
 

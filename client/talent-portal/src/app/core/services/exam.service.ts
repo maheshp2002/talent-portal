@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IGetQuestions, IPostQuestions } from '../interfaces';
+import { IDescriptiveScore, IGetMcqQuestions, IPostQuestions, IResponse } from '../interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -15,12 +15,21 @@ export class ExamService {
     }
 
     getQuestions() {
-        return this.http.get<IGetQuestions[]>(this.adminUrl + "/questions");
+        return this.http.get<IGetMcqQuestions[]>(this.adminUrl + "/questions");
     }
 
-    getSkillQuestions(jobId: number, userId: string) {
+    getMcqQuestions(jobId: number, userId: string) {
         const params = { jobId: jobId, userId: userId };
-        return this.http.get<IGetQuestions[]>(this.userUrl + "/exam/skill-questions", { params });
+        return this.http.get<IGetMcqQuestions[]>(this.userUrl + "/exam/mcq-questions", { params });
+    }
+
+    getDescriptiveQuestions(jobId: number, userId: string) {
+        const params = { jobId: jobId, userId: userId };
+        return this.http.get<IGetMcqQuestions[]>(this.userUrl + "/exam/descriptive-questions", { params });
+    }
+
+    descriptiveScore(descriptiveScore: IDescriptiveScore[]) {
+        return this.http.post<string>(this.userUrl + "/exam/descriptive-answer", descriptiveScore);
     }
 
     addQuestions(question: IPostQuestions) {

@@ -18,12 +18,9 @@ export class DetectionService {
     private readonly messageService: MessageService
   ) {}
 
-  startDetection() {
+  startDetection(passportImage: string | ArrayBufferLike | Blob | ArrayBufferView) {
     this.websocket = new WebSocket('ws://localhost:8765');
-
-    // this.websocket.onmessage = (event) => {
-    //   console.log('Detected object:', event.data); // Log the detected object in the browser console
-    // };
+  
     this.websocket.onerror = (error) => {
       this.setConfirmDialogShow(true); 
       this.messageService.add({
@@ -33,18 +30,53 @@ export class DetectionService {
       this.router.navigate(['user/jobs']);
       console.error('WebSocket error:', error);
     };
-
+  
     this.websocket.onclose = () => {
       console.log('WebSocket connection closed');
       // You can handle the closed connection here if needed
     };
-
+  
     this.websocket.onopen = () => {
-      setTimeout(() => {              
-        this.preloaderService.hide();
-      }, 4000);
+      if (this.websocket) { 
+        // Convert the passport image to base64 format
+        const base64Data = this.convertToBase64(passportImage);
+        // Check if this.websocket is defined before sending data
+        if (this.websocket) {
+          // Send the base64-encoded image to the server
+          this.websocket.send(base64Data);
+          setTimeout(() => {              
+            this.preloaderService.hide();
+          }, 4000);
+        } else {
+          console.error('WebSocket connection is not defined.');
+        }
+      }
     }
-
+  }
+  
+  // Function to convert image to base64 format
+  convertToBase64(passportImage: string | ArrayBufferLike | Blob | ArrayBufferView): string {
+    let base64Data = '';
+    if (typeof passportImage === 'string') {
+      // If the input is already a base64 string, use it directly
+      base64Data = passportImage;
+    } else if (passportImage instanceof Blob) {
+      // If the input is a Blob, read it as data URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        base64Data = reader.result as string;
+      };
+      reader.readAsDataURL(passportImage);
+    } else {
+      // For other types of input, such as ArrayBuffer or ArrayBufferView, convert to Blob first
+      const blob = new Blob([passportImage]);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        base64Data = reader.result as string;
+      };
+      reader.readAsDataURL(blob);
+    }
+    return base64Data;
   }
 
   stopDetection() {

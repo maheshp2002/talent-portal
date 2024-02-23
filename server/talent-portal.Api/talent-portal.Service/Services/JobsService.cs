@@ -5,17 +5,22 @@ using talent_portal.Domain.Models;
 using talent_portal.Service.Data;
 using talent_portal.Service.Dto;
 using talent_portal.Service.Type;
+using iTextSharp.text.pdf.parser;
+using iTextSharp.text.pdf;
+using System.Text;
 
 namespace talent_portal.Service.Services;
 
 public class JobsService
 {
     private readonly ApplicationDbContext _db;
+    private ExamService _examService;
 
     public JobsService(
-    ApplicationDbContext db)
+    ApplicationDbContext db, ExamService examService)
     {
         _db = db;
+        _examService = examService;
     }
 
     public async Task<ServiceResponse<JobsViewDto>> GetJobAsync(int id)
@@ -37,7 +42,76 @@ public class JobsService
         return response;
     }
 
-    public async Task<ServiceResponse<List<JobsViewDto>>> GetAllJobsAsync()
+    public async Task<ServiceResponse<List<JobsViewDto>>> GetAllJobsAsync(string userId)
+    {
+        var response = new ServiceResponse<List<JobsViewDto>>();
+
+        var user = _db.ApplicationUser.FirstOrDefault(m => m.Id == userId);
+        var extractedSkills = "";
+
+        if (user.Resume == null || user.Resume == "")
+        {
+            response.AddError("no resume", "Please upload a resume first");
+            return response;
+        }
+
+        var resume = await _examService.ConvertPdfToIFormFileAsync(user.Resume);
+
+        try
+        {
+            // Read the content of the IFormFile into a byte array
+            byte[] resumeBytes;
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                await resume.CopyToAsync(memoryStream);
+                resumeBytes = memoryStream.ToArray();
+            }
+
+            // Extract skills from the uploaded PDF
+            var extractedSkillsResponse = await ExtractSkillsFromPDFAsync(resumeBytes);
+
+            // Check if skills were extracted successfully
+            if (extractedSkillsResponse.IsValid)
+            {
+                // Use the extracted skills or perform further processing
+                extractedSkills = extractedSkillsResponse.Result;
+            }
+            else
+            {
+                response.AddError("failed", "Failed to process the uploaded file");
+            }
+        }
+        catch (Exception ex)
+        {
+            response.AddError("Failed to process the uploaded file: ", ex.Message);
+        }
+
+        // Fetch all jobs from the database
+        var allJobs = await _db.Jobs.ToListAsync();
+
+        // Filter the jobs in memory using LINQ to Objects
+        var jobsWithSkills = allJobs
+            .Where(job => _examService.ExtractSkillsFromText(extractedSkills, job.Id).Count > 0)
+            .Select(c => new JobsViewDto
+            {
+                Id = c.Id,
+                Title = c.Title,
+                Description = c.Description,
+                IsOpen = c.IsOpen,
+                Skills = c.Skills.ToList(),
+                StartedDate = c.StartedDate,
+                Position = c.Position
+            })
+            .OrderByDescending(c => c.StartedDate)
+            .ToList();
+
+        // Assign the filtered jobs to the response
+        response.Result = jobsWithSkills;
+
+        return response;
+    }
+
+    public async Task<ServiceResponse<List<JobsViewDto>>> GetAllJobsAdminAsync()
     {
         var response = new ServiceResponse<List<JobsViewDto>>();
 
@@ -170,6 +244,33 @@ public class JobsService
 
         response.Result = "Job closed sucessfully";
         
+        return response;
+    }
+
+    public async Task<ServiceResponse<string>> ExtractSkillsFromPDFAsync(byte[] pdfBytes)
+    {
+        var response = new ServiceResponse<string>();
+        try
+        {
+            // Load PDF document
+            var pdfReader = new PdfReader(pdfBytes);
+            var text = new StringBuilder();
+
+            // Extract text from each page
+            for (int page = 1; page <= pdfReader.NumberOfPages; page++)
+            {
+                text.Append(PdfTextExtractor.GetTextFromPage(pdfReader, page));
+            }
+
+            pdfReader.Close();
+
+            response.Result = text.ToString();
+        }
+        catch (Exception ex)
+        {
+            response.AddError("Failed to extract skills from PDF: ", ex.Message);
+        }
+
         return response;
     }
 }

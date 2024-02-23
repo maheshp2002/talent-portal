@@ -1,6 +1,10 @@
 .p-dialog {
     width: 50vw !important;
-    max-height: 60vh !important;
+    max-height: 75vh !important;
     overflow-y: auto !important;
     position: relative !important;
+}
+
+.p-dialog .p-dialog-header {
+    padding-bottom: 0px !important;
 }

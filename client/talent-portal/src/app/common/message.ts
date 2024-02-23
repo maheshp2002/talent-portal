@@ -21,4 +21,6 @@ export class Messages {
     invalidPhoneNumber = "Invalid phone number"
     invalidUrl = "Invalid URL"
     passwordMisMatch = "Password mismatch"
+    invalidImageSize = "Image size should be less than 1 mb"
+    invalidImageType = "Invalid image file. Accepted formats: JPG or PNG"
 }

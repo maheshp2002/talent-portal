@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TooltipModule } from 'primeng/tooltip';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
@@ -36,7 +37,8 @@ import { CounsellingComponent } from './counselling/counselling.component';
     ButtonModule,
     SharedModule,
     TableModule,
-    TooltipModule
+    TooltipModule,
+    InputTextareaModule
   ]
 })
 export class AdminModule { }

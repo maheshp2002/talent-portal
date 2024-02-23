@@ -19,4 +19,6 @@ public class QuestionsAddDto
     public string Answer { get; set; }
 
     public string Skill { get; set; }
+
+    public bool IsDescriptiveQuestion { get; set; }
 }

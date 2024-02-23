@@ -4,6 +4,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 import { UserRoutingModule } from './user-routing.module';
 import { HomepageComponent } from './homepage/homepage.component';
@@ -47,7 +48,8 @@ import { CounsellingComponent } from './counselling/counselling.component';
     TableModule,
     FontAwesomeModule,
     TooltipModule,
-    NgCircleProgressModule
+    NgCircleProgressModule,
+    InputTextareaModule
   ],
   providers: [ConfirmationService, CircleProgressOptions]
 })

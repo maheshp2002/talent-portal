@@ -95,6 +95,13 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/resumes"
 });
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Images")),
+    RequestPath = "/images"
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -22,7 +22,7 @@
                     <h4 class="ms-3">Code</h4>
                     <pre class="code"><code [highlight]="mcq.code" [lineNumbers]="true"></code></pre>
                 </div>
-                <div class="options">
+                <div class="options" *ngIf="!mcq.isDescriptiveQuestion">
                     <ol>
                         <li>{{mcq.optionOne}}</li>
                         <li>{{mcq.optionTwo}}</li>
@@ -30,9 +30,7 @@
                         <li>{{mcq.optionFour}}</li>
                     </ol>
                 </div>
-                <div class="answer">
-                    <span class="text-danger">Answer is: {{mcq.answer}}</span>
-                </div>
+                <span class="text-success answer">Answer is: <span class="text-dark font-weight-light">{{mcq.answer}}</span></span>
             </div>
         </div>
         <a (click)="ConfirmShow(mcq.id)" class="right-container d-flex justify-content-center align-items-center">
@@ -40,7 +38,7 @@
         </a>
     </div>
 </div>
-<p-dialog header="Add new question" [(visible)]="isVisible">
+<p-dialog [draggable]="false" header="Add new question" [(visible)]="isVisible">
     <form [formGroup]="questionForm" class="mb-5" (ngSubmit)="onSubmit()">
         <div class="form-input-control ps-0">
             <label class="required" for="admin-homepage-question">
@@ -53,56 +51,73 @@
                     maxlength: message.maxLengthFiveHundred
             }"></app-error-message>
         </div>
-        <div class="form-input-control ps-0">
-            <label class="required" for="admin-homepage-optionOne">
-                Option One
-            </label>
-            <input formControlName="optionOne" placeholder="Type down option here" type="text" class="w-100"
-                id="admin-homepage-optionOne">
-            <app-error-message [control]="questionForm.get('optionOne')" [validationMessages]="{
-                    required: message.requiredField,
-                    maxlength: message.maxLengthFiveHundred
-            }"></app-error-message>
-        </div>
-        <div class="form-input-control ps-0">
-            <label class="required" for="admin-homepage-optionTwo">
-                Option Two
-            </label>
-            <input formControlName="optionTwo" placeholder="Type down option here" type="text" class="w-100"
-                id="admin-homepage-optionTwo">
-            <app-error-message [control]="questionForm.get('optionTwo')" [validationMessages]="{
-                    required: message.requiredField,
-                    maxlength: message.maxLengthFiveHundred
-            }"></app-error-message>
-        </div>
-        <div class="form-input-control ps-0">
-            <label class="required" for="admin-homepage-optionThree">
-                Option Three
-            </label>
-            <input formControlName="optionThree" placeholder="Type down option here" type="text" class="w-100"
-                id="admin-homepage-optionThree">
-            <app-error-message [control]="questionForm.get('optionThree')" [validationMessages]="{
-                    required: message.requiredField,
-                    maxlength: message.maxLengthFiveHundred
-            }"></app-error-message>
-        </div>
-        <div class="form-input-control ps-0">
-            <label class="required" for="admin-homepage-optionFour">
-                Option Four
-            </label>
-            <input formControlName="optionFour" placeholder="Type down option here" type="text" class="w-100"
-                id="admin-homepage-optionFour">
-            <app-error-message [control]="questionForm.get('optionFour')" [validationMessages]="{
-                    required: message.requiredField,
-                    maxlength: message.maxLengthFiveHundred
-            }"></app-error-message>
-        </div>
         <div class="d-flex gap-3">
+            <label>
+                Is Descriptive Question
+            </label>
+            <div class="d-flex gap-2">
+                <input type="radio" name="isDescriptiveQuestion" [value]="true" formControlName="isDescriptiveQuestion">
+                <label>Yes</label>
+            </div>
+            <div class="d-flex gap-2">
+                <input type="radio" name="isDescriptiveQuestion" [value]="false"
+                    formControlName="isDescriptiveQuestion">
+                <label>No</label>
+            </div>
+        </div>
+        <div *ngIf="!questionForm.getRawValue().isDescriptiveQuestion">
+            <div class="form-input-control ps-0">
+                <label class="required" for="admin-homepage-optionOne">
+                    Option One
+                </label>
+                <input formControlName="optionOne" placeholder="Type down option here" type="text" class="w-100"
+                    id="admin-homepage-optionOne">
+                <app-error-message [control]="questionForm.get('optionOne')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.maxLengthFiveHundred
+            }"></app-error-message>
+            </div>
+            <div class="form-input-control ps-0">
+                <label class="required" for="admin-homepage-optionTwo">
+                    Option Two
+                </label>
+                <input formControlName="optionTwo" placeholder="Type down option here" type="text" class="w-100"
+                    id="admin-homepage-optionTwo">
+                <app-error-message [control]="questionForm.get('optionTwo')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.maxLengthFiveHundred
+            }"></app-error-message>
+            </div>
+            <div class="form-input-control ps-0">
+                <label class="required" for="admin-homepage-optionThree">
+                    Option Three
+                </label>
+                <input formControlName="optionThree" placeholder="Type down option here" type="text" class="w-100"
+                    id="admin-homepage-optionThree">
+                <app-error-message [control]="questionForm.get('optionThree')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.maxLengthFiveHundred
+            }"></app-error-message>
+            </div>
+            <div class="form-input-control ps-0">
+                <label class="required" for="admin-homepage-optionFour">
+                    Option Four
+                </label>
+                <input formControlName="optionFour" placeholder="Type down option here" type="text" class="w-100"
+                    id="admin-homepage-optionFour">
+                <app-error-message [control]="questionForm.get('optionFour')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.maxLengthFiveHundred
+            }"></app-error-message>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3" *ngIf="!questionForm.getRawValue().isDescriptiveQuestion">
             <label>
                 Is Code Provided
             </label>
             <div class="d-flex gap-2">
-                <input type="radio" name="isCodeProvided" [value]="true"  formControlName="isCodeProvided">
+                <input type="radio" name="isCodeProvided" [value]="true" formControlName="isCodeProvided">
                 <label>Yes</label>
             </div>
             <div class="d-flex gap-2">
@@ -120,24 +135,39 @@
                     maxlength: message.codeLength
             }"></app-error-message>
         </div>
-        <div class="d-flex gap-3 mt-2 mb-2">
+        <div class="gap-3 mt-2 mb-2" *ngIf="questionForm.getRawValue().isDescriptiveQuestion">
+            <label>
+                Answer
+            </label>
+            <textarea rows="10" cols="88" name="answer" formControlName="answer" placeholder="Type down your answer..."
+                pInputTextarea [value]="" [autoResize]="true" maxlength="1000"
+                [class]="questionForm.invalid ? 'ng-invalid ng-dirty' : ''"></textarea>
+            <app-error-message [control]="questionForm.get('answer')" [validationMessages]="{
+                    required: message.requiredField
+            }"></app-error-message>
+        </div>
+        <div class="d-flex gap-3 mt-2 mb-2" *ngIf="!questionForm.getRawValue().isDescriptiveQuestion">
             <label>
                 Answer
             </label>
             <div class="d-flex gap-2">
-                <input type="radio" name="answer" [value]="questionForm.get('optionOne')?.getRawValue()"  formControlName="answer">
+                <input type="radio" name="answer" [value]="questionForm.get('optionOne')?.getRawValue()"
+                    formControlName="answer">
                 <label>Option 1</label>
             </div>
             <div class="d-flex gap-2">
-                <input type="radio" name="answer" [value]="questionForm.get('optionTwo')?.getRawValue()" formControlName="answer">
+                <input type="radio" name="answer" [value]="questionForm.get('optionTwo')?.getRawValue()"
+                    formControlName="answer">
                 <label>Option 2</label>
             </div>
             <div class="d-flex gap-2">
-                <input type="radio" name="answer" [value]="questionForm.get('optionThree')?.getRawValue()" formControlName="answer">
+                <input type="radio" name="answer" [value]="questionForm.get('optionThree')?.getRawValue()"
+                    formControlName="answer">
                 <label>Option 3</label>
             </div>
             <div class="d-flex gap-2">
-                <input type="radio" name="answer" [value]="questionForm.get('optionFour')?.getRawValue()" formControlName="answer">
+                <input type="radio" name="answer" [value]="questionForm.get('optionFour')?.getRawValue()"
+                    formControlName="answer">
                 <label>Option 4</label>
             </div>
             <app-error-message [control]="questionForm.get('answer')" [validationMessages]="{

@@ -2,13 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Text;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
 using talent_portal.Domain.Models;
 using talent_portal.Service.Data;
 using talent_portal.Service.Dto;
 using talent_portal.Service.Type;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace talent_portal.Service.Services;
 
@@ -21,14 +20,27 @@ public class ExamService
     ApplicationDbContext db)
     {
         _db = db;
+
     }
 
-    public async Task<ServiceResponse<List<QuestionsViewDto>>> GetQuestionsAsync(ExamDto dto)
+    public async Task<ServiceResponse<List<QuestionsViewDto>>> GetMcqQuestionsAsync(ExamDto dto)
     {
         var response = new ServiceResponse<List<QuestionsViewDto>>();
         var user = _db.ApplicationUser.FirstOrDefault(m => m.Id == dto.UserId);
         var exam = _db.Results.FirstOrDefault(m => m.JobId == dto.JobId && m.ApplicationUserId == dto.UserId);
         var extractedSkills = new List<string>();
+        var jobQuery = _db.Jobs.FirstOrDefault(job => job.Id == dto.JobId);
+
+        if (jobQuery != null)
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            // Deserialize the JSON array into a List<string>
+            extractedSkills = System.Text.Json.JsonSerializer.Deserialize<List<string>>(jobQuery.SerializedSkills, options);
+        }
 
         if (exam != null)
         {
@@ -42,44 +54,42 @@ public class ExamService
             return response;
         }
 
-        var resume = await ConvertPdfToIFormFileAsync(user.Resume);
+        //var resume = await ConvertPdfToIFormFileAsync(user.Resume);
 
-        try
-        {
-            // Read the content of the IFormFile into a byte array
-            byte[] resumeBytes;
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                await resume.CopyToAsync(memoryStream);
-                resumeBytes = memoryStream.ToArray();
-            }
+        //try
+        //{
+        //    // Read the content of the IFormFile into a byte array
+        //    byte[] resumeBytes;
+        //    using (MemoryStream memoryStream = new MemoryStream())
+        //    {
+        //        await resume.CopyToAsync(memoryStream);
+        //        resumeBytes = memoryStream.ToArray();
+        //    }
 
-            // Extract skills from the uploaded PDF
-            var extractedSkillsResponse = await ExtractSkillsFromPDFAsync(resumeBytes, dto.JobId);
+        //    // Extract skills from the uploaded PDF
+        //    var extractedSkillsResponse = await ExtractSkillsFromPDFAsync(resumeBytes, dto.JobId);
 
-            // Check if skills were extracted successfully
-            if (extractedSkillsResponse.IsValid)
-            {
-                // Use the extracted skills or perform further processing
-                extractedSkills = extractedSkillsResponse.Result;
-            }
-            else
-            {
-                response.AddError("failed", "Failed to process the uploaded file");
-            }
-        }
-        catch (Exception ex)
-        {
-            response.AddError("Failed to process the uploaded file: ", ex.Message);
-        }
+        //    // Check if skills were extracted successfully
+        //    if (extractedSkillsResponse.IsValid)
+        //    {
+        //        // Use the extracted skills or perform further processing
+        //        extractedSkills = extractedSkillsResponse.Result;
+        //    }
+        //    else
+        //    {
+        //        response.AddError("failed", "Failed to process the uploaded file");
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    response.AddError("Failed to process the uploaded file: ", ex.Message);
+        //}
 
         var questionCount = _db.Questions.Where(c => extractedSkills.Contains(c.Skill.ToLower())).Count();
 
         var questions = await _db.Questions
             .Where(
-            c => questionCount < 15
-                ? extractedSkills.Contains(c.Skill.ToLower()) && excludedSkills.Contains(c.Skill.ToLower())
-                : extractedSkills.Contains(c.Skill.ToLower()))
+            c => extractedSkills.Contains(c.Skill.ToLower()) && !c.IsDescriptiveQuestion)
             .Select(c => new QuestionsViewDto
             {
                 Id = c.Id,
@@ -90,7 +100,9 @@ public class ExamService
                 OptionTwo = c.OptionTwo,
                 OptionThree = c.OptionThree,
                 OptionFour = c.OptionFour,
-                Answer = c.Answer
+                Answer = c.Answer,
+                IsDescriptiveQuestion = c.IsDescriptiveQuestion,
+                Skill = c.Skill,
             }).ToListAsync();
 
         response.Result = questions;
@@ -113,7 +125,8 @@ public class ExamService
                 OptionTwo = c.OptionTwo,
                 OptionThree = c.OptionThree,
                 OptionFour = c.OptionFour,
-                Answer = c.Answer
+                Answer = c.Answer,
+                IsDescriptiveQuestion = c.IsDescriptiveQuestion
             }).ToListAsync();
 
         response.Result = questions;
@@ -124,6 +137,13 @@ public class ExamService
     public async Task<ServiceResponse<QuestionsViewDto>> QuestionsAddAsync(QuestionsAddDto dto)
     {
         var response = new ServiceResponse<QuestionsViewDto>();
+        var isDuplicateQuestion = _db.Questions.FirstOrDefault(q => q.Question == dto.Question);
+
+        if (isDuplicateQuestion != null)
+        {
+            response.AddError("DuplicateQuestion", "Same question already exists!");
+            return response;
+        }
 
         var questions = new ExamQuestion
         {
@@ -135,7 +155,8 @@ public class ExamService
             OptionThree = dto.OptionThree,
             OptionFour = dto.OptionFour,
             Answer = dto.Answer,
-            Skill = dto.Skill
+            Skill = dto.Skill,
+            IsDescriptiveQuestion = dto.IsDescriptiveQuestion
         };
 
         _db.Questions.Add(questions);
@@ -151,7 +172,8 @@ public class ExamService
             OptionTwo = questions.OptionTwo,
             OptionThree = questions.OptionThree,
             OptionFour = questions.OptionFour,
-            Answer = questions.Answer
+            Answer = questions.Answer,
+            IsDescriptiveQuestion = questions.IsDescriptiveQuestion
         };
 
         return response;
@@ -177,37 +199,79 @@ public class ExamService
         return response;
     }
 
-    public async Task<ServiceResponse<List<string>>> ExtractSkillsFromPDFAsync(byte[] pdfBytes, int jobId)
+    public async Task<ServiceResponse<List<QuestionsViewDto>>> GetDescriptiveQuestionsAsync(ExamDto dto)
     {
-        var response = new ServiceResponse<List<string>>();
-        try
-        {
-            // Load PDF document
-            var pdfReader = new PdfReader(pdfBytes);
-            var text = new StringBuilder();
+        var response = new ServiceResponse<List<QuestionsViewDto>>();
+        var extractedSkills = new List<string>();
+        var jobQuery = _db.Jobs.FirstOrDefault(job => job.Id == dto.JobId);
 
-            // Extract text from each page
-            for (int page = 1; page <= pdfReader.NumberOfPages; page++)
+        if (jobQuery != null)
+        {
+            var options = new JsonSerializerOptions
             {
-                text.Append(PdfTextExtractor.GetTextFromPage(pdfReader, page));
-            }
+                PropertyNameCaseInsensitive = true
+            };
 
-            pdfReader.Close();
-
-            // Extract skills using your preferred logic (regex, keyword matching, etc.)
-            List<string> extractedSkills = ExtractSkillsFromText(text.ToString(), jobId);
-
-            response.Result = extractedSkills;
+            // Deserialize the JSON array into a List<string>
+            extractedSkills = System.Text.Json.JsonSerializer.Deserialize<List<string>>(jobQuery.SerializedSkills, options);
         }
-        catch (Exception ex)
-        {
-            response.AddError("Failed to extract skills from PDF: ", ex.Message);
-        }
+
+        var questionCount = _db.Questions.Where(c => extractedSkills.Contains(c.Skill.ToLower())).Count();
+
+        var questions = await _db.Questions
+            .Where(
+            c => extractedSkills.Contains(c.Skill.ToLower()) && c.IsDescriptiveQuestion)
+            .Select(c => new QuestionsViewDto
+            {
+                Id = c.Id,
+                Question = c.Question,
+                IsCodeProvided = c.IsCodeProvided,
+                Code = c.Code,
+                OptionOne = c.OptionOne,
+                OptionTwo = c.OptionTwo,
+                OptionThree = c.OptionThree,
+                OptionFour = c.OptionFour,
+                Answer = c.Answer,
+                IsDescriptiveQuestion = c.IsDescriptiveQuestion,
+                Skill = c.Skill,
+            }).ToListAsync();
+
+        response.Result = questions;
 
         return response;
     }
 
-    private List<string> ExtractSkillsFromText(string text, int jobId)
+    //public async Task<ServiceResponse<List<string>>> ExtractSkillsFromPDFAsync(byte[] pdfBytes, int jobId)
+    //{
+    //    var response = new ServiceResponse<List<string>>();
+    //    try
+    //    {
+    //        // Load PDF document
+    //        var pdfReader = new PdfReader(pdfBytes);
+    //        var text = new StringBuilder();
+
+    //        // Extract text from each page
+    //        for (int page = 1; page <= pdfReader.NumberOfPages; page++)
+    //        {
+    //            text.Append(PdfTextExtractor.GetTextFromPage(pdfReader, page));
+    //        }
+
+    //        pdfReader.Close();
+
+    //        // Extract skills using your preferred logic (regex, keyword matching, etc.)
+    //        List<string> extractedSkills = ExtractSkillsFromText(text.ToString(), jobId);
+
+    //        response.Result = extractedSkills;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        response.AddError("Failed to extract skills from PDF: ", ex.Message);
+    //    }
+
+    //    return response;
+    //}
+
+    public List<string> ExtractSkillsFromText(string text, int jobId)
     {
         var jobSkills = new List<string>();
         List<string> result = new List<string>();
@@ -253,7 +317,7 @@ public class ExamService
         return result;
     }
 
-    private List<string> LoadSkillsFromJSONFile(string filePath)
+    public List<string> LoadSkillsFromJSONFile(string filePath)
     {
 
         // Read the JSON file content
@@ -290,4 +354,120 @@ public class ExamService
             return null;
         }
     }
+
+    //public async Task<ServiceResponse<string>> CalculateSimilarityScore(DescriptiveDto dto)
+    //{
+    //    var response = new ServiceResponse<string>();
+    //    var dbAnswer = "";
+    //    var query = _db.Questions
+    //        .FirstOrDefault(q => q.Id == dto.QuestionId && q.IsDescriptiveQuestion == true);
+
+    //    if (query != null)
+    //    {
+    //        dbAnswer = query.Answer;
+    //    }
+
+    //    try
+    //    {
+    //        // Path to your Python script
+    //        string scriptPath = System.IO.Path.Combine("Python", "bert_similarity.py");
+
+    //        // Start a new process to run the Python script
+    //        ProcessStartInfo start = new ProcessStartInfo();
+    //        start.FileName = "python"; // Assumes python is in the PATH environment variable
+    //        start.Arguments = $"{scriptPath} \"{dto.UserAnswer}\" \"{dbAnswer}\"";
+    //        start.UseShellExecute = false;
+    //        start.RedirectStandardOutput = true;
+
+    //        // Capture the output of the Python script
+    //        using (Process process = Process.Start(start))
+    //        {
+    //            using (StreamReader reader = process.StandardOutput)
+    //            {
+    //                string result = await reader.ReadToEndAsync();
+    //                double similarityScore;
+    //                if (double.TryParse(result, out similarityScore))
+    //                {
+
+    //                    response.Result = similarityScore.ToString();
+    //                    return response;
+    //                }
+    //                else
+    //                {
+    //                    response.AddError("Bert Error", "Invalid similarity score received from Python script");
+    //                    return response;
+    //                }
+    //            }
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        response.AddError("Python Error", "Failed to calculate similarity score");
+    //        return response;
+    //    }
+    //}
+
+    public async Task<ServiceResponse<string>> CalculateSimilarityScore(List<DescriptiveDto> dtos)
+    {
+        var response = new ServiceResponse<string>();
+        double totalSimilarityScore = 0.0;
+
+        // Get all the unique question IDs from the list of DTOs
+        var questionIds = dtos.Select(dto => dto.QuestionId).Distinct().ToList();
+
+        // Query the database for all relevant answers at once
+        var questionAnswers = _db.Questions
+            .Where(q => questionIds.Contains(q.Id) && q.IsDescriptiveQuestion)
+            .ToDictionary(q => q.Id, q => q.Answer);
+
+        foreach (var dto in dtos)
+        {
+            // Get the database answer for the current DTO's question ID
+            if (questionAnswers.TryGetValue(dto.QuestionId, out var dbAnswer))
+            {
+                try
+                {
+                    // Path to your Python script
+                    string scriptPath = System.IO.Path.Combine("Python", "bert_similarity.py");
+
+                    // Start a new process to run the Python script
+                    ProcessStartInfo start = new ProcessStartInfo();
+                    start.FileName = "python"; // Assumes python is in the PATH environment variable
+                    start.Arguments = $"{scriptPath} \"{dto.UserAnswer}\" \"{dbAnswer}\"";
+                    start.UseShellExecute = false;
+                    start.RedirectStandardOutput = true;
+
+                    // Capture the output of the Python script
+                    using (Process process = Process.Start(start))
+                    {
+                        using (StreamReader reader = process.StandardOutput)
+                        {
+                            string result = await reader.ReadToEndAsync();
+                            double similarityScore;
+                            if (double.TryParse(result, out similarityScore))
+                            {
+                                totalSimilarityScore += similarityScore;
+                            }
+                            else
+                            {
+                                response.AddError("Bert Error", "Invalid similarity score received from Python script");
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.AddError("Python Error", "Failed to calculate similarity score");
+                }
+            }
+            else
+            {
+                response.AddError("Database Error", $"No answer found for question ID: {dto.QuestionId}");
+            }
+        }
+
+        response.Result = totalSimilarityScore.ToString();
+        return response;
+    }
+
 }

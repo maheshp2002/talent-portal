@@ -10,6 +10,8 @@ import { MessageService } from 'primeng/api';
 import { ToastTypes } from 'src/app/core/enums';
 import { Subscription } from 'rxjs';
 import { ProfileDialogService } from 'src/app/core/services/ProfileDialogService.service';
+import { ImageValidator } from 'src/app/core/validators/image.validator';
+import { PreLoaderService } from 'src/app/core/services/preloader.service';
 
 @Component({
   selector: 'app-homepage',
@@ -27,7 +29,8 @@ export class HomepageComponent implements OnInit {
     email: '',
     isAdmin: false,
     resume: '',
-    resumeUrl: ''
+    resumeUrl: '',
+    profileImage: ''
   };
 
   fileName: string = '';
@@ -36,6 +39,8 @@ export class HomepageComponent implements OnInit {
   fileSizeInBytes: number = this.constants.fileSizeInBytes;
   allowedFileType: string = this.constants.allowedFileType;
   resumeUploadForm: FormGroup = new FormGroup({});
+  imageSizeInBytes: number = this.constants.imageSizeInBytes;
+  allowedImageType: string = this.constants.allowedImageType;
 
   constructor(
     private readonly service: AuthenticationService,
@@ -45,7 +50,9 @@ export class HomepageComponent implements OnInit {
     private readonly constants: Constants,
     public readonly message: Messages,
     private readonly fileValidator: FileValidator,
-    private readonly profileDialogService: ProfileDialogService
+    private readonly imageValidator: ImageValidator,
+    private readonly profileDialogService: ProfileDialogService,
+    private readonly preloaderService: PreLoaderService
   ) {
     this.dialogSubscription = this.profileDialogService.isDialogVisible$.subscribe((isVisible: boolean) => {
       this.isDialogVisible = isVisible;
@@ -53,10 +60,10 @@ export class HomepageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      window.scrollTo(0, 0);
-      this.isDialogVisible = false;
-      this.getUserProfile();
-      this.buildResumeForm();
+    window.scrollTo(0, 0);
+    this.isDialogVisible = false;
+    this.getUserProfile();
+    this.buildResumeForm();
   }
 
   // Image Animation
@@ -84,7 +91,7 @@ export class HomepageComponent implements OnInit {
     this.userId = this.tokenHelper.getDecodedToken().nameidentifier;
 
     this.service.getUserProfile(this.userId).subscribe({
-      next: (response: any) => {
+      next: (response: any) => {                
         this.profile = response.result;
       }
     });
@@ -93,10 +100,16 @@ export class HomepageComponent implements OnInit {
   buildResumeForm() {
     this.resumeUploadForm = this.fb.group({
       id: [this.userId],
-      file: ['',
+      resume: ['',
         [
           this.fileValidator.fileSizeValidator(this.constants.fileSizeInBytes),
           this.fileValidator.fileTypeValidator()
+        ]
+      ],
+      profileImage: ['',
+        [
+          this.imageValidator.imageSizeValidator(this.constants.imageSizeInBytes),
+          this.imageValidator.imageTypeValidator()
         ]
       ]
     });
@@ -108,8 +121,8 @@ export class HomepageComponent implements OnInit {
     this.profile.resumeUrl = fileUrl;
     this.profile.resume = file.name;
 
-    this.resumeUploadForm.patchValue({ file: file });
-    this.resumeUploadForm.get('file')?.markAsDirty();
+    this.resumeUploadForm.patchValue({ resume: file });
+    this.resumeUploadForm.get('resume')?.markAsDirty();
 
     if (this.fileUpload) {
       this.fileUpload.clear();
@@ -120,18 +133,48 @@ export class HomepageComponent implements OnInit {
     this.isFileSelected = this.resumeUploadForm.invalid ? false : true;
   }
 
+  /**
+    * Method that used to set a default image when there is an image error.
+    */
+  handleImageError() {
+    this.profile.profileImage = '/assets/images/image-not-available.png';
+  }
+
+  /**
+   * Handles the selection of an image file and updates the user profile form accordingly.
+   * This method is triggered when an image file is selected using an input element.
+   *
+   * @param params - An object containing the selected image file(s) in the 'files' property.
+   * @param params.files - An array of File objects representing the selected image files.
+   */
+  onImageSelect({ files }: { files: File[] }) {
+    const file = files[0];
+    const imageUrl = URL.createObjectURL(file);
+    this.profile.profileImage = imageUrl;
+
+    this.resumeUploadForm.patchValue({ profileImage: file });
+    this.resumeUploadForm.get('profileImage')?.markAsDirty();
+
+    if (this.fileUpload) {
+      this.fileUpload.clear();
+    }
+  }  
+
   onSubmit() {
+    this.preloaderService.show();
     const formData = new FormData();
     const temp = this.resumeUploadForm.value;
 
-    Object.keys(temp).forEach((key) => {
-      console.log(key, temp[key]);
-
+    Object.keys(temp).forEach((key) => {      
       formData.append(key, temp[key])
     });
-
+    console.log(formData.get('profileImage'));
+    console.log(formData.get('resume'));
+    
+    
     this.service.uploadResume(formData).subscribe({
       next: () => {
+        this.preloaderService.hide();
         this.fileName = '';
         this.isFileSelected = false;
         this.getUserProfile();

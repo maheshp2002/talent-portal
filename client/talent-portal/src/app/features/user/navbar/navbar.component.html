@@ -19,8 +19,16 @@
                     <button class="btn nav-link" id="nav-bar-logout-button" (click)="isConfirmShow = true">
                         <fa-icon [icon]="faLogout"></fa-icon> Logout</button>
                 </li>
-                <button class="btn nav-link profile-pic d-flex justify-content-center align-items-center me-2 ms-3"
-                    (click)="onProfileClick()" routerLinkActive="active-link"><i class="pi pi-user"></i></button>
+                <button class="btn nav-link profile-pic p-0 d-flex justify-content-center align-items-center me-2 ms-3"
+                    (click)="onProfileClick()" routerLinkActive="active-link">
+                    <ng-container *ngIf="profileImage; else defaultImage">
+                        <img [src]="profileImage" alt="Profile Image">
+                    </ng-container>
+                    <ng-template #defaultImage>
+                        <i class="pi pi-user"></i>
+                    </ng-template>
+                </button>
+
             </ul>
         </div>
     </div>

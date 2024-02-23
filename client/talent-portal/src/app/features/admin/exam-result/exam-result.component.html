@@ -44,7 +44,7 @@
                 <td>
                     <a [href]="'mailto:' + result.userEmail">{{result.userEmail}}</a>
                 </td>
-                <td>{{result.score}}</td>
+                <td>{{result.score + " out of " + result.totalScore}}</td>
                 <td class="d-flex gap-3 fw-700" [ngClass]="result.isPassed ? 'text-success' : 'text-danger'">
                     <span>{{result.isPassed ? 'Passed' : 'Failed'}}</span>
                     <i class="pi" [ngClass]="result.isPassed ? 'pi-check-circle' : 'pi-times'"></i>

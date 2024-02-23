@@ -6,6 +6,22 @@
     }
 }
 
+button {
+    .pi-chevron-left:before {
+        font-size: 18px;
+        padding-right: 10px;
+    }
+
+    .pi-chevron-right:before {
+        font-size: 18px;
+        padding-left: 10px;
+    }
+   
+    i {
+        font-size: 23px;
+    }
+}
+
 input {
     transform: scale(1.5);
 }

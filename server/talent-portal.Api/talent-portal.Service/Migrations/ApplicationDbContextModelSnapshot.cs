@@ -220,6 +220,10 @@ namespace talent_portal.Service.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfileImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Resume")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -301,6 +305,9 @@ namespace talent_portal.Service.Migrations
                     b.Property<bool>("IsCodeProvided")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDescriptiveQuestion")
+                        .HasColumnType("bit");
+
                     b.Property<string>("OptionFour")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -353,8 +360,8 @@ namespace talent_portal.Service.Migrations
                     b.Property<int>("JobId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Score")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("TotalScore")
                         .HasColumnType("int");

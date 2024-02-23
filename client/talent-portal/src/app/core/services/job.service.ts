@@ -14,8 +14,8 @@ export class JobService {
 
     }
 
-    getAllJobs() {
-        return this.http.get<IGetJobDto[]>(this.userUrl + "/jobs");
+    getAllJobs(userId: string) {
+        return this.http.get<IGetJobDto[]>(`${this.userUrl}/skill-jobs/${userId}`);
     }
     
     getAllJobsAdmin() {

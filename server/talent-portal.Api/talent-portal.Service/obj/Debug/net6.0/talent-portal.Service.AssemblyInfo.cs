@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("talent-portal.Service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c10214bef635bb6fbd57e2f7809fd68b1dc7e6f")]
 [assembly: System.Reflection.AssemblyProductAttribute("talent-portal.Service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("talent-portal.Service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

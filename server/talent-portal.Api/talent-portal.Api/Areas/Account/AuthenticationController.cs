@@ -39,12 +39,29 @@ public class AuthenticationController : AccountControllerBase
         return BadRequest(result.Errors);
     }
 
+    /// <summary>
+    /// This method POST request with email to check against database.
+    /// </summary>
+    /// /// <param name="email">The Email of the user is passed.</param>
+    /// <returns>A JSON response indicating whether the email was found or not found error message.</returns>
+    [HttpGet("user-email-exists")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CheckEmailExists([FromQuery] string email)
+    {
+        var result = await _service.CheckEmailExists(email);
+        if (result.IsValid)
+            return Ok(result);
+
+        return BadRequest(result.Errors);
+    }
+
     [HttpPost("upload-resume")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UploadResume([FromForm] ResumeDto resume)
     {
-        var result = await _service.UploadResumeAsync(resume);
+        var result = await _service.UploadResumeAndProfileAsync(resume);
         if (result.IsValid)
             return Ok(result);
 

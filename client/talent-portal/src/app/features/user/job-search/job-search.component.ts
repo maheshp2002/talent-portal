@@ -6,6 +6,7 @@ import { Table } from 'primeng/table';
 import { Constants } from 'src/app/configs/app.config';
 import { IGetJobDto } from 'src/app/core/interfaces';
 import { JobService } from 'src/app/core/services/job.service';
+import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
 
 @Component({
   selector: 'app-job-search',
@@ -29,7 +30,8 @@ export class JobSearchComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly constants: Constants,
     private readonly service: JobService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly tokenHelper: TokenHelper
   ) { }
 
   ngOnInit(): void {
@@ -44,7 +46,8 @@ export class JobSearchComponent implements OnInit {
   }
 
   getUserProfile() {
-    this.service.getAllJobs().subscribe({
+    const userId = this.tokenHelper.getDecodedToken().nameidentifier;
+    this.service.getAllJobs(userId).subscribe({
       next: (response: any) => {
         this.initialJobs = this.jobs = response.result;
       }

@@ -5,6 +5,8 @@ import { MessageService } from 'primeng/api';
 import { take } from 'rxjs';
 import { ToastTypes } from 'src/app/core/enums';
 import { ProfileDialogService } from 'src/app/core/services/ProfileDialogService.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
 
 @Component({
   selector: 'app-navbar',
@@ -16,23 +18,40 @@ export class NavbarComponent implements OnInit {
   isConfirmShow = false;
   faHome = faHome;
   faLogout = faSignOutAlt
+  userId = '';
+  profileImage = '';
 
   constructor(
     private readonly activatedRouter: ActivatedRoute,
     private readonly router: Router,
     private readonly toast: MessageService,
-    private profileDialogService: ProfileDialogService
+    private profileDialogService: ProfileDialogService,
+    private readonly tokenHelper: TokenHelper,
+    private readonly authenticationService: AuthenticationService
   ) { }
 
 
   ngOnInit(): void {
     this.getPath();
+    this.getUserProfile();
   }
 
   getPath() {
     this.activatedRouter.params.pipe(take(1)).subscribe((params) => {
       console.log(params);
 
+    });
+  }
+
+  getUserProfile() {
+    this.userId = this.tokenHelper.getDecodedToken().nameidentifier;
+
+    this.authenticationService.getUserProfile(this.userId).subscribe({
+      next: (response: any) => {
+        if (response.result.profileImage != '') {
+          this.profileImage = response.result.profileImage;
+        }
+      }
     });
   }
 

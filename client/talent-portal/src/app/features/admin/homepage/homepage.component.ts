@@ -5,7 +5,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { MessageService } from 'primeng/api';
 import { Messages } from 'src/app/common/message';
 import { ToastTypes } from 'src/app/core/enums';
-import { IGetQuestions, IResponse } from 'src/app/core/interfaces';
+import { IGetMcqQuestions, IResponse } from 'src/app/core/interfaces';
 import { ExamService } from 'src/app/core/services/exam.service';
 
 @Component({
@@ -24,7 +24,7 @@ export class HomepageComponent implements OnInit {
   questionId = 0;
   faQuestionCircle = faQuestionCircle;
   faDelete = faTrash;
-  mcqs: IGetQuestions[] = [];
+  mcqs: IGetMcqQuestions[] = [];
   questionForm: FormGroup = new FormGroup({});
   initialFormState: FormGroup = new FormGroup({});
   confirmHeader = 'Delete Question';
@@ -62,30 +62,50 @@ export class HomepageComponent implements OnInit {
    */
   buildQuestionForm() {
     this.questionForm = this.fb.group({
-      question: ['',
-        [Validators.required, Validators.maxLength(500)]
-      ],
+      question: ['', [Validators.required, Validators.maxLength(500)]],
       isCodeProvided: [false],
       code: ['', Validators.maxLength(3000)],
-      optionOne: ['',
-        [Validators.required, Validators.maxLength(500)]
-      ],
-      optionTwo: ['',
-        [Validators.required, Validators.maxLength(500)]
-      ],
-      optionThree: ['',
-        [Validators.required, Validators.maxLength(500)]
-      ],
-      optionFour: ['',
-        [Validators.required, Validators.maxLength(500)]
-      ],
-      answer: [null,
-        [Validators.required]
-      ],
-      skill: ['',
-        [Validators.required, Validators.maxLength(500)]
-      ]
+      optionOne: ['', this.optionValidator()],
+      optionTwo: ['', this.optionValidator()],
+      optionThree: ['', this.optionValidator()],
+      optionFour: ['', this.optionValidator()],
+      answer: ['', Validators.required],
+      skill: ['', [Validators.required, Validators.maxLength(500)]],
+      isDescriptiveQuestion: [false]
     });
+
+    // Listen to changes in isDescriptiveQuestion and update validators for options accordingly
+    this.questionForm.get('isDescriptiveQuestion')?.valueChanges.subscribe(value => {
+      const optionOneControl = this.questionForm.get('optionOne');
+      const optionTwoControl = this.questionForm.get('optionTwo');
+      const optionThreeControl = this.questionForm.get('optionThree');
+      const optionFourControl = this.questionForm.get('optionFour');
+
+      // Ensure controls are not null before accessing properties
+      optionOneControl?.clearValidators();
+      optionTwoControl?.clearValidators();
+      optionThreeControl?.clearValidators();
+      optionFourControl?.clearValidators();
+
+      if (!value) {
+        // If isDescriptiveQuestion is false, apply validators for options
+        optionOneControl?.setValidators([Validators.required, Validators.maxLength(500)]);
+        optionTwoControl?.setValidators([Validators.required, Validators.maxLength(500)]);
+        optionThreeControl?.setValidators([Validators.required, Validators.maxLength(500)]);
+        optionFourControl?.setValidators([Validators.required, Validators.maxLength(500)]);
+      }
+
+      // Update validity of controls
+      optionOneControl?.updateValueAndValidity();
+      optionTwoControl?.updateValueAndValidity();
+      optionThreeControl?.updateValueAndValidity();
+      optionFourControl?.updateValueAndValidity();
+    });
+  }
+
+  // Custom validator function for options
+  optionValidator() {
+    return [Validators.required, Validators.maxLength(500)];
   }
 
   /**
@@ -101,12 +121,14 @@ export class HomepageComponent implements OnInit {
   }
 
   onDelete() {
+    this.isConfirmShow = false;
     this.service.deleteQuestions(this.questionId).subscribe({
       next: () => {
         this.messageService.add({
           severity: ToastTypes.SUCCESS,
           summary: 'Question deleted successfully'
         });
+        this.getQuestionsList();
       },
 
       error: () => {
@@ -138,16 +160,31 @@ export class HomepageComponent implements OnInit {
           severity: ToastTypes.SUCCESS,
           summary: 'Question added successfully'
         });
+        this.getQuestionsList();
       },
 
-      error: () => {
-        this.messageService.add({
-          severity: ToastTypes.ERROR,
-          summary: 'An error occurred while adding'
-        });
+      error: (errorResponse) => {
+        const errorObject = errorResponse.error;
+
+        // Iterate through the keys in the error object
+        for (const key in errorObject) {
+          if (Object.prototype.hasOwnProperty.call(errorObject, key)) {
+            const errorMessage = errorObject[key];
+            // Display or handle the error message as needed
+            this.messageService.add({
+              severity: ToastTypes.ERROR,
+              summary: errorMessage
+            });
+          } else {
+            this.messageService.add({
+              severity: ToastTypes.ERROR,
+              summary: 'An error occurred while adding'
+            });
+          }
+        }
       }
     })
-
+    this.buildQuestionForm();
   }
 
   restoreMultiline(text: string): string {

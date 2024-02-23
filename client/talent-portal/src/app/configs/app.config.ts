@@ -15,5 +15,10 @@ export class Constants {
 	allowedFileType = 'application/pdf';
 	urlPattern = '^(https?:\\/\\/)?([a-zA-Z0-9-]+\\.)*[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}(\\/[^\\s]*)?$';
 	row = 10;
+	imageSizeInBytes = 1000000;
+	allowedImageType = 'image/*';
+	mcqQuestions = 'mcqQuestions';
+	mcqResults = 'mcqResults';
+	descriptiveQuestions = 'descriptiveQuestions';
 }
 

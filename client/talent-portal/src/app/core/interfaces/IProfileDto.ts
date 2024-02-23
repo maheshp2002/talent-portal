@@ -8,4 +8,5 @@ export interface IProfileDto {
 export interface IUserProfileDto extends IProfileDto {
     resume: string
     resumeUrl: string
+    profileImage: string
 }

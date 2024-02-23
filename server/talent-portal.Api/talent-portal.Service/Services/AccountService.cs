@@ -1,14 +1,10 @@
-﻿using MailKit;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading;
 using talent_portal.Domain.Models;
 using talent_portal.Service.Data;
 using talent_portal.Service.Dto;
@@ -128,7 +124,8 @@ public class AccountService
             UserName = dto.Email,
             NormalizedUserName = dto.Email.ToUpper(),
             IsAdmin = false,
-            Resume = ""
+            Resume = "",
+            ProfileImage = ""
         };
 
         var hasher = new PasswordHasher<ApplicationUser>();
@@ -145,13 +142,14 @@ public class AccountService
             Name = user.Name,
             Email = user.Email,
             IsAdmin = user.IsAdmin,
-            Resume = user.Resume
+            Resume = user.Resume,
+            ProfileImage = user.ProfileImage
         };
 
         return response;
     }
 
-    public async Task<ServiceResponse<string>> UploadResumeAsync(ResumeDto dto)
+    public async Task<ServiceResponse<string>> UploadResumeAndProfileAsync(ResumeDto dto)
     {
 
         var response = new ServiceResponse<string>();
@@ -160,30 +158,78 @@ public class AccountService
 
         if (user == null)
         {
-            response.AddError("resume upload error", "Unable to upload resume");
+            response.AddError("resume upload error", "Unable to upload resume or profile photo");
             return response;
         }
 
-        if (user.Resume != null && user.Resume != "")
+        if (dto.Resume != null)
         {
-            File.Delete(user.Resume);
+
+            if (user.Resume != null && user.Resume != "")
+            {
+                File.Delete(user.Resume);
+            }
+
+            string fileName = dto.Resume.FileName;
+            string fileExtension = Path.GetExtension(fileName).ToLower();
+
+            string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+            string uploadsDir = Path.Join("Resumes", uniqueFileName);
+
+            using (var fileStream = new FileStream(uploadsDir, FileMode.Create))
+            {
+                await dto.Resume.CopyToAsync(fileStream);
+            }
+
+            user.Resume = uploadsDir;
         }
 
-        string fileName = dto.File.FileName;
-        string fileExtension = Path.GetExtension(fileName).ToLower();
-
-        string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
-        string uploadsDir = Path.Join("Resumes", uniqueFileName);
-
-        using (var fileStream = new FileStream(uploadsDir, FileMode.Create))
+        if (dto.ProfileImage != null)
         {
-            await dto.File.CopyToAsync(fileStream);
+            if (user.ProfileImage != null && user.ProfileImage != "")
+            {
+                File.Delete(user.ProfileImage);
+            }
+
+            string fileName = dto.ProfileImage.FileName;
+            string fileExtension = Path.GetExtension(fileName).ToLower();
+
+            string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+            string uploadsDir = Path.Join("Images", uniqueFileName);
+
+            using (var fileStream = new FileStream(uploadsDir, FileMode.Create))
+            {
+                await dto.ProfileImage.CopyToAsync(fileStream);
+            }
+
+            user.ProfileImage = uploadsDir;
         }
 
-        user.Resume = uploadsDir;
-        response.Result = user.Resume;
+        response.Result = "Uploaded successfully";
         await _db.SaveChangesAsync();
 
+        return response;
+    }
+
+    public async Task<ServiceResponse<string>> CheckEmailExists(string email)
+    {
+
+        var response = new ServiceResponse<string>();
+
+        // Find a user in the database with the specified email address.
+        var user = await _userManager.FindByEmailAsync(email);
+
+        // If the user is found, add an error to the response and return it.
+        if (user != null)
+        {
+            response.AddError(nameof(email), "There is already an account registered with the provided email id.");
+        }
+        else
+        {
+            response.Result = "User not found in database.";
+        }
+
+        // Return the response object.
         return response;
     }
 
@@ -208,6 +254,7 @@ public class AccountService
             IsAdmin = user.IsAdmin,
             Resume = user.Resume == null || user.Resume == "" ? "No resume uploaded" : user.Resume.Remove(0, 8),
             ResumeUrl = user.Resume == null || user.Resume == "" ? "" : "https://localhost:7163/" + user.Resume, // update url according to your local host
+            ProfileImage = user.ProfileImage == null || user.ProfileImage == "" ? "" : "https://localhost:7163/" + user.ProfileImage
         };
 
         return response;

@@ -13,5 +13,7 @@
         public string? Resume { get; set; }
 
         public string? ResumeUrl { get; set; }
+
+        public string? ProfileImage { get; set; }
     }
 }

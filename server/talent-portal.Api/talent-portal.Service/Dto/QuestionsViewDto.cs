@@ -19,5 +19,10 @@
         public string OptionFour { get; set; }
 
         public string Answer { get; set; }
+
+        public bool IsDescriptiveQuestion { get; set; }
+
+        public string Skill { get; set; }
+
     }
 }

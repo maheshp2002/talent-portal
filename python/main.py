@@ -84,7 +84,7 @@ async def simulate_detection(passport_image_base64):
                         class_id = np.argmax(scores)
                         confidence = scores[class_id]
                         if confidence > 0.2:  # Adjust confidence threshold as needed
-                            if class_id in [67, 63]:  # Class ID for cell phone and laptop in COCO dataset
+                            if class_id in [68, 64]:  # Class ID for cell phone and laptop in COCO dataset
                                 detected_class = classes[class_id]
                                 print(f"Cheating: {detected_class.capitalize()} detected")
                                 await active_websocket.send(f"Cheating: {detected_class.capitalize()} detected!")

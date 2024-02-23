@@ -40,7 +40,8 @@
                 <img src="assets/images/carrer-counseling.jpg" alt="boy looking book">
                 <div class="d-flex flex-column justify-content-center align-items-center h-100">
                     <p>contact career counsellors.</p>
-                    <a type="button" [routerLink]="['/user/counselling']" class="btn btn-outline-dark rounded-2 nav-button">Contact</a>
+                    <a type="button" [routerLink]="['/user/counselling']"
+                        class="btn btn-outline-dark rounded-2 nav-button">Contact</a>
                 </div>
             </div>
         </div>
@@ -97,7 +98,22 @@
 </div>
 
 <p-dialog [(visible)]="isDialogVisible" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
-    <div class="d-flex gap-3 cheating-dialog">
+    <div class="gap-3">
+        <div class="cheating-dialog d-flex gap-3 align-items-center">
+            <div class="profile-container">
+                <p-fileUpload #fileUpload (onSelect)="onImageSelect($event)" mode="basic" name="profilePic"
+                    uploadLabel="" [accept]="allowedImageType" [customUpload]="true"
+                    [maxFileSize]="imageSizeInBytes"></p-fileUpload>
+                <div class="profile-image-container rounded-circle overflow-hidden">
+                    <img [src]="profile.profileImage" alt="Profile image" (error)="handleImageError()"
+                        class="h-100 w-100 rounded-circle object-fit-cover text-center">
+                </div>
+            </div>
+            <app-error-message [control]="resumeUploadForm.get('profileImage')" [validationMessages]="{
+            invalidImageSize: message.invalidImageSize,
+            invalidImageType: message.invalidImageType}">
+            </app-error-message>
+        </div>
         <h3>User Profile</h3>
     </div>
     <form [formGroup]="resumeUploadForm" (submit)="onSubmit()">
@@ -122,14 +138,15 @@
             <a *ngIf="profile.resumeUrl !== ''" [attr.href]="profile.resumeUrl" target="_blank">{{profile.resume}}</a>
             <a *ngIf="profile.resumeUrl === ''">{{profile.resume}}</a>
         </div>
-        <div class="d-flex justify-content-center w-100 mt-3 gap-5">
-            <p-fileUpload #fileUpload (onSelect)="onFileSelect($event)" mode="basic" name="file"
+        <div class="d-flex justify-content-center file-upload w-100 mt-3 gap-5">
+            <p-fileUpload #fileUpload (onSelect)="onFileSelect($event)" mode="basic" name="resume"
                 [chooseLabel]="isFileSelected ? fileName : 'Choose'" [accept]="allowedFileType" [customUpload]="true"
                 [maxFileSize]="fileSizeInBytes"></p-fileUpload>
-            <button type="submit" [disabled]="resumeUploadForm.invalid || !resumeUploadForm.dirty" class="btn btn-outline-dark rounded-2 upload-button">Upload</button>
+            <button type="submit" [disabled]="resumeUploadForm.invalid || !resumeUploadForm.dirty"
+                class="btn btn-outline-dark rounded-2 upload-button">Upload</button>
         </div>
         <div class="error">
-            <app-error-message [control]="resumeUploadForm.get('file')" [validationMessages]="{
+            <app-error-message [control]="resumeUploadForm.get('resume')" [validationMessages]="{
                             invalidFileSize: message.invalidFileSize,
                             invalidFileType: message.invalidFileType}">
             </app-error-message>
