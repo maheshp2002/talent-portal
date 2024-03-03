@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -20,8 +20,14 @@ import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
   templateUrl: './exam.component.html',
   styleUrls: ['./exam.component.scss']
 })
-export class ExamComponent implements CanComponentDeactivate, OnInit {
-  passportImageBase64: string | ArrayBufferLike | Blob | ArrayBufferView = ''; // Base64 representation of the image
+export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy {
+  @ViewChild('video', { static: true }) videoElement: any;
+  @ViewChild('canvas', { static: true }) canvas: any;
+  videoWidth = 0;
+  videoHeight = 0;
+  constraints = {
+    video: true
+  };
 
   userId = '';
   navigatingAway: boolean = false;
@@ -32,6 +38,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
   detectObject: any;
   isConfirmDialogShow: boolean = false;
   isDescriptiveQuestion = false;
+  faceMatchCount = 0;
   currentQuestion: IGetMcqQuestions = {
     id: 0,
     question: "",
@@ -89,6 +96,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
     this.getMcqQuestionsList();
     const storedResult = localStorage.getItem(this.constants.mcqResults);
     const storeQuestion = localStorage.getItem(this.constants.mcqQuestions);
+    // this.capture();
     if (storedResult) {
       this.clearMcqResultFromLocalStorage();
       this.clearDescriptiveQuestionResultFromLocalStorage();
@@ -96,6 +104,62 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
     if (storeQuestion) {
       this.clearMcqQuestionFromLocalStorage();
     }
+
+  }
+
+  async sendPassportImage(base64Data: any) {
+    try {
+      this.onDetectionStart(base64Data);
+      this.startCameraAfterPassportProcessing();
+    } catch (err) {
+      console.error("Error accessing camera:", err);
+    }
+  }
+
+  async startCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(this.constraints);
+      this.videoElement.nativeElement.srcObject = stream;
+      this.videoElement.nativeElement.play();
+      this.preloaderService.hide();
+  
+      // Continuously send camera feed for cheating detection
+      setInterval(() => {
+        this.captureFrameAndSend();
+      }, 1000); // Adjust interval as needed
+    } catch (err) {
+      console.error("Error accessing camera:", err);
+    }
+  }
+
+    // Method to stop the camera
+    stopCamera() {
+      const stream = this.videoElement.nativeElement.srcObject;
+      if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach((track: any) => track.stop());
+      }
+    }
+  
+  
+  captureFrameAndSend() {
+    const canvas = document.createElement('canvas');
+    canvas.width = this.videoElement.nativeElement.videoWidth;
+    canvas.height = this.videoElement.nativeElement.videoHeight;
+    const context = canvas.getContext('2d');
+    context?.drawImage(this.videoElement.nativeElement, 0, 0, canvas.width, canvas.height);
+    const base64Data = canvas.toDataURL('image/jpeg');
+  
+    // Send camera feed for cheating detection
+    this.detectionService.sendCameraFeed(base64Data);
+  }
+
+  startCameraAfterPassportProcessing() {
+    this.detectionService.getDetectedObject().subscribe((message: string) => {      
+      if (message.includes('Passport image uploaded successfully')) {
+        this.startCamera();
+      }
+    });
   }
 
   getUserProfile() {
@@ -121,7 +185,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64Data = reader.result as string | ArrayBufferLike | Blob | ArrayBufferView;
-          this.onDetectionStart(base64Data); // Start detection with the base64 data
+          this.sendPassportImage(base64Data); // Start detection with the base64 data
         };
         reader.readAsDataURL(blob);
       });
@@ -147,6 +211,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
     if (!this.isCheating) {
       $event.returnValue = "Are you sure you want to reload this page? This will terminate you from the exam.";
       this.detectionService.stopDetection();
+      this.stopCamera();
     }
   }
 
@@ -154,16 +219,19 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
     if (!this.isConfirmDialogShow) {
       const confirmNavigation = window.confirm('Are you sure you want to leave this page? Leaving this page will terminate you from examination.');
       this.detectionService.stopDetection();
+      this.stopCamera();
       return confirmNavigation;
     }
     return true;
   }
 
-  onDetectionStart(base64Data: string | ArrayBufferLike | Blob | ArrayBufferView) {
+  onDetectionStart(base64Data: string | ArrayBufferLike | Blob | ArrayBufferView) {    
     this.detectionService.startDetection(base64Data);
 
     this.detectionService.getDetectedObject().subscribe((data) => {
       this.detectObject = data;
+      console.log(data);
+      
 
       if (this.detectObject.toString().toLowerCase().includes("cheating")) {
         this.messageService.add({
@@ -179,11 +247,15 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
           this.objectCheatingLimit = (this.objectCheatingLimit || 0) + 1; // Initialize if undefined
         }
 
-        // Check if cheating limits exceeded
-        if (this.objectCheatingLimit >= 10 || this.personCheatingLimit >= 2 || this.detectObject.toString().toLowerCase().includes("cheating: face not matching user profile!")) {
-          this.isCheating = this.isConfirmDialogShow = true;
+        if(this.detectObject.toString().toLowerCase().includes("cheating: face not matching user profile!")) {
+          this.faceMatchCount = (this.objectCheatingLimit || 0) + 1;
+        }
 
+        // Check if cheating limits exceeded
+        if (this.objectCheatingLimit >= 10 || this.personCheatingLimit >= 2 || this.faceMatchCount >= 2) {
+          this.isCheating = this.isConfirmDialogShow = true;
           this.detectionService.stopDetection();
+          this.stopCamera();
 
           setTimeout(() => {
             this.router.navigate(['user/jobs']);
@@ -192,7 +264,6 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
       }
     });
   }
-
 
   getMcqQuestionsList() {
     this.examService.getMcqQuestions(this.result.jobId, this.result.userId).subscribe({
@@ -224,6 +295,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
         }
 
         this.detectionService.stopDetection();
+        this.stopCamera();
 
         setTimeout(() => {          
           this.router.navigate(['user/jobs']);
@@ -258,6 +330,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
         }
 
         this.detectionService.stopDetection();
+        this.stopCamera();
 
         setTimeout(() => {          
           this.router.navigate(['user/jobs']);
@@ -393,7 +466,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
         this.examResult(response.result);
       },
 
-      error: (errorResponse) => {
+      error: (errorResponse: any) => {
         const errorObject = errorResponse.error;
 
         // Iterate through the keys in the error object
@@ -426,6 +499,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
         this.isConfirmDialogShow = true;
         this.preloaderService.hide();
         this.detectionService.stopDetection();
+        this.stopCamera();
         this.messageService.add({
           severity: ToastTypes.SUCCESS,
           summary: 'Exam completed successfully'
@@ -435,6 +509,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
 
       error: () => {
         this.detectionService.stopDetection();
+        this.stopCamera();
         this.isConfirmDialogShow = true;
         this.preloaderService.hide();
         this.router.navigate(['user/result', result.jobId, result.userId]);
@@ -445,56 +520,6 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
       }
     })
   }
-
-  // submit() {
-  //   // this.result.score = this.currentQuestion.answer.toLowerCase() == selectedOption.toLowerCase()
-  //   //   ? this.result.score + 1
-  //   //   : this.result.score + 0;
-
-  //   if (this.index < this.noOfQ - 1) {
-  //     this.index = this.index + 1;
-  //     this.currentQuestion = this.mcqs[this.index];
-  //   }
-  //   else {
-  //     this.detectionService.stopDetection();
-
-  //     this.selectedOptions.forEach(element => {
-  //       this.result.score = element.option == this.mcqs[element.index].answer
-  //         ? this.result.score + 1
-  //         : this.result.score + 0;
-  //       console.log(element, this.mcqs[element.index].answer);
-
-  //     });
-
-  //     var result = this.result;
-  //     result.totalScore = this.noOfQ
-  //     result.isPassed = result.score >= (this.noOfQ - 1) / 2 ? true : false;
-
-  //     console.log(result);
-
-  //     // this.resultService.addResult(result).subscribe({
-  //     //   next: () => {
-  //     //     this.isConfirmDialogShow = true;
-  //     //     this.preloaderService.hide();
-  //     //     this.messageService.add({
-  //     //       severity: ToastTypes.SUCCESS,
-  //     //       summary: 'Exam completed successfully'
-  //     //     });
-  //     //     this.router.navigate(['user/result', result.jobId, result.userId]);
-  //     //   },
-
-  //     //   error: () => {
-  //     //     this.isConfirmDialogShow = true;
-  //     //     this.preloaderService.hide();
-  //     //     this.router.navigate(['user/result', result.jobId, result.userId]);
-  //     //     this.messageService.add({
-  //     //       severity: ToastTypes.ERROR,
-  //     //       summary: 'An error occurred'
-  //     //     });
-  //     //   }
-  //     // })
-  //   }
-  // }
 
   restoreMultiline(text: string): string {
     return text.replace(/\\n/g, "\n");
@@ -530,8 +555,9 @@ export class ExamComponent implements CanComponentDeactivate, OnInit {
   }
 
   ngOnDestroy(): void {
+    this.stopCamera();
+    this.detectionService.stopDetection();
     this.clearMcqQuestionFromLocalStorage();
     this.clearDescriptiveQuestionResultFromLocalStorage();
   }
-
 }

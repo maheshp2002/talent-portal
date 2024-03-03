@@ -1,170 +1,180 @@
-import cv2
 import asyncio
+import os
+
 import websockets
 import base64
-import face_recognition
+import cv2
 import numpy as np
+import face_recognition
+import tempfile
 
 # Variables for detection and tracking
 detect = False
 active_websocket = None
+reference_encoding = None
+output_layers = None
+net = None
+classes = None
 
-# Function for simulating person and object detection (phones, tablets, laptops)
-async def simulate_detection(passport_image_base64):
-    global detect
-    global active_websocket
-    cap = cv2.VideoCapture(0)  # Use '0' for the primary camera
+# WebSocket URL
+websocket_url = "ws://localhost:8765"
 
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+# Function to delete the temporary image file
+def delete_temporary_image():
+    if passport_image_filename:
+        try:
+            os.remove(passport_image_filename)
+            print("Temporary image file deleted successfully.")
+        except Exception as e:
+            print("Error deleting temporary image file:", e)
 
-    # Load YOLO
-    net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
-    classes = []
-    with open("coco.names", "r") as f:
-        classes = [line.strip() for line in f]
-
-    # Get output layer names
-    layer_names = net.getLayerNames()
-    output_layers_indices = net.getUnconnectedOutLayers()
-
-    # Convert output layer indices to list of integers
-    output_layers = [layer_names[idx - 1] for idx in output_layers_indices]
-
-    print("Simulation started")
+# Function for decoding and saving the passport image
+async def process_passport_image(passport_image_base64):
+    global reference_encoding
+    global passport_image_filename
 
     try:
         # Convert base64 image to OpenCV format
         image_bytes = base64.b64decode(passport_image_base64.split(',')[1])
         image_np = np.frombuffer(image_bytes, np.uint8)
-        decoded_image = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
+        passport_image = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
 
-        # Check if the image was properly decoded
-        if decoded_image is None:
-            raise ValueError("Failed to decode image")
+        # Get the directory path of the current script
+        script_directory = os.path.dirname(__file__)
 
-        # Save the decoded photo
-        cv2.imwrite("decoded_photo.jpg", decoded_image)
+        # Save the passport image as a temporary file in the same directory as the main script
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg', dir=script_directory) as temp_file:
+            temp_file.write(image_bytes)
+            passport_image_filename = temp_file.name  # Store the filename
+            temp_file_path = temp_file.name
 
-        # Load the reference image for face comparison
-        reference_image = decoded_image
-        reference_encoding = face_recognition.face_encodings(reference_image)[0]
+        # Encode the face in the passport image
+        reference_encoding = face_recognition.face_encodings(passport_image)[0]
+        await active_websocket.send("Passport image uploaded successfully")
 
-        while detect:
-            ret, frame = cap.read()
-            if not ret:
-                print("Error: Camera capture failed")
+        return temp_file_path
+    except Exception as e:
+        print("Error processing passport image:", e)
+        return None
+
+
+# Function for detecting cheating by matching the decoded image with the person in the camera feed
+async def detect_cheating(camera_image_base64):
+    global detect
+    global active_websocket
+    global reference_encoding
+    global output_layers
+    global net
+    global classes
+
+    try:
+        if reference_encoding is None:
+            print("Passport image not processed yet!")
+            return
+
+        # Convert base64 image to OpenCV format
+        image_bytes = base64.b64decode(camera_image_base64.split(',')[1])
+        image_np = np.frombuffer(image_bytes, np.uint8)
+        camera_image = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
+
+        # Convert the frame to RGB (face_recognition library uses RGB)
+        rgb_frame = cv2.cvtColor(camera_image, cv2.COLOR_BGR2RGB)
+
+        # Find all face locations and encodings in the current frame
+        face_locations = face_recognition.face_locations(rgb_frame)
+
+        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+
+        # Compare each face encoding in the frame with the reference encoding
+        for face_encoding in face_encodings:
+            # Compare the current face encoding with the reference encoding
+            match = face_recognition.compare_faces([reference_encoding], face_encoding)
+
+            if match[0]:
+                print("Match found!")
+                break
+            else:
+                await active_websocket.send("cheating: face not matching user profile!")
                 break
 
-            try:
-                # Face comparison with the reference image
-                compare_result = compare_faces(frame, reference_encoding)
-                if not compare_result:
-                    print("Cheating: Face not matching user profile!")
-                    await active_websocket.send(f"Cheating: Face not matching user profile!")
+        # Object detection using YOLO
+        height, width, channels = camera_image.shape
+        blob = cv2.dnn.blobFromImage(camera_image, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
+        net.setInput(blob)
+        outs = net.forward(output_layers)
 
-                # Haar Cascade person detection
-                gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                faces = face_cascade.detectMultiScale(gray_frame, 1.3, 5)
+        for out in outs:
+            for detection in out:
+                scores = detection[5:]
+                class_id = np.argmax(scores)
+                confidence = scores[class_id]
+                if confidence > 0.2:  # Adjust confidence threshold as needed
+                    if class_id in [67, 63]:  # Class ID for cell phone and laptop in COCO dataset
+                        detected_class = classes[class_id]
+                        await active_websocket.send(f"Cheating: {detected_class.capitalize()} detected!")
 
-                # Check for multiple faces in the camera feed
-                if len(faces) > 1:
-                    print("Error: More than one face detected")
-                    await active_websocket.send(f"Cheating: More than one face detected!")
-                    continue
-
-                # Object detection using YOLO for phone, tablet, and laptop
-                height, width, channels = frame.shape
-                blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
-                net.setInput(blob)
-                outs = net.forward(output_layers)
-
-                for out in outs:
-                    for detection in out:
-                        scores = detection[5:]
-                        class_id = np.argmax(scores)
-                        confidence = scores[class_id]
-                        if confidence > 0.2:  # Adjust confidence threshold as needed
-                            if class_id in [68, 64]:  # Class ID for cell phone and laptop in COCO dataset
-                                detected_class = classes[class_id]
-                                print(f"Cheating: {detected_class.capitalize()} detected")
-                                await active_websocket.send(f"Cheating: {detected_class.capitalize()} detected!")
-
-                # Display the frame with face rectangles
-                for (x, y, w, h) in faces:
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-
-                # Display the resulting frame
-                cv2.imshow('Face Recognition', frame)
-
-                # Break the loop if 'q' is pressed
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
-
-                await asyncio.sleep(1)  # Control the rate of detection
-                if active_websocket and active_websocket.closed:
-                    detect = False
-
-            except Exception as e:
-                print("Error in simulation loop:", e)
+        # Multiple person detection
+        if len(face_locations) > 1:
+            await active_websocket.send("Cheating: More than one face detected!")
 
     except Exception as e:
+        print("haha")
         print("Error processing image:", e)
-        # Send an error message to the client or handle the error as needed
 
-    finally:
-        cap.release()
-        cv2.destroyAllWindows()
-        print("Simulation stopped")
 
-# Function to compare faces using face recognition
-def compare_faces(face_image, reference_encoding):
-    # Convert the frame to RGB (face_recognition library uses RGB)
-    rgb_frame = cv2.cvtColor(face_image, cv2.COLOR_BGR2RGB)
-
-    # Find all face locations and encodings in the current frame
-    face_locations = face_recognition.face_locations(rgb_frame)
-    face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
-
-    # Compare each face encoding in the frame with the reference encoding
-    for face_encoding in face_encodings:
-        # Compare the current face encoding with the reference encoding
-        match = face_recognition.compare_faces([reference_encoding], face_encoding)
-
-        if match[0]:
-            print("Match found!")
-            return True
-        else:
-            return False
-
-# Function to start simulation
-async def start_simulation(websocket, path):
+# Function to start detection
+async def start_detection(websocket, path):
     global detect
     global active_websocket
     active_websocket = websocket
     detect = True
-    await simulate_detection(await websocket.recv())
 
-# Function to stop simulation
-def stop_simulation():
+    while detect:
+        message = await websocket.recv()
+
+        # Split the received message to separate the string "camera_feed" and the base64 data
+        message_parts = message.split(",", 1)
+        if message_parts[0] == "camera_feed":
+            # Start cheating detection using camera feed
+            await detect_cheating(message_parts[1])  # Pass the base64 data to the function
+        else:
+            # Process passport image
+            await process_passport_image(message)
+
+
+# Function to stop detection
+def stop_detection():
     global detect
     detect = False
 
-# Start WebSocket server
-start_server = websockets.serve(start_simulation, "localhost", 8765)
 
-try:
-    print("WebSocket server started")
-    asyncio.get_event_loop().run_until_complete(start_server)
-    asyncio.get_event_loop().run_forever()
-except KeyboardInterrupt:
-    print("Server terminated by the user.")
-finally:
-    loop = asyncio.get_event_loop()
-    tasks = asyncio.all_tasks(loop=loop)
+async def main():
+    global output_layers
+    global net
+    global classes
+    try:
+        # Load YOLO
+        net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
+        classes = []
+        with open("coco.names", "r") as f:
+            classes = [line.strip() for line in f]
 
-    for task in tasks:
-        task.cancel()
+        # Get output layer names
+        layer_names = net.getLayerNames()
+        output_layers_indices = net.getUnconnectedOutLayers()
 
-    loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
-    loop.close()
-    print("WebSocket server stopped")
+        # Convert output layer indices to list of integers
+        output_layers = [layer_names[idx - 1] for idx in output_layers_indices]
+
+        print("WebSocket server started")
+        async with websockets.serve(start_detection, "localhost", 8765):
+            await asyncio.Future()  # Run forever
+    except KeyboardInterrupt:
+        print("Server terminated by user")
+    finally:
+        stop_detection()
+        delete_temporary_image()
+
+
+print("Starting WebSocket server")
+asyncio.run(main())

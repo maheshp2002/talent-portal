@@ -17,7 +17,7 @@ export class AdminGuard implements CanActivate {
         const role = this.tokenHelper.getDecodedToken();
         console.log(hasToken);
         if (!hasToken) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['']);
             return false;
         }
         if (role.role !== "Admin") {
