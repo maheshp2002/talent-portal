@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -23,8 +23,8 @@ import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
 export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy {
   @ViewChild('video', { static: true }) videoElement: any;
   @ViewChild('canvas', { static: true }) canvas: any;
-  videoWidth = 0;
-  videoHeight = 0;
+  @Input('appTimeFormat') remainingTime: number = 30 * 60;
+
   constraints = {
     video: true
   };
@@ -54,6 +54,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
   descriptiveAnswer: IDescriptiveScore[] = [];
   selectedOptions: ISelectedOption[] = [];
   totalScore = 0;
+  timer: any;
 
   result: IPostResult = {
     isPassed: false,
@@ -69,6 +70,31 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     isValid: true,
     errors: {},
     result: []
+  }
+
+  startTimer() {
+    this.timer = setInterval(() => {
+      this.remainingTime--;
+      if (this.remainingTime <= 0) {
+        this.messageService.add({
+          severity: ToastTypes.ERROR,
+          summary: 'Exam time Out! You have been disqualified.'
+        });
+        this.isConfirmDialogShow = true;
+        clearInterval(this.timer);
+        this.router.navigate(['user/jobs']);
+      }
+    }, 1000);
+  }
+
+  formatTime(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${this.pad(minutes)}:${this.pad(remainingSeconds)}`;
+  }
+
+  pad(val: number): string {
+    return val < 10 ? '0' + val : val.toString();
   }
 
   constructor(
@@ -96,7 +122,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     this.getMcqQuestionsList();
     const storedResult = localStorage.getItem(this.constants.mcqResults);
     const storeQuestion = localStorage.getItem(this.constants.mcqQuestions);
-    // this.capture();
+    this.startCamera();
     if (storedResult) {
       this.clearMcqResultFromLocalStorage();
       this.clearDescriptiveQuestionResultFromLocalStorage();
@@ -122,7 +148,8 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
       this.videoElement.nativeElement.srcObject = stream;
       this.videoElement.nativeElement.play();
       this.preloaderService.hide();
-  
+      this.startTimer();
+
       // Continuously send camera feed for cheating detection
       setInterval(() => {
         this.captureFrameAndSend();
@@ -132,16 +159,16 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     }
   }
 
-    // Method to stop the camera
-    stopCamera() {
-      const stream = this.videoElement.nativeElement.srcObject;
-      if (stream) {
-        const tracks = stream.getTracks();
-        tracks.forEach((track: any) => track.stop());
-      }
+  // Method to stop the camera
+  stopCamera() {
+    const stream = this.videoElement.nativeElement.srcObject;
+    if (stream) {
+      const tracks = stream.getTracks();
+      tracks.forEach((track: any) => track.stop());
     }
-  
-  
+  }
+
+
   captureFrameAndSend() {
     const canvas = document.createElement('canvas');
     canvas.width = this.videoElement.nativeElement.videoWidth;
@@ -149,13 +176,13 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     const context = canvas.getContext('2d');
     context?.drawImage(this.videoElement.nativeElement, 0, 0, canvas.width, canvas.height);
     const base64Data = canvas.toDataURL('image/jpeg');
-  
+
     // Send camera feed for cheating detection
     this.detectionService.sendCameraFeed(base64Data);
   }
 
   startCameraAfterPassportProcessing() {
-    this.detectionService.getDetectedObject().subscribe((message: string) => {      
+    this.detectionService.getDetectedObject().subscribe((message: string) => {
       if (message.includes('Passport image uploaded successfully')) {
         this.startCamera();
       }
@@ -225,13 +252,13 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     return true;
   }
 
-  onDetectionStart(base64Data: string | ArrayBufferLike | Blob | ArrayBufferView) {    
+  onDetectionStart(base64Data: string | ArrayBufferLike | Blob | ArrayBufferView) {
     this.detectionService.startDetection(base64Data);
 
     this.detectionService.getDetectedObject().subscribe((data) => {
       this.detectObject = data;
       console.log(data);
-      
+
 
       if (this.detectObject.toString().toLowerCase().includes("cheating")) {
         this.messageService.add({
@@ -297,7 +324,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
         this.detectionService.stopDetection();
         this.stopCamera();
 
-        setTimeout(() => {          
+        setTimeout(() => {
           this.router.navigate(['user/jobs']);
         }, 1000);
       }
@@ -332,7 +359,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
         this.detectionService.stopDetection();
         this.stopCamera();
 
-        setTimeout(() => {          
+        setTimeout(() => {
           this.router.navigate(['user/jobs']);
         }, 1000);
       }
@@ -459,7 +486,8 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     }
   }
 
-  getDescriptiveScore() {    
+  getDescriptiveScore() {
+    clearInterval(this.timer);
     this.preloaderService.show();
     this.examService.descriptiveScore(this.descriptiveAnswer).subscribe({
       next: (response: any) => {
@@ -493,7 +521,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     result.score = parseFloat(parsedScore.toFixed(2));
     result.totalScore = this.noOfQ + mcq.totalScore
     result.isPassed = result.score >= (result.totalScore) / 2 ? true : false;
-    
+
     this.resultService.addResult(result).subscribe({
       next: () => {
         this.isConfirmDialogShow = true;
@@ -555,6 +583,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
+    clearInterval(this.timer);
     this.stopCamera();
     this.detectionService.stopDetection();
     this.clearMcqQuestionFromLocalStorage();

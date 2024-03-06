@@ -1,11 +1,20 @@
-<div class="video-container" style="height: 100px; width: 100px;">
-    <video #video autoplay playsinline></video>
-    <canvas #canvas hidden></canvas>
-  </div>
-<form class="p-5" [formGroup]="questionForm">
-    <div class="d-flex gap-4 align-items-center border-bottom border-warning mb-4">
-        <label class="text-warning">Question {{index + 1}}:</label>
-        <h1>{{currentQuestion.question}}</h1>
+<form class="ps-5 pe-5 pt-3" [formGroup]="questionForm">
+    <div class="row border-bottom border-warning mb-4">
+        <div class="d-flex align-items-center gap-4 col-8">
+            <label class="text-warning">Question {{index + 1}}:</label>
+            <h1>{{currentQuestion.question}}</h1>
+        </div>
+        <div class="video-container d-flex gap-3 align-items-center justify-content-end col-4 mb-2">
+            <div class="timer">
+                <b>Time Remaining: </b>
+                <span [style.color]="remainingTime < 180 ? 'red' 
+               : (remainingTime < 300 ? 'orange' : 'inherit')">
+                    {{ formatTime(remainingTime) }}
+                </span>
+            </div>
+            <video #video autoplay playsinline class="video rounded"></video>
+            <canvas #canvas hidden></canvas>
+        </div>
     </div>
     <div *ngIf="currentQuestion.isCodeProvided" class="mt-3 mb-3 code">
         <label class="text-warning mb-4 options-label">Code:</label>
