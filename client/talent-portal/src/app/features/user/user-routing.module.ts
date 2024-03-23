@@ -9,13 +9,14 @@ import { JobSearchComponent } from './job-search/job-search.component';
 import { ResultComponent } from './result/result.component';
 import { AttendedExamsComponent } from './attended-exams/attended-exams.component';
 import { CounsellingComponent } from './counselling/counselling.component';
+import { ExamGuard } from 'src/app/core/utilities/guards/exam.guard';
 
 const routes: Routes = [
   {
     path: '', component: UserLayoutComponent, children: [
       { path: '', component: HomepageComponent },
       { path: 'exam-landing/:id', component: OnlineExamLandingComponent},
-      { path: 'exam/:id', component: ExamComponent, canDeactivate: [CanDeactivateGuard]  },
+      { path: 'exam/:id', component: ExamComponent, canDeactivate: [CanDeactivateGuard, ExamGuard]  },
       { path: 'jobs', component: JobSearchComponent },
       { path: 'result/:jobId/:userId', component: ResultComponent },
       { path: 'attended-exams', component: AttendedExamsComponent },

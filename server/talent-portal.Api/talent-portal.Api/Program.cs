@@ -102,6 +102,13 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "CandidateImage")),
+    RequestPath = "/candidateImage"
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 

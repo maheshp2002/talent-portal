@@ -10,6 +10,7 @@ export class OnlineExamLandingComponent implements OnInit {
   jobId: number = 0;
 
   ngOnInit(): void {
+    window.scrollTo(0, 0);
     this.getJobId();
   }
 

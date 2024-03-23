@@ -40,7 +40,9 @@
         </ng-template>
         <ng-template pTemplate="body" ngFor let-result [ngForOf]="results" let-i="index">
             <tr>
-                <td>{{result.userName}}</td>
+                <td class="d-flex align-items-center justify-content-between">
+                    <span [pTooltip]="result.userName" class="text-truncate candidate-name-container">{{result.userName}}</span>
+                    <img class="candidate-img" (click)="openModal(result.userImage)" [src]="result.userImage"></td>
                 <td>
                     <a [href]="'mailto:' + result.userEmail">{{result.userEmail}}</a>
                 </td>

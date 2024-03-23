@@ -40,7 +40,15 @@ export class DetectionService {
         if (this.websocket) {
           this.websocket.send(base64Data);          
         } else {
+          this.preloaderService.show();
+          setTimeout(() => {
+            this.router.navigate(['user/jobs']);
+          }, 3000);
           console.error('WebSocket connection is not defined.');
+          this.messageService.add({
+            severity: ToastTypes.ERROR,
+            summary: "An error occured!"
+          });
         }
       }
     }

@@ -4,6 +4,7 @@ export interface IPostResult {
     jobId: number
     totalScore: number
     userId: string
+    userImage: string
 }
 
 export interface IGetResult {
@@ -39,4 +40,5 @@ export interface IGetAllResultAdmin {
     jobDescription: string
     userEmail: string
     userName: string
+    userImage: string
 }

@@ -168,9 +168,6 @@ export class HomepageComponent implements OnInit {
     Object.keys(temp).forEach((key) => {      
       formData.append(key, temp[key])
     });
-    console.log(formData.get('profileImage'));
-    console.log(formData.get('resume'));
-    
     
     this.service.uploadResume(formData).subscribe({
       next: () => {

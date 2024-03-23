@@ -1,9 +1,21 @@
+@import '/src/styles/variables.scss';
+
 .fw-700 {
     font-weight: 700;
 }
 
 .top-container {
     height: 10vh;
+}
+
+.add-button {
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+
+    &:hover {
+        color: white;
+    }
 }
 
 .pi {
@@ -17,4 +29,19 @@
 
 a {
     text-decoration: none;
+}
+
+.dialog-footer {
+    background-color: white;
+    border-top: 1px solid $secondary-color;
+}
+
+.dialog-button {
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+
+    &:hover {
+        color: white;
+    }
 }

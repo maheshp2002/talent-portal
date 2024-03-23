@@ -17,6 +17,8 @@ import { ViewAllJobComponent } from './view-all-job/view-all-job.component';
 import { TableModule } from 'primeng/table';
 import { ExamResultComponent } from './exam-result/exam-result.component';
 import { CounsellingComponent } from './counselling/counselling.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ImageModalComponent } from './image-modal/image-modal.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import { CounsellingComponent } from './counselling/counselling.component';
     NavbarComponent,
     ViewAllJobComponent,
     ExamResultComponent,
-    CounsellingComponent
+    CounsellingComponent,
+    ImageModalComponent
   ],
   imports: [
     CommonModule,
@@ -38,6 +41,7 @@ import { CounsellingComponent } from './counselling/counselling.component';
     SharedModule,
     TableModule,
     TooltipModule,
+    MatDialogModule,
     InputTextareaModule
   ]
 })

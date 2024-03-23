@@ -32,7 +32,8 @@ public class ResultService
                 JobDescription = _db.Jobs.FirstOrDefault(m => m.Id == c.JobId).Description,
                 Resume = "https://localhost:7163/" +_db.ApplicationUser.FirstOrDefault(m => m.Id == c.ApplicationUserId).Resume,
                 UserEmail = _db.Users.FirstOrDefault(m => m.Id == c.ApplicationUserId).Email,
-                UserName = _db.Users.FirstOrDefault(m => m.Id == c.ApplicationUserId).Name
+                UserName = _db.Users.FirstOrDefault(m => m.Id == c.ApplicationUserId).Name,
+                UserImage = "https://localhost:7163/" + c.UserImage
             }).ToListAsync();
 
         response.Result = jobs;
@@ -87,6 +88,28 @@ public class ResultService
     {
         var response = new ServiceResponse<ResultViewUserDto>();
 
+        var imageUrl = "";
+
+        if (dto.UserImage != null)
+        {
+
+            //string fileName = dto.UserImage.FileName;
+            //string fileExtension = Path.GetExtension(fileName).ToLower();
+            byte[] imageBytes = Convert.FromBase64String(dto.UserImage);    
+
+            string uniqueFileName = Guid.NewGuid().ToString() + ".jpg";
+            string uploadsDir = Path.Join("CandidateImage", uniqueFileName);
+
+            //using (var fileStream = new FileStream(uploadsDir, FileMode.Create))
+            //{
+            //    await dto.UserImage.CopyToAsync(fileStream);
+            //}
+
+            File.WriteAllBytes(uploadsDir, imageBytes);
+
+            imageUrl = uploadsDir;
+        }
+
         var result = new ExamResult
         {
             IsPassed = dto.IsPassed,
@@ -94,7 +117,8 @@ public class ResultService
             ApplicationUserId = dto.UserId,
             JobId = dto.JobId,
             TotalScore = dto.TotalScore,
-            ExamDate = DateTime.Now.ToString("MM/dd/yyyy")
+            ExamDate = DateTime.Now.ToString("MM/dd/yyyy"),
+            UserImage = imageUrl
         };
 
         _db.Results.Add(result);

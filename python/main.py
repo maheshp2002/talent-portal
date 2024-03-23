@@ -15,9 +15,8 @@ reference_encoding = None
 output_layers = None
 net = None
 classes = None
+isImageSend = False
 
-# WebSocket URL
-websocket_url = "ws://localhost:8765"
 
 # Function to delete the temporary image file
 def delete_temporary_image():
@@ -27,6 +26,7 @@ def delete_temporary_image():
             print("Temporary image file deleted successfully.")
         except Exception as e:
             print("Error deleting temporary image file:", e)
+
 
 # Function for decoding and saving the passport image
 async def process_passport_image(passport_image_base64):
@@ -66,6 +66,7 @@ async def detect_cheating(camera_image_base64):
     global output_layers
     global net
     global classes
+    global isImageSend
 
     try:
         if reference_encoding is None:
@@ -86,12 +87,25 @@ async def detect_cheating(camera_image_base64):
         face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
         # Compare each face encoding in the frame with the reference encoding
-        for face_encoding in face_encodings:
+        for face_location, face_encoding in zip(face_locations, face_encodings):
             # Compare the current face encoding with the reference encoding
             match = face_recognition.compare_faces([reference_encoding], face_encoding)
 
             if match[0]:
                 print("Match found!")
+                if not isImageSend:
+                    # Save the photo of the person
+                    top, right, bottom, left = face_location
+                    person_photo = camera_image[top:bottom, left:right]
+
+                    # Convert the person's photo to base64
+                    _, person_photo_base64 = cv2.imencode('.jpg', person_photo)
+                    person_photo_base64_str = base64.b64encode(person_photo_base64).decode('utf-8')
+
+                    # Send the photo to Angular
+                    await active_websocket.send(f"Match found! Sending photo:{person_photo_base64_str}")
+                    # await active_websocket.send(person_photo_base64_str)
+                    isImageSend = True
                 break
             else:
                 await active_websocket.send("cheating: face not matching user profile!")
@@ -118,7 +132,6 @@ async def detect_cheating(camera_image_base64):
             await active_websocket.send("Cheating: More than one face detected!")
 
     except Exception as e:
-        print("haha")
         print("Error processing image:", e)
 
 

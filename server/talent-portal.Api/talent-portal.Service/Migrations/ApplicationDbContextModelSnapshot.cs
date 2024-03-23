@@ -366,6 +366,9 @@ namespace talent_portal.Service.Migrations
                     b.Property<int>("TotalScore")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserImage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");

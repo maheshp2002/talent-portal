@@ -1,5 +1,7 @@
-<div class="top-container w-100 p-3 d-flex justify-content-start">
+<div class="top-container w-100 p-3 d-flex justify-content-between">
     <h2>Job details</h2>
+    <button type="submit" class="btn btn-outline-warning rounded-2 add-button" (click)="isVisible = true">Add
+        Job</button>
 </div>
 <div class="ms-3 me-3">
     <hr>
@@ -58,3 +60,47 @@
         </ng-template>
     </p-table>
 </div>
+
+<p-dialog [draggable]="false" header="Add new job" [(visible)]="isVisible">
+    <form [formGroup]="jobForm" class="mb-5" (ngSubmit)="onSubmit()">
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-job-job">
+                Job
+            </label>
+            <input formControlName="title" placeholder="Type down job title here" type="text" class="w-100"
+                id="admin-job-title">
+            <app-error-message [control]="jobForm.get('title')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.lengthTwoHundred
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-job-description">
+                Description
+            </label>
+            <textarea formControlName="description" placeholder="Type down job description here" type="text" class="w-100"
+                id="admin-job-description"></textarea>
+            <app-error-message [control]="jobForm.get('description')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.maxLengthFiveHundred
+            }"></app-error-message>
+        </div>
+        <div class="form-input-control ps-0">
+            <label class="required" for="admin-job-posiiton">
+                Position
+            </label>
+            <input formControlName="position" placeholder="Type down job position here" type="text" class="w-100"
+            id="admin-job-position">
+            <app-error-message [control]="jobForm.get('position')" [validationMessages]="{
+                    required: message.requiredField,
+                    maxlength: message.lengthTwoHundred
+            }"></app-error-message>
+        </div>
+        <div class="fixed-bottom dialog-footer w-100 d-flex justify-content-end p-3">
+            <button icon="pi pi-check" (click)="isVisible = false"
+                class="btn btn-outline-dark rounded-2 dialog-button me-3">Cancel</button>
+            <button [disabled]="jobForm.invalid" icon="pi pi-check" type="submit"
+                class="btn btn-dark rounded-2 dialog-button">Save</button>
+        </div>
+    </form>
+</p-dialog>

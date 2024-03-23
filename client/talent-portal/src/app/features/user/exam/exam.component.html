@@ -43,12 +43,19 @@
             <label>{{currentQuestion.optionFour}}</label>
         </div>
     </div>
-    <div class="middle-container d-flex flex-column justify-content-center mb-5" *ngIf="isDescriptiveQuestion">
-        <textarea rows="15" cols="180" name="answer" formControlName="answer" placeholder="Type down your answer..."
+    <div class="middle-container d-flex flex-column justify-content-center position-relative mb-5" *ngIf="isDescriptiveQuestion">
+        <textarea rows="15" cols="180" name="answer" maxlength="3000" formControlName="answer" placeholder="Type down your answer..."
             pInputTextarea [value]="" [autoResize]="true"
             [class]="questionForm.invalid ? 'ng-invalid ng-dirty' : ''"></textarea>
+        
+        <div class="voice-button-container">
+            <button class="voice-button" (click)="toggleRecording()" [ngClass]="{ 'recording background-red': isRecording, 'background-orange': !isRecording }">
+                <i class="material-icons">{{ isRecording ? 'stop' : 'mic_none' }}</i>
+            </button>
+        </div>
         <app-error-message [control]="questionForm.get('answer')" [validationMessages]="{
-            required: message.requiredField
+            required: message.requiredField,
+            maxlength: message.maxLengthFiveHundred
         }"></app-error-message>
     </div>
     <div class="d-flex justify-content-end">
@@ -75,5 +82,19 @@
     <p class="mt-5">
         You have been terminated from the examination.
     </p>
+</p-dialog>
+
+<p-dialog [(visible)]="isInstructionDialogVisible" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <div class="d-flex gap-3 cheating-dialog">
+        <i class="pi pi-exclamation-triangle p-mr-2 text-warning"></i>
+        <h3>Instructions</h3>
+    </div>
+    <ol class="mt-5">
+        <li>There is no negative marks included</li>
+        <li>You should complete the exam within the time limit, else you will be eliminate.</li>
+        <li>There should not be more than one person in the room. If more than one person found you will be terminated from exam</li>
+        <li>Don't cover your face with anything, else you will be terminated from exam</li>
+        <li>Don't use mobile phone, tablet, or laptop. If found any such thing you will be terminated from exam</li>
+    </ol>
 </p-dialog>
 <app-pre-loader></app-pre-loader>

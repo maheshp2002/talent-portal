@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Table } from 'primeng/table';
 import { Constants } from 'src/app/configs/app.config';
 import { IGetAllResultAdmin, IGetAllResultUser } from 'src/app/core/interfaces';
 import { ResultService } from 'src/app/core/services/result.service';
+import { ImageModalComponent } from '../image-modal/image-modal.component';
 
 @Component({
   selector: 'app-exam-result',
@@ -20,7 +22,8 @@ export class ExamResultComponent implements OnInit {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly constants: Constants,
-    private readonly service: ResultService
+    private readonly service: ResultService,
+    public readonly dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -40,6 +43,12 @@ export class ExamResultComponent implements OnInit {
         this.results = response.result;
         console.log(this.results); 
       }
+    });
+  }
+
+  openModal(imageUrl: string): void {
+    this.dialog.open(ImageModalComponent, {
+      data: { imageSrc: imageUrl }
     });
   }
 }

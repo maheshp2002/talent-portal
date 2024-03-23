@@ -57,6 +57,8 @@ export class JobSearchComponent implements OnInit {
       next: (response: any) => {
         this.preloader.hide();
         this.initialJobs = this.jobs = response.result;
+        console.log(this.initialJobs);
+        
       },
 
       error: (errorResponse) => {

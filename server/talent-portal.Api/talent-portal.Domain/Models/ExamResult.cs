@@ -21,5 +21,7 @@ namespace talent_portal.Domain.Models
         [ForeignKey(nameof(ApplicationUserId))]
         public string? ApplicationUserId { get; set; }
         public ApplicationUser? User { get; set; }
+
+        public string? UserImage { get; set; }
     }
 }

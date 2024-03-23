@@ -5,10 +5,10 @@
     <a [ngClass]="jobSearchForm.get('search')?.value ? 'pi-times fs-18' : 'pi-search fs-23'" class="search-icon pi text-decoration-none" (click)="cancelSearch()" id="serach-icon"></a>
 </form>
 <div class="main-container mt-5">
-    <div *ngIf="isResultEmpty" class="d-flex justify-content-center align-items-center">
+    <div *ngIf="isResultEmpty || !initialJobs.length" class="d-flex justify-content-center align-items-center">
         <img src="/assets/gif/no-result.gif">
     </div>
-    <div *ngIf="!isResultEmpty">
+    <div *ngIf="!isResultEmpty || initialJobs.length">
         <div class="card back-shadow m-3 border-warning d-flex flex-row" *ngFor="let job of jobs">
             <div class="left-container p-4">
                 <div class="main-div">

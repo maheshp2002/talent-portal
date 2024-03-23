@@ -9,6 +9,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './core/utilities/interceptors/token.interceptor';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
     AppRoutingModule,
     CoreModule,
     HttpClientModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    BrowserAnimationsModule
   ],
   providers: [
     TokenHelper,

@@ -4,6 +4,18 @@
     .options-label {
         font-size: 16px;
     }
+
+    .text-area-container {
+        position: relative;
+    }
+
+    .voice-button-container {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin-bottom: 20px;
+        margin-right: 20px;
+    }
 }
 
 .video {
@@ -22,7 +34,7 @@ button {
         font-size: 18px;
         padding-left: 10px;
     }
-   
+
     i {
         font-size: 23px;
     }
@@ -40,4 +52,47 @@ input {
 
 i {
     font-size: 2rem;
+}
+
+
+.voice-button {
+    border-radius: 100%;
+    background-color: rgba(255, 166, 0, 0.516);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    outline: none;
+
+    i {
+        color: white;
+        font-size: 24px;
+    }
+}
+
+.background-orange {
+    background-color: rgba(255, 166, 0, 0.516);
+}
+
+.background-red {
+    background-color: rgba(255, 0, 0, 0.516);
+}
+
+.recording {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

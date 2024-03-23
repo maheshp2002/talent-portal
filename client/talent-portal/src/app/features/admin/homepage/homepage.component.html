@@ -18,7 +18,7 @@
                     <fa-icon [icon]="faQuestionCircle" class="me-2 ms-2"></fa-icon>
                     <span>{{mcq.question}}</span>
                 </div>
-                <div *ngIf="mcq.isCodeProvided" class="mt-3 mb-3">
+                <div *ngIf="mcq.isCodeProvided && !mcq.isDescriptiveQuestion" class="mt-3 mb-3">
                     <h4 class="ms-3">Code</h4>
                     <pre class="code"><code [highlight]="mcq.code" [lineNumbers]="true"></code></pre>
                 </div>
@@ -125,7 +125,7 @@
                 <label>No</label>
             </div>
         </div>
-        <div class="form-input-control ps-0" *ngIf="questionForm.getRawValue().isCodeProvided">
+        <div class="form-input-control ps-0" *ngIf="questionForm.getRawValue().isCodeProvided  && !questionForm.getRawValue().isDescriptiveQuestion">
             <label class="required" for="admin-homepage-code">
                 Code
             </label>
