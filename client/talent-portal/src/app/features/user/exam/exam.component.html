@@ -1,8 +1,8 @@
 <form class="ps-5 pe-5 pt-3" [formGroup]="questionForm">
     <div class="row border-bottom border-warning mb-4">
         <div class="d-flex align-items-center gap-4 col-8">
-            <label class="text-warning">Question {{index + 1}}:</label>
-            <h1>{{currentQuestion.question}}</h1>
+            <label *ngIf="!isDescriptiveAlertVisible" class="text-warning">Question {{index + 1}}:</label>
+            <h1 [ngClass]="{'text-danger': isDescriptiveAlertVisible}">{{!isDescriptiveAlertVisible ? currentQuestion.question : 'Alert!'}}</h1>
         </div>
         <div class="video-container d-flex gap-3 align-items-center justify-content-end col-4 mb-2">
             <div class="timer">
@@ -16,11 +16,11 @@
             <canvas #canvas hidden></canvas>
         </div>
     </div>
-    <div *ngIf="currentQuestion.isCodeProvided" class="mt-3 mb-3 code">
+    <div *ngIf="currentQuestion.isCodeProvided && !isDescriptiveAlertVisible" class="mt-3 mb-3 code">
         <label class="text-warning mb-4 options-label">Code:</label>
         <pre class="code"><code [highlight]="currentQuestion.code" [lineNumbers]="true"></code></pre>
     </div>
-    <div class="middle-container" *ngIf="!isDescriptiveQuestion">
+    <div class="middle-container" *ngIf="!isDescriptiveQuestion && !isDescriptiveAlertVisible">
         <label class="text-warning mb-4 options-label">Options:</label>
         <div class="d-flex gap-4 mb-3">
             <input type="radio" name="answer" [value]="currentQuestion.optionOne" formControlName="answer"
@@ -43,7 +43,7 @@
             <label>{{currentQuestion.optionFour}}</label>
         </div>
     </div>
-    <div class="middle-container d-flex flex-column justify-content-center position-relative mb-5" *ngIf="isDescriptiveQuestion">
+    <div class="middle-container d-flex flex-column justify-content-center position-relative mb-5" *ngIf="isDescriptiveQuestion && !isDescriptiveAlertVisible">
         <textarea rows="15" cols="180" name="answer" maxlength="3000" formControlName="answer" placeholder="Type down your answer..."
             pInputTextarea [value]="" [autoResize]="true"
             [class]="questionForm.invalid ? 'ng-invalid ng-dirty' : ''"></textarea>
@@ -58,7 +58,7 @@
             maxlength: message.maxLengthFiveHundred
         }"></app-error-message>
     </div>
-    <div class="d-flex justify-content-end">
+    <div *ngIf="!isDescriptiveAlertVisible" class="d-flex justify-content-end">
         <div [tooltipPosition]="'top'" [pTooltip]="index <= 0 ? 'No previous question' : ''" class="me-5">
             <button [disabled]="index <= 0" [type]="'button'" class="btn btn-outline-dark rounded-2 next-button"
                 (click)="onBackClick()">
@@ -69,6 +69,19 @@
             [type]="index >= noOfQ - 1 && isDescriptiveQuestion ? 'submit' : 'button'"
             class="btn btn-dark rounded-2 next-button" (click)="submit()">{{index >= noOfQ - 1 && isDescriptiveQuestion
             ? 'Submit' : 'Next'}}
+            <i class="pi pi-chevron-right"></i>
+        </button>
+    </div>
+    <ul *ngIf="isDescriptiveAlertVisible" class="alert-container">
+        <li>When You click submit you will be navigated to next round.</li>
+        <li>You will not be able to edit to mcq question again after submitting.</li>
+    </ul>
+    <div *ngIf="isDescriptiveAlertVisible" class="d-flex gap-3 justify-content-end">
+        <button [disabled]="index <= 0" [type]="'button'" class="btn btn-outline-dark rounded-2 next-button"
+            (click)="isDescriptiveAlertVisible = !isDescriptiveAlertVisible">
+            <i class="pi pi-chevron-left">Back</i>
+        </button>
+        <button type="button" class="btn btn-dark rounded-2 next-button" (click)="startDescriptive()">Start
             <i class="pi pi-chevron-right"></i>
         </button>
     </div>

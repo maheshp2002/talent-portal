@@ -41,6 +41,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
   isConfirmDialogShow: boolean = false;
   isDescriptiveQuestion = false;
   faceMatchCount = 0;
+  isDescriptiveAlertVisible = false;
   currentQuestion: IGetMcqQuestions = {
     id: 0,
     question: "",
@@ -279,17 +280,17 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
 
     this.authenticationService.getUserProfile(this.userId).subscribe({
       next: (response: any) => {
-        // try {
-        //   this.downloadImageAndConvertToBase64(response.result.profileImage);
-        // } catch {
-        //   this.messageService.add({
-        //     severity: ToastTypes.ERROR,
-        //     summary: 'An error occurred during cheating detection'
-        //   });
-        //   setTimeout(() => {
-        //     this.router.navigate(['user/jobs']);
-        //   }, 3000);
-        // }
+        try {
+          this.downloadImageAndConvertToBase64(response.result.profileImage);
+        } catch {
+          this.messageService.add({
+            severity: ToastTypes.ERROR,
+            summary: 'An error occurred during cheating detection'
+          });
+          setTimeout(() => {
+            this.router.navigate(['user/jobs']);
+          }, 3000);
+        }
       }
     });
   }
@@ -503,8 +504,9 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
 
   submit() {
     let questionList: any[] = [];
+
+    // Get the list from local storage or initialize if it doesn't exist
     if (this.isDescriptiveQuestion) {
-      // Get the list from local storage or initialize if it doesn't exist
       const questionListString = localStorage.getItem(this.constants.descriptiveQuestions);
       questionList = questionListString ? JSON.parse(questionListString) : [];
     } else {
@@ -533,8 +535,8 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
       });
     }
 
+    // Store the updated list in local storage
     if (this.isDescriptiveQuestion) {
-      // Store the updated list in local storage
       localStorage.setItem(this.constants.descriptiveQuestions, JSON.stringify(questionList));
     } else {
       localStorage.setItem(this.constants.mcqQuestions, JSON.stringify(questionList));
@@ -547,31 +549,10 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
         this.questionForm.patchValue({ answer: this.getAnswerAtIndex(this.index) })
       }
     } else {
-
+      // Calculate score based on selected options and correct answers
       if (!this.isDescriptiveQuestion) {
-        // Calculate score based on selected options and correct answers
-        this.result.score = 0;
-        this.selectedOptions.forEach(element => {
-          const question = this.mcqs[element.index];
-          const selectedOption = element.option;
-          const correctAnswer = question.answer;
+        this.isDescriptiveAlertVisible = true;
 
-          if (selectedOption === correctAnswer) {
-            this.result.score++;
-          }
-        });
-
-        // Calculate total score and determine if the exam is passed
-        this.result.totalScore = this.noOfQ;
-        this.result.isPassed = this.result.score >= (this.noOfQ - 1) / 2;
-
-        // Store result in local storage
-        localStorage.setItem(this.constants.mcqResults, JSON.stringify(this.result));
-        this.isDescriptiveQuestion = true;
-        this.getDescriptiveQuestionsList();
-        this.buildQuestionForm();
-        this.index = 0;
-        console.log("score", this.result.score);
       } else {
         let answer: IDescriptiveScore = {
           questionId: this.currentQuestion.id,
@@ -581,6 +562,31 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
         this.getDescriptiveScore();
       }
     }
+  }
+
+  startDescriptive() {
+    this.isDescriptiveAlertVisible = false;
+    this.result.score = 0;
+    this.selectedOptions.forEach(element => {
+      const question = this.mcqs[element.index];
+      const selectedOption = element.option;
+      const correctAnswer = question.answer;
+
+      if (selectedOption === correctAnswer) {
+        this.result.score++;
+      }
+    });
+
+    // Calculate total score and determine if the exam is passed
+    this.result.totalScore = this.noOfQ;
+    this.result.isPassed = this.result.score >= (this.noOfQ - 1) / 2;
+
+    // Store result in local storage
+    localStorage.setItem(this.constants.mcqResults, JSON.stringify(this.result));
+    this.isDescriptiveQuestion = true;
+    this.getDescriptiveQuestionsList();
+    this.buildQuestionForm();
+    this.index = 0;
   }
 
   getDescriptiveScore() {
