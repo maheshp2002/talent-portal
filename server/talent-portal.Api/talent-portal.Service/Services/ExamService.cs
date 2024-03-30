@@ -297,6 +297,14 @@ public class ExamService
     {
         var response = new ServiceResponse<string>();
         double totalSimilarityScore = 0.0;
+        var scoreMapping = new Dictionary<double, int>
+        {
+            { 0.6, 0 },
+            { 0.65, 1 },
+            { 0.7, 2 },
+            { 0.8, 3 },
+            { 1.0, 5 }
+        };
 
         // Get all the unique question IDs from the list of DTOs
         var questionIds = dtos.Select(dto => dto.QuestionId).Distinct().ToList();
@@ -332,7 +340,8 @@ public class ExamService
                             double similarityScore;
                             if (double.TryParse(result, out similarityScore))
                             {
-                                totalSimilarityScore += similarityScore;
+                                int scoreToAdd = scoreMapping.FirstOrDefault(x => x.Key >= similarityScore).Value;
+                                totalSimilarityScore += scoreToAdd;
                             }
                             else
                             {

@@ -174,11 +174,11 @@ export class HomepageComponent implements OnInit {
         this.preloaderService.hide();
         this.fileName = '';
         this.isFileSelected = false;
-        this.getUserProfile();
         this.messageService.add({
           severity: ToastTypes.SUCCESS,
-          summary: 'Resume uploaded successfully'
+          summary: 'Profile updated successfully'
         });
+        this.getUserProfile();
       },
 
       error: () => {

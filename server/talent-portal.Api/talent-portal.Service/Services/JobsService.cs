@@ -51,7 +51,13 @@ public class JobsService
 
         if (user.Resume == null || user.Resume == "")
         {
-            response.AddError("no resume", "Please upload a resume first");
+            response.AddError("no resume", "Please upload a resume from user profile");
+            return response;
+        }
+
+        if (user.ProfileImage == null || user.Resume == "")
+        {
+            response.AddError("no photo", "Please upload a profile photo from user profile");
             return response;
         }
 
@@ -78,12 +84,12 @@ public class JobsService
             }
             else
             {
-                response.AddError("failed", "Failed to process the uploaded file");
+                response.AddError("failed", "Failed to process the uploaded resume");
             }
         }
         catch (Exception ex)
         {
-            response.AddError("Failed to process the uploaded file: ", ex.Message);
+            response.AddError("Failed to process the uploaded file: ", "Failed to process the uploaded resume");
         }
 
         // Fetch all jobs from the database
@@ -91,7 +97,7 @@ public class JobsService
 
         // Filter the jobs in memory using LINQ to Objects
         var jobsWithSkills = allJobs
-            .Where(job => _examService.ExtractSkillsFromText(extractedSkills, job.Id).Count > 0)
+            .Where(job => _examService.ExtractSkillsFromText(extractedSkills, job.Id).Count > 0 && job.IsOpen)
             .Select(c => new JobsViewDto
             {
                 Id = c.Id,

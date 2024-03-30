@@ -115,6 +115,14 @@ public class AccountService
 
         var existingUsersCount = await _db.ApplicationUser.CountAsync();
 
+        var userAlreadyExists = await _db.ApplicationUser.FirstOrDefaultAsync(x => x.Email == dto.Email);
+
+        if (userAlreadyExists != null)
+        {
+            response.AddError("UserExists", "A user with this email already exists");
+            return response;
+        }
+
         var user = new ApplicationUser()
         {
             Id = Guid.NewGuid().ToString(),

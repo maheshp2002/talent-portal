@@ -1,6 +1,5 @@
 import asyncio
 import os
-
 import websockets
 import base64
 import cv2
@@ -8,25 +7,30 @@ import numpy as np
 import face_recognition
 import tempfile
 
+class DetectionState:
+    def __init__(self):
+        self.is_image_sent = False
+
 # Variables for detection and tracking
-detect = False
 active_websocket = None
 reference_encoding = None
+passport_image_filename = None
 output_layers = None
 net = None
 classes = None
-isImageSend = False
-
+detection_state = DetectionState()
 
 # Function to delete the temporary image file
 def delete_temporary_image():
+    if detection_state.is_image_sent:
+        detection_state.is_image_sent = False
+    global passport_image_filename
     if passport_image_filename:
         try:
             os.remove(passport_image_filename)
             print("Temporary image file deleted successfully.")
         except Exception as e:
             print("Error deleting temporary image file:", e)
-
 
 # Function for decoding and saving the passport image
 async def process_passport_image(passport_image_base64):
@@ -57,16 +61,13 @@ async def process_passport_image(passport_image_base64):
         print("Error processing passport image:", e)
         return None
 
-
 # Function for detecting cheating by matching the decoded image with the person in the camera feed
 async def detect_cheating(camera_image_base64):
-    global detect
-    global active_websocket
     global reference_encoding
+    global active_websocket
     global output_layers
     global net
     global classes
-    global isImageSend
 
     try:
         if reference_encoding is None:
@@ -92,8 +93,7 @@ async def detect_cheating(camera_image_base64):
             match = face_recognition.compare_faces([reference_encoding], face_encoding)
 
             if match[0]:
-                print("Match found!")
-                if not isImageSend:
+                if not detection_state.is_image_sent:
                     # Save the photo of the person
                     top, right, bottom, left = face_location
                     person_photo = camera_image[top:bottom, left:right]
@@ -104,8 +104,7 @@ async def detect_cheating(camera_image_base64):
 
                     # Send the photo to Angular
                     await active_websocket.send(f"Match found! Sending photo:{person_photo_base64_str}")
-                    # await active_websocket.send(person_photo_base64_str)
-                    isImageSend = True
+                    detection_state.is_image_sent = True
                 break
             else:
                 await active_websocket.send("cheating: face not matching user profile!")
@@ -134,37 +133,40 @@ async def detect_cheating(camera_image_base64):
     except Exception as e:
         print("Error processing image:", e)
 
-
 # Function to start detection
 async def start_detection(websocket, path):
-    global detect
     global active_websocket
     active_websocket = websocket
-    detect = True
 
-    while detect:
-        message = await websocket.recv()
+    try:
+        while True:
+            message = await websocket.recv()
 
-        # Split the received message to separate the string "camera_feed" and the base64 data
-        message_parts = message.split(",", 1)
-        if message_parts[0] == "camera_feed":
-            # Start cheating detection using camera feed
-            await detect_cheating(message_parts[1])  # Pass the base64 data to the function
-        else:
-            # Process passport image
-            await process_passport_image(message)
-
+            # Split the received message to separate the string "camera_feed" and the base64 data
+            message_parts = message.split(",", 1)
+            if message_parts[0] == "camera_feed":
+                # Start cheating detection using camera feed
+                await detect_cheating(message_parts[1])  # Pass the base64 data to the function
+            else:
+                # Process passport image
+                await process_passport_image(message)
+    except websockets.exceptions.ConnectionClosedOK:
+        print("WebSocket connection closed.")
+    except Exception as e:
+        print("WebSocket error:", e)
+    finally:
+        delete_temporary_image()
 
 # Function to stop detection
 def stop_detection():
-    global detect
-    detect = False
+    global active_websocket
 
+    if active_websocket and not active_websocket.closed:
+        asyncio.run_coroutine_threadsafe(active_websocket.close(), asyncio.get_event_loop())
 
-async def main():
-    global output_layers
-    global net
-    global classes
+# Function to load YOLO model and initialize variables
+def load_model():
+    global output_layers, net, classes
     try:
         # Load YOLO
         net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
@@ -179,15 +181,23 @@ async def main():
         # Convert output layer indices to list of integers
         output_layers = [layer_names[idx - 1] for idx in output_layers_indices]
 
-        print("WebSocket server started")
-        async with websockets.serve(start_detection, "localhost", 8765):
-            await asyncio.Future()  # Run forever
+        print("Model loaded successfully.")
+    except Exception as e:
+        print("Error loading model:", e)
+
+# Main function
+def main():
+    try:
+        load_model()
+        start_server = websockets.serve(start_detection, "localhost", 8765)
+        asyncio.get_event_loop().run_until_complete(start_server)
+        asyncio.get_event_loop().run_forever()
     except KeyboardInterrupt:
         print("Server terminated by user")
-    finally:
         stop_detection()
+    finally:
         delete_temporary_image()
 
-
-print("Starting WebSocket server")
-asyncio.run(main())
+if __name__ == "__main__":
+    print("Starting WebSocket server")
+    main()

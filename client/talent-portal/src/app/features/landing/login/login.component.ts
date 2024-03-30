@@ -76,11 +76,19 @@ export class LoginComponent implements OnInit {
         }
       },
 
-      error: () => {
-        this.toast.add({
-          severity: ToastTypes.ERROR,
-          summary: 'An error occurred during login'
-        });
+      error: (errorResponse) => {
+        const errorObject = errorResponse.error;
+
+        // Iterate through the keys in the error object
+        for (const key in errorObject) {
+          if (Object.prototype.hasOwnProperty.call(errorObject, key)) {
+            const errorMessage = errorObject[key];
+            this.toast.add({
+              severity: ToastTypes.ERROR,
+              summary: errorMessage
+            });
+          }
+        }
       }
     });
   }

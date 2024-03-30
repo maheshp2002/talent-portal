@@ -56,13 +56,11 @@ export class JobSearchComponent implements OnInit {
     this.service.getAllJobs(userId).subscribe({
       next: (response: any) => {
         this.preloader.hide();
-        this.initialJobs = this.jobs = response.result;
-        console.log(this.initialJobs);
-        
+        this.initialJobs = this.jobs = response.result;        
       },
 
       error: (errorResponse) => {
-        const errorObject = errorResponse.error;
+        const errorObject = errorResponse.error;        
 
         // Iterate through the keys in the error object
         for (const key in errorObject) {

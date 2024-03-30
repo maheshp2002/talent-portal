@@ -1,5 +1,5 @@
 <form [formGroup]="jobSearchForm"
-    class="mb-5 form-input-control ps-5 pe-5 w-100 top-container w-100">
+    class="mb-5 mt-5 form-input-control ps-5 pe-5 w-100 top-container w-100">
     <input formControlName="search" placeholder="Search for job name" type="text" class="w-100"
         id="user-job-search-search">
     <a [ngClass]="jobSearchForm.get('search')?.value ? 'pi-times fs-18' : 'pi-search fs-23'" class="search-icon pi text-decoration-none" (click)="cancelSearch()" id="serach-icon"></a>

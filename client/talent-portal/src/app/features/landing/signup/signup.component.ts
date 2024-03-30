@@ -76,12 +76,20 @@ export class SignupComponent implements OnInit{
         });
     },
 
-    error: () => {
+    error: (errorResponse) => {
       this.preLoaderService.hide();
-      this.toast.add({
-        severity: ToastTypes.ERROR,
-        summary: 'An error occurred during registration'
-      });
+      const errorObject = errorResponse.error;
+
+      // Iterate through the keys in the error object
+      for (const key in errorObject) {
+        if (Object.prototype.hasOwnProperty.call(errorObject, key)) {
+          const errorMessage = errorObject[key];
+          this.toast.add({
+            severity: ToastTypes.ERROR,
+            summary: errorMessage
+          });
+        }
+      }
     }
   })
 }

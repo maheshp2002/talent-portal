@@ -79,6 +79,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
   isInstructionDialogVisible = true;
   isRecording: boolean = false;
   recognition: any;
+  isSubmit = false;
 
   startTimer() {
     this.timer = setInterval(() => {
@@ -258,20 +259,21 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
   }
 
   startCameraAfterPassportProcessing() {
-    this.detectionService.getDetectedObject().subscribe((message: string) => {
-      if (message.includes('Passport image uploaded successfully')) {
+    this.detectionService.getDetectedObject().subscribe((message: string) => {  
+      
+      if (message == 'Passport image uploaded successfully') {        
         this.startCamera();
       }
-      else {
-        this.preloaderService.show();
-        setTimeout(() => {
-          this.router.navigate(['user/jobs']);
-        }, 3000);
-        this.messageService.add({
-          severity: ToastTypes.ERROR,
-          summary: "An error occured!"
-        });
-      }
+      // else {
+      //   this.preloaderService.show();
+      //   setTimeout(() => {
+      //     this.router.navigate(['user/jobs']);
+      //   }, 3000);
+      //   this.messageService.add({
+      //     severity: ToastTypes.ERROR,
+      //     summary: "An error occured during image upload!"
+      //   });
+      // }
     });
   }
 
@@ -328,15 +330,10 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
       $event.returnValue = "Are you sure you want to reload this page? This will terminate you from the exam.";
       // this.detectionService.stopDetection();
       // this.stopCamera();
-      if (this.fullscreenService.isFullscreen) {
-        $event.returnValue = "Are you sure you want to leave this page? This will terminate you from the exam.";
-        // this.detectionService.stopDetection();
-        // this.stopCamera();
-      }
     }
   }
 
-  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {        
     if (!this.isConfirmDialogShow) {
       const confirmNavigation = window.confirm('Are you sure you want to leave this page? Leaving this page will terminate you from examination.');
       // this.detectionService.stopDetection();
@@ -373,14 +370,15 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
         }
 
         if (this.detectObject.toString().toLowerCase().includes("cheating: face not matching user profile!")) {
-          this.faceMatchCount = (this.objectCheatingLimit || 0) + 1;
+          this.faceMatchCount = (this.faceMatchCount || 0) + 1;          
         }
 
         // Check if cheating limits exceeded
         if (this.objectCheatingLimit >= 10 || this.personCheatingLimit >= 2 || this.faceMatchCount >= 2) {
           this.isCheating = this.isConfirmDialogShow = true;
-          this.detectionService.stopDetection();
-          this.stopCamera();
+          
+          // this.detectionService.stopDetection();
+          // this.stopCamera();
 
           setTimeout(() => {
             this.router.navigate(['user/jobs']);
@@ -615,6 +613,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
   }
 
   async examResult(descriptiveResult: string) {
+    this.isSubmit = true;
     const questionListString = localStorage.getItem(this.constants.mcqResults);
     const mcq = questionListString ? JSON.parse(questionListString) : [];
 
@@ -623,7 +622,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     // Parse the string to float and then add them together
     const parsedScore = Number.parseFloat(mcq.score) + Number.parseFloat(descriptiveResult);
     result.score = parseFloat(parsedScore.toFixed(2));
-    result.totalScore = this.noOfQ + mcq.totalScore
+    result.totalScore = (this.noOfQ * 5) + mcq.totalScore
     result.isPassed = result.score >= (result.totalScore) / 2 ? true : false;
 
     this.resultService.addResult(result).subscribe({
