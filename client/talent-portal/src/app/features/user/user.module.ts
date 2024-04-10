@@ -23,6 +23,7 @@ import { CircleProgressOptions, NgCircleProgressModule } from 'ng-circle-progres
 import { ResultComponent } from './result/result.component';
 import { AttendedExamsComponent } from './attended-exams/attended-exams.component';
 import { CounsellingComponent } from './counselling/counselling.component';
+import { RobotComponent } from 'src/app/shared/robot/robot.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { CounsellingComponent } from './counselling/counselling.component';
     FontAwesomeModule,
     TooltipModule,
     NgCircleProgressModule,
-    InputTextareaModule
+    InputTextareaModule,
+    RobotComponent
   ],
   providers: [ConfirmationService, CircleProgressOptions]
 })

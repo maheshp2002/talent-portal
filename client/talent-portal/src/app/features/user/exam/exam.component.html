@@ -85,6 +85,9 @@
             <i class="pi pi-chevron-right"></i>
         </button>
     </div>
+    <div (click)="speechToggle(currentQuestion.question)">
+        <app-robot></app-robot>
+    </div>
 </form>
 
 <p-dialog [(visible)]="isCheating" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
@@ -111,3 +114,4 @@
     </ol>
 </p-dialog>
 <app-pre-loader></app-pre-loader>
+

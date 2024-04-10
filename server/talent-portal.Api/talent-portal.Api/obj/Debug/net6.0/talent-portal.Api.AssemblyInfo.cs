@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("talent-portal.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b007ef5ca2644781d5b575ace5a17c8f7f90c4a1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f5a9b08db85efb1edeb4787525c9eb2337a23e05")]
 [assembly: System.Reflection.AssemblyProductAttribute("talent-portal.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("talent-portal.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,252 @@
+.robot {
+    position: relative;
+    width: 80px; // Adjust the size as needed
+    height: 90px; // Adjust the size as needed
+    bottom: 0;
+}
+
+.robot-container {
+    width: 100px;
+    height: 100px;
+}
+
+.main-div {
+    position: absolute;
+    width: 200px;
+}
+
+.head {
+    position: absolute;
+    width: 80px;
+    height: 50px;
+    background-color: #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    background: linear-gradient(to right, #ccc 0%, lighten(#ccc, 10%) 40%, lighten(#ccc, 10%) 60%, #ccc 100%);
+    transform-origin: 50% 100%;
+    animation: bob 8000ms ease-in-out alternate infinite -1000ms;
+}
+
+.eyes {
+    position: absolute;
+    top: calc(25% - 5px);
+    right: 15px;
+    left: 15px;
+    height: 10px;
+    animation: blink 10000ms linear forwards infinite;
+}
+
+.eyeball {
+    position: absolute;
+    width: 6px;
+    height: 10px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background-color: black;
+}
+
+.eyeball_left {
+    left: 0;
+}
+
+.eyeball_right {
+    right: 0;
+}
+
+.mouth {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    width: 76px;
+    height: 10px;
+    background-color: black;
+    overflow: hidden;
+    border-radius: 2px;
+    transition: height 100ms cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.mouth-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.robot_speaking {
+    .mouth {
+        height: 20px;
+    }
+
+    .mouth-container {
+        animation: speakingAnim 0.3s infinite;
+    }
+}
+
+.mouth-container-line {
+    position: absolute;
+    top: 50%;
+    height: 2px;
+    background-color: limegreen;
+    width: 100%;
+    margin-top: -1px;
+}
+
+.torso {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    width: 40px;
+    height: 30px;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(to right, #ccc 0%, lighten(#ccc, 10%) 40%, lighten(#ccc, 10%) 60%, #ccc 100%);
+}
+
+.neck {
+    position: absolute;
+    bottom: 22px;
+    left: 32px;
+    width: 16px;
+    height: 25px;
+    border-radius: 15px;
+    background:
+        repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 7%, rgb(100, 100, 100) 10%),
+        linear-gradient(to right, #ccc 0%, lighten(#ccc, 10%) 40%, lighten(#ccc, 10%) 60%, #ccc 100%);
+}
+
+.arms {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    height: 25px;
+}
+
+.arm {
+    position: absolute;
+    top: 0;
+    width: 10px;
+    height: 25px;
+    border-radius: 5px 5px 0 0;
+    background:
+        repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 7%, rgb(100, 100, 100) 10%),
+        linear-gradient(to right, #ccc 0%, lighten(#ccc, 10%) 40%, lighten(#ccc, 10%) 60%, #ccc 100%);
+}
+
+.arm_left {
+    left: 0;
+}
+
+.arm_right {
+    right: 0;
+}
+
+@keyframes lowAnim {
+    0% {
+        filter: url('#low-0');
+    }
+
+    25% {
+        filter: url('#low-1');
+    }
+
+    50% {
+        filter: url('#low-2');
+    }
+
+    75% {
+        filter: url('#low-3');
+    }
+
+    100% {
+        filter: url('#low-4');
+    }
+}
+
+@keyframes listeningAnim {
+    0% {
+        filter: url('#listening-0');
+    }
+
+    25% {
+        filter: url('#listening-1');
+    }
+
+    50% {
+        filter: url('#listening-2');
+    }
+
+    75% {
+        filter: url('#listening-3');
+    }
+
+    100% {
+        filter: url('#listening-4');
+    }
+}
+
+@keyframes speakingAnim {
+    0% {
+        filter: url('#speaking-0');
+    }
+
+    25% {
+        filter: url('#speaking-1');
+    }
+
+    50% {
+        filter: url('#speaking-2');
+    }
+
+    75% {
+        filter: url('#speaking-3');
+    }
+
+    100% {
+        filter: url('#speaking-4');
+    }
+}
+
+@keyframes bob {
+    0% {
+        transform: rotate(-3deg);
+    }
+
+    40% {
+        transform: rotate(-3deg);
+        animation-timing-function: cubic-bezier(1, 0, 0, 1);
+    }
+
+    60% {
+        transform: rotate(3deg);
+    }
+
+    100% {
+        transform: rotate(3deg);
+    }
+}
+
+@keyframes blink {
+    50% {
+        transform: scale(1, 1);
+    }
+
+    51% {
+        transform: scale(1, 0.1);
+    }
+
+    52% {
+        transform: scale(1, 1);
+    }
+}
+
+.dialog-box {
+    position: absolute;
+    transform: translateX(-7px) translateY(16px);
+    bottom: 0;
+    color: black;
+    background-color: #fff;
+    padding: 5px 10px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

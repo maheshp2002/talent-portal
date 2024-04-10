@@ -14,6 +14,7 @@ import { ExamService } from 'src/app/core/services/exam.service';
 import { FullscreenService } from 'src/app/core/services/fullscreen.service';
 import { PreLoaderService } from 'src/app/core/services/preloader.service';
 import { ResultService } from 'src/app/core/services/result.service';
+import { SpeechService } from 'src/app/core/services/speech.service';
 import { TokenHelper } from 'src/app/core/utilities/helpers/token.helper';
 
 @Component({
@@ -31,6 +32,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
   };
 
   userId = '';
+  questionToSpeech: string = '';
   navigatingAway: boolean = false;
   personCheatingLimit: number = 0;
   objectCheatingLimit: number = 0;
@@ -120,7 +122,8 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     private readonly http: HttpClient,
     private readonly authenticationService: AuthenticationService,
     private readonly constants: Constants,
-    private readonly fullscreenService: FullscreenService
+    private readonly fullscreenService: FullscreenService,
+    private readonly speechService: SpeechService
   ) { }
 
   enterFullscreen() {
@@ -220,7 +223,6 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
       this.videoElement.nativeElement.srcObject = stream;
       this.videoElement.nativeElement.play();
       this.preloaderService.hide();
-      // this.subscribeToDetectedPhoto();
       this.startTimer();
 
       if (!this.isCameraClose) {
@@ -264,16 +266,16 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
       if (message == 'Passport image uploaded successfully') {        
         this.startCamera();
       }
-      // else {
-      //   this.preloaderService.show();
-      //   setTimeout(() => {
-      //     this.router.navigate(['user/jobs']);
-      //   }, 3000);
-      //   this.messageService.add({
-      //     severity: ToastTypes.ERROR,
-      //     summary: "An error occured during image upload!"
-      //   });
-      // }
+      else {
+        this.preloaderService.show();
+        setTimeout(() => {
+          this.router.navigate(['user/jobs']);
+        }, 3000);
+        this.messageService.add({
+          severity: ToastTypes.ERROR,
+          summary: "An error occured during image upload!"
+        });
+      }
     });
   }
 
@@ -303,7 +305,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64Data = reader.result as string | ArrayBufferLike | Blob | ArrayBufferView;
-          this.sendPassportImage(base64Data); // Start detection with the base64 data
+          this.sendPassportImage(base64Data);
         };
         reader.readAsDataURL(blob);
       });
@@ -388,6 +390,12 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     });
   }
 
+  speechToggle(message: string) {
+    console.log(message);
+    
+    this.speechService.toggleSpeech(message);
+  }
+
   getMcqQuestionsList() {
     this.examService.getMcqQuestions(this.result.jobId, this.result.userId).subscribe({
       next: (result: any) => {
@@ -400,6 +408,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
           }
         });
         this.currentQuestion = this.mcqs[0];
+        this.speechToggle(this.currentQuestion.question);
       },
 
       error: (errorResponse) => {
