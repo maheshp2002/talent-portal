@@ -243,12 +243,10 @@ public class ExamService
                 {
                     result.Add(jobSkill);
                     uniqueSkills.Add(jobSkill); // Add the skill to the HashSet
-                    break;
                 }
                 else if (!uniqueSkills.Contains(jobSkill))
                 {
                     excludedSkills.Add(jobSkill);
-                    break;
                 }
             }
         }
