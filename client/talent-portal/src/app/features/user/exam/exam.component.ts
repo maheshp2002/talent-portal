@@ -264,17 +264,8 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     this.detectionService.getDetectedObject().subscribe((message: string) => {  
       
       if (message == 'Passport image uploaded successfully') {        
+        console.log(message);
         this.startCamera();
-      }
-      else {
-        this.preloaderService.show();
-        setTimeout(() => {
-          this.router.navigate(['user/jobs']);
-        }, 3000);
-        this.messageService.add({
-          severity: ToastTypes.ERROR,
-          summary: "An error occured during image upload!"
-        });
       }
     });
   }
@@ -354,7 +345,6 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
       if (this.detectObject.toString().toLowerCase().includes("match found! sending photo:")) {
         const photoIndex = data.indexOf("Match found! Sending photo:") + "Match found! Sending photo:".length;
         this.result.userImage = data.substring(photoIndex);
-        console.log(this.result.userImage);
       }
 
       if (this.detectObject.toString().toLowerCase().includes("cheating")) {
@@ -390,9 +380,7 @@ export class ExamComponent implements CanComponentDeactivate, OnInit, OnDestroy 
     });
   }
 
-  speechToggle(message: string) {
-    console.log(message);
-    
+  speechToggle(message: string) {    
     this.speechService.toggleSpeech(message);
   }
 

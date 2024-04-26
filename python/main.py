@@ -108,6 +108,7 @@ async def detect_cheating(camera_image_base64):
                 break
             else:
                 await active_websocket.send("cheating: face not matching user profile!")
+                print("cheating: face not matching user profile!")
                 break
 
         # Object detection using YOLO
@@ -125,10 +126,12 @@ async def detect_cheating(camera_image_base64):
                     if class_id in [67, 63]:  # Class ID for cell phone and laptop in COCO dataset
                         detected_class = classes[class_id]
                         await active_websocket.send(f"Cheating: {detected_class.capitalize()} detected!")
+                        print(f"Cheating: {detected_class.capitalize()} detected!")
 
         # Multiple person detection
         if len(face_locations) > 1:
             await active_websocket.send("Cheating: More than one face detected!")
+            print("Cheating: More than one face detected!")
 
     except Exception as e:
         print("Error processing image:", e)
